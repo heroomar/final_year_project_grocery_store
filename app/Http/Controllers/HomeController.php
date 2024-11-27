@@ -47,8 +47,7 @@ class HomeController extends Controller
     {
         $user = auth()->user();
         
-        
-        if ($user->type == 'super admin') {
+        if (1||$user->type == 'super admin') {
           
           $data = $this->handleSuperAdmin($user);
 
@@ -59,46 +58,29 @@ class HomeController extends Controller
         }
     }
 
-    // private function handleSuperAdmin($user)
-    // {
-    //     $user['total_user'] = $user->countCompany();
-    //     $user['total_orders'] = PlanOrder::total_orders();
-    //     $user['total_plan'] = Plan::total_plan();
-    //     $chartData = $this->getOrderChart(['duration' => 'week']);
-    //     $topAdmins = $user->createdAdmins()
-    //         ->with('stores')
-    //         ->withCount('stores')
-    //         ->orderBy('stores_count', 'desc')
-    //         ->limit(5)
-    //         ->get();
+    private function handleSuperAdmin($user)
+    {
+        $user['total_user'] = 0;
+        $user['total_orders'] = 0;
+        $user['total_plan'] = 0;
+        $chartData = [0,0,0,0,0,0,0];
+        $topAdmins = [];
 
-    //     $visitors = DB::table('shetabit_visits')->whereNotNull('store_id')->pluck('store_id')->toArray();
-    //     $visitors = array_count_values($visitors);
-    //     arsort($visitors);
-    //     $visitors = array_slice($visitors, 0, 5, true);
+        
+        $visitors = [0,0,0,0,0];
 
-    //     $plan_order = Plan::most_purchese_plan();
-    //     $coupons = PlanCoupon::get();
-    //     $maxValue = 0;
-    //     $couponName = '';
-    //     foreach ($coupons as $coupon) {
-    //         $max = $coupon->used_coupon();
-    //         if ($max > $maxValue) {
-    //             $maxValue = $max;
-    //             $couponName = $coupon->name;
-    //         }
-    //     }
+        $plan_order = [];
+        $coupons = [];
+        $maxValue = 0;
+        $couponName = '';
+        
 
-    //     $allStores = Order::select('store_id', DB::raw('SUM(final_price) as total_amount'))
-    //         ->groupBy('store_id')
-    //         ->orderByDesc('total_amount')
-    //         ->limit(5)
-    //         ->get();
-    //     $plan_requests = PlanRequest::count();
+        $allStores = [];
+        $plan_requests = 0;
 
-    //     $data =  compact('user', 'chartData', 'couponName', 'plan_order', 'plan_requests', 'allStores', 'topAdmins', 'visitors');
-    //     return $data;
-    // }
+        $data =  compact('user', 'chartData', 'couponName', 'plan_order', 'plan_requests', 'allStores', 'topAdmins', 'visitors');
+        return $data;
+    }
 
     // private function handleRegularUser($user)
     // {

@@ -1,50 +1,24 @@
 @php
-    if(auth()->user() && auth()->user()->type == 'admin') {
-        $setting = getAdminAllSetting();
-        $supperadminSetting = \App\Models\Setting::where('name', 'disable_lang')->where('created_by', 1)->pluck('value', 'name')->toArray();
-        $setting['disable_lang'] = $supperadminSetting['disable_lang'] ?? null;
-    } else {
-        $setting = getSuperAdminAllSetting();
-    }
-    $SuperadminData = getSuperAdminAllSetting();
-    $theme_name = !empty(APP_THEME()) ? APP_THEME() : env('DATA_INSERT_APP_THEME');
-    $cust_darklayout = \App\Models\Utility::GetValueByName('cust_darklayout', $theme_name);
-    if ($cust_darklayout == '') {
-        $setting['cust_darklayout'] = 'off';
-    }
-
-    $cust_theme_bg = \App\Models\Utility::GetValueByName('cust_theme_bg', $theme_name);
-    if($cust_theme_bg == ''){
-        $setting['cust_theme_bg'] = 'on';
-    }
-
-    $SITE_RTL = \App\Models\Utility::GetValueByName('SITE_RTL', $theme_name);
-    if($SITE_RTL == ''){
-        $setting['SITE_RTL'] = 'off';
-    }
-
-    if (!isset($setting['color'])) {
-        $themeColor = 'theme-3';
-    } elseif (isset($setting['color_flag']) && $setting['color_flag'] == 'true') {
-        $themeColor = 'custom-color';
-    } else {
-        if (!in_array($setting['color'], ['theme-1','theme-2','theme-3','theme-4','theme-5','theme-6','theme-7','theme-8','theme-9'])) {
-            $themeColor = 'custom-color' ?? 'theme-3';
-        } else {
-            $themeColor = $setting['color'] ?? 'theme-3';
-        }
-
-    }
-
-    if(auth()->user() && auth()->user()->language) {
-        $setting['currantLang'] = auth()->user()->language;
-    } else {
-        $setting['currantLang'] = 'en';
-    }
-
-    if ($setting['currantLang'] == 'ar' || $setting['currantLang'] == 'he') {
-        $setting['SITE_RTL'] = 'on';
-    }
+$SuperadminData=[];
+$SuperadminData['metatitle'] = '';
+$SuperadminData['metatitle'] = '';
+$SuperadminData['metakeyword'] = '';
+$SuperadminData['metakeyword'] = '';
+$SuperadminData['metadesc'] = '';
+$SuperadminData['metadesc'] = '';
+$SuperadminData['metatitle'] = '';
+$SuperadminData['metatitle'] = '';
+$SuperadminData['metadesc'] = '';
+$SuperadminData['metadesc'] = '';
+$SuperadminData['metaimage'] = '';
+$SuperadminData['metaimage'] = '';
+$SuperadminData['metatitle'] = '';
+$SuperadminData['metatitle'] = '';
+$SuperadminData['metadesc'] = '';
+$SuperadminData['metadesc'] = '';
+$SuperadminData['metaimage'] = '';
+$SuperadminData['metaimage'] = '';
+    
 @endphp
 
 <!DOCTYPE html>
@@ -66,20 +40,20 @@
     <meta property="og:url" content="{{ env('APP_URL') }}">
     <meta property="og:title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'EcommerceGo' }}">
     <meta property="og:description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.'}} ">
-    <meta property="og:image" content="{{ get_file(isset($SuperadminData['metaimage']) ? $SuperadminData['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png')  }}{{'?'.time() }}">
+    <meta property="og:image" content="{{ (isset($SuperadminData['metaimage']) ? $SuperadminData['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png')  }}{{'?'.time() }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ env('APP_URL') }}">
     <meta property="twitter:title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'EcommerceGo' }}">
     <meta property="twitter:description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.'}} ">
-    <meta property="twitter:image" content="{{ get_file(isset($SuperadminData['metaimage']) ? $SuperadminData['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png')  }}{{'?'.time() }}">
+    <meta property="twitter:image" content="{{ (isset($SuperadminData['metaimage']) ? $SuperadminData['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png')  }}{{'?'.time() }}">
 
     <title>{{ isset($setting['title_text']) ? $setting['title_text'] : ( env('APP_NAME') ?? 'Ecommercego saas') }} - @yield('page-title') </title>
 
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/select2.min.css') }}">
     <!-- Favicon icon -->
-    <link rel="icon" href="{{ isset($setting['favicon']) ? get_file($setting['favicon'], APP_THEME()) . '?timestamp=' . time() : asset(Storage::url('uploads/logo/favicon.png')) . '?timestamp=' . time() }}" type="image/x-icon" />
+    
 
     <!-- notification css -->
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/notifier.css') }}">
