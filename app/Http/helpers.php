@@ -54,3 +54,43 @@ if (!function_exists('hasChildren')) {
         return false;
     }
 }
+
+function module_is_active($name){
+    return true;
+}
+
+if (!function_exists('bulkDeleteCloneCheckboxColumn')) {
+    function bulkDeleteCloneCheckboxColumn() {
+        // Initialize an array to hold the columns
+        $columns = [];
+
+        // Check if the BulkDelete module is active
+        if (module_is_active('BulkDelete')) {
+            // Add the checkbox column if the module is active
+            $columns[] = \Yajra\DataTables\Html\Column::computed('checkbox')
+                ->title('<input type="checkbox" id="select-all">')
+                ->orderable(false)
+                ->exportable(false)
+                ->printable(false)
+                ->width(20)
+                ->addClass('text-center')
+                ->render('function() {
+                    return \'<input type="checkbox" class="select-row" value="\' + this.id + \'">\';
+                }');
+        }
+
+        return $columns; // Return the array of columns
+    }
+}
+
+if (!function_exists('bulkDeleteForm')) {
+    function bulkDeleteForm($type,$dataTableId) {
+        return [
+            'text' => '<i class="ti ti-trash"></i> ' . __('Delete'),
+            'className' => 'btn btn-light-danger bulk-delete me-1',
+            'action' => "function(e, dt, button, config) {
+                bulkDelete('{$type}','{$dataTableId}');
+            }"
+        ];
+    }
+}
