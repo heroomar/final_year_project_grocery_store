@@ -472,8 +472,8 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::post('get-subcategory', [TestimonialController::class, 'get_subcategory'])->name('get.subcategory');
 //     Route::post('get-product', [TestimonialController::class, 'get_product'])->name('get.product');
 
-//     Route::resource('main-category', MainCategoryController::class);
-//     Route::resource('sub-category', SubCategoryController::class);
+    Route::resource('main-category', MainCategoryController::class);
+    Route::resource('sub-category', SubCategoryController::class);
 //     Route::resource('product', ProductController::class);
 //     Route::post('get-slug', [ProductController::class, 'get_slug'])->name('get.slug');
 //     Route::post('get-product-subcategory', [ProductController::class, 'get_subcategory'])->name('get.product.subcategory');

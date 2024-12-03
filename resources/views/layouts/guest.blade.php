@@ -68,10 +68,10 @@
     <link rel="stylesheet" href="{{ asset('assets/fonts/material.css') }}">
 
     <!-- vendor css -->
-        <link rel="stylesheet" href="{{ asset('assets/css/style-dark.css') }}" id="main-style-link">
+        <!-- <link rel="stylesheet" href="{{ asset('assets/css/style-dark.css') }}" id="main-style-link"> -->
         <link rel="stylesheet" href="{{ asset('assets/css/style-rtl.css') }}" id="main-style-link">
         <link rel="stylesheet" href="{{ asset('css/rtl-loader.css') }}{{ '?v=' . time() }}">
-        <link rel="stylesheet" href="{{ asset('assets/css/style-dark.css') }}" id="main-style-link">
+        <!-- <link rel="stylesheet" href="{{ asset('assets/css/style-dark.css') }}" id="main-style-link"> -->
         <link rel="stylesheet" href="{{ asset('css/loader.css') }}{{ '?v=' . time() }}">
         <link rel="stylesheet" href="{{ asset('assets/css/style-rtl.css') }}" id="main-style-link">
         <link rel="stylesheet" href="{{ asset('css/rtl-loader.css') }}{{ '?v=' . time() }}">
@@ -87,7 +87,7 @@
 
     <style>
         :root {
-            --color-customColor: <?=$setting['color'] ?? 'linear-gradient(141.55deg, rgba(240, 244, 243, 0) 3.46%, #ffffff 99.86%)' ?>;
+            --color-customColor: <?= $setting['color'] ?? 'linear-gradient(141.55deg, rgba(240, 244, 243, 0) 3.46%, #ffffff 99.86%)' ?>;
         }
     </style>
     <style>

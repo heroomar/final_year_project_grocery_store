@@ -991,6 +991,7 @@
 
 <script>
     var data = "{\"logo_dark\":\"storage\\\/uploads\\\/logo\\\/logo-dark.png\",\"logo_light\":\"storage\\\/uploads\\\/logo\\\/logo-light.png\",\"favicon\":\"storage\\\/uploads\\\/logo\\\/favicon.png\",\"title_text\":\"ecom\",\"footer_text\":\"Copyright \\u00a9 ecom\",\"site_date_format\":\"M j, Y\",\"site_time_format\":\"g:i A\",\"SITE_RTL\":\"off\",\"display_landing\":\"on\",\"SIGNUP\":\"on\",\"email_verification\":\"off\",\"color\":\"theme-3\",\"cust_theme_bg\":\"on\",\"cust_darklayout\":\"off\",\"storage_setting\":\"local\",\"local_storage_validation\":\"jpg,jpeg,png,csv,svg,pdf\",\"local_storage_max_upload_size\":\"2048000\",\"s3_key\":\"\",\"s3_secret\":\"\",\"s3_region\":\"\",\"s3_bucket\":\"\",\"s3_endpoint\":\"\",\"s3_max_upload_size\":\"\",\"s3_storage_validation\":\"\",\"wasabi_key\":\"\",\"wasabi_secret\":\"\",\"wasabi_region\":\"\",\"wasabi_bucket\":\"\",\"wasabi_url\":\"\",\"wasabi_root\":\"\",\"wasabi_max_upload_size\":\"\",\"wasabi_storage_validation\":\"\",\"CURRENCY_NAME\":\"USD\",\"CURRENCYCURRENCY\":\"$\",\"currency_format\":\"1\",\"defult_currancy\":\"USD\",\"defult_language\":\"en\",\"defult_timezone\":\"Asia\\\/Kolkata\",\"enable_cookie\":\"on\",\"cookie_logging\":\"on\",\"necessary_cookies\":\"on\",\"cookie_title\":\"We use cookies!\",\"cookie_description\":\"Hi, this website uses essential cookies to ensure its proper operation and tracking cookies to understand how you interact with it\",\"strictly_cookie_title\":\"Strictly necessary cookies\",\"strictly_cookie_description\":\"These cookies are essential for the proper functioning of my website. Without these cookies, the website would not work properly\",\"more_information_description\":\"For any queries in relation to our policy on cookies and your choices, please contact us\",\"more_information_title\":\"\",\"contactus_url\":\"#\"}";
+    data="{}"
     var parsed = JSON.parse(data);
     let language_code = document.documentElement.getAttribute('lang');
     let languages = {};
@@ -1057,7 +1058,7 @@
     }
 
 
-    if (typeof initCookieConsent === 'function') {
+    if (typeof initCookieConsent === 'sfunction') {
         var cc = initCookieConsent();
         cc.run({
             current_lang: 'en',

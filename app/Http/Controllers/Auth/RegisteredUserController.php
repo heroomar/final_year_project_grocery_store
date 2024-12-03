@@ -158,7 +158,7 @@ class RegisteredUserController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                'store_name' => ['required', 'string', 'max:255'],
+                // 'store_name' => ['required', 'string', 'max:255'],
             ]);
             // $superAdmin = Cache::remember('super_admin_details', 3600, function () {
             //     return User::where('type','super admin')->first();

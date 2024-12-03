@@ -1,9 +1,9 @@
 @php
-    if(auth()->user() && auth()->user()->type == 'admin') {
-        $setting = getAdminAllSetting();
-    } else {
-        $setting = getSuperAdminAllSetting();
-    }
+$setting['footer_text'] = '';
+$setting['footer_text'] = '';
+$setting['footer_text'] = '';
+$setting['footer_text'] = '';
+$setting['footer_text'] = '';
  @endphp
  <footer class="dash-footer">
      <div class="footer-wrapper">

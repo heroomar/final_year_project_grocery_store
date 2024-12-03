@@ -34,11 +34,11 @@
                 <input id="name" class="form-control" type="text" name="name" :value="old('name')" required
                 placeholder="{{ __('Enter Name') }}" autofocus />
             </div>
-            <div class="form-group mb-3">
+            <!-- <div class="form-group mb-3">
                 <label class="form-label" for="name">{{ __('Store name') }}</label>
                 <input id="name" class="form-control" type="text" name="store_name" :value="old('store_name')"
                 placeholder="{{ __('Enter Store name') }}" required autofocus />
-            </div>
+            </div> -->
             <div class="form-group mb-3">
                 <label class="form-label" for="email">{{ __('Email') }}</label>
                 <input id="email" class="form-control" type="email" name="email" :value="old('email')" placeholder="{{ __('Enter Email') }}" required />

@@ -164,9 +164,9 @@ $SuperadminData['metaimage'] = '';
                             </div>
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    @if (\Request::route()->getName() != 'dashboard')
-                                        <a href="{{ route('dashboard') }}">{{ __('Home') }}</a>
-                                    @endif
+                                    
+                                        <a href="{{ url('dashboard') }}">{{ __('Home') }}</a>
+                                    
                                 </li>
                                 @yield('breadcrumb')
                             </ul>
@@ -183,7 +183,7 @@ $SuperadminData['metaimage'] = '';
     </div>
     <!-- [ Main Content ] end -->
 
-    @if (\Request::route()->getName() != 'pos.index')
+    @if (1)
         <div id="commanModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modelCommanModelLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -269,7 +269,7 @@ $SuperadminData['metaimage'] = '';
 
             '<div class="form-group col-lg-6 col-12 d-flex justify-content-end all-button-box">' +
             '<a href="#" class="btn btn-sm btn-primary add_attribute" data-ajax-popup="true" data-title="{{ __('Add Attribute Option') }}" data-size="md" ' +
-            'data-url="{{ route('product-attribute-option.create') }}/' + i + '" ' +
+            'data-url="{{ url('product-attribute-option.create') }}/' + i + '" ' +
             'data-toggle="tooltip">' +
             '<i class="ti ti-plus">{{ __('Add Attribute option') }}</i></a></div></div>' +
 
@@ -332,12 +332,7 @@ $SuperadminData['metaimage'] = '';
     @endif
 
 
-    @php
-        $setting = getSuperAdminAllSetting();
-    @endphp
-    @if (isset($setting['enable_cookie']) && $setting['enable_cookie'] == 'on')
-        @include('layouts.cookie_consent')
-    @endif
+    
 </body>
 
 </html>

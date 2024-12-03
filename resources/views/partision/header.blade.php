@@ -1,13 +1,7 @@
 @php
-    $displaylang = App\Models\Utility::languages();
-    if (auth()->user() && auth()->user()->language) {
-        $currentLanguage = auth()->user() ? auth()->user()->language : 'en';
-    } else {
-        $currentLanguage = Cookie::get('LANGUAGE');
-        if (empty($currentLanguage)) {
-            $currentLanguage = auth()->user() ? auth()->user()->language : 'en';
-        }
-    }
+    
+        $currentLanguage = 'en';
+    
 @endphp
 
 @if (isset($setting['cust_theme_bg']) && $setting['cust_theme_bg'] == 'on')
@@ -47,12 +41,12 @@
                 </a>
                 <div class="dropdown-menu dash-h-dropdown">
 
-                    <a href="{{ route('profile') }}" class="dropdown-item">
+                    <a href="{{ url('profile') }}" class="dropdown-item">
                         <i class="ti ti-user"></i>
                         <span>{{ __('Profile') }}</span>
                     </a>
-                    <form method="POST" action="{{ route('logout') }}" id="form_logout">
-                        <a href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();"
+                    <form method="POST" action="{{ url('logout') }}" id="form_logout">
+                        <a href="url('logout')" onclick="event.preventDefault(); this.closest('form').submit();"
                             class="dropdown-item">
                             <i class="ti ti-power"></i>
                             @csrf
@@ -65,14 +59,7 @@
     </div>
     <div class="dash-center-drp">
         <ul class="list-unstyled exit-company-btn">
-            @impersonating($guard = null)
-                <li class="dropdown dash-h-item">
-                    <a class="dropdown-item dash-head-link dropdown-toggle arrow-none cust-btn bg-danger"
-                        href="{{ route('exit.admin') }}"><i class="ti ti-ban"></i>
-                        {{ __('Exit Admin Login') }}
-                    </a>
-                </li>
-            @endImpersonating
+            
         </ul>
     </div>
     <div class="dash-right-drp">
@@ -80,7 +67,7 @@
 
                 @if (auth()->user() && auth()->user()->type == 'admin')
                     <li class="dropdown dash-h-item drp-language">
-                        <a href="{{ route('stores.create') }}" class="dropdown-item dash-head-link dropdown-toggle arrow-none cust-btn bg-primary" data-size="lg"
+                        <a href="{{ url('stores.create') }}" class="dropdown-item dash-head-link dropdown-toggle arrow-none cust-btn bg-primary" data-size="lg"
                             >
                             <i class="ti ti-circle-plus"></i>
                             <span class="text-store">{{ __('Create New Store') }}</span>
@@ -110,7 +97,7 @@
                                 @if (auth()->user()->type == 'admin')
                                     @foreach ($stores as $store)
                                         @if ($store->is_active)
-                                        <a href="@if ($activeStore == $store->id) # @else {{ route('change.store', $store->id) }} @endif"
+                                        <a href="@if ($activeStore == $store->id) # @else {{ url('change.store', $store->id) }} @endif"
                                             class="dropdown-item">
                                             @if ($activeStore == $store->id)
                                                 <i class="ti ti-checks text-primary"></i>
@@ -158,21 +145,8 @@
                 </a>
 
                 <div class="dropdown-menu dash-h-dropdown dropdown-menu-end">
-                    @foreach ($displaylang as $key => $lang)
-                        @if(isset($setting['disable_lang']) && str_contains($setting['disable_lang'], $key))
-                            @unset($key)
-                            @continue
-                        @endif
-                        <a href="{{ route('change.language', $key) }}"
-                            class="dropdown-item {{ $currentLanguage == $key ? 'text-primary' : '' }}">
-                            <span>{{ Str::ucfirst($lang) }}</span>
-                        </a>
-                    @endforeach
-                    @if (auth()->user() && auth()->user()->type == 'super admin')
-                        <a href="{{ route('manage.language', [auth()->user()->language]) }}"
-                            class="dropdown-item border-top py-1 text-primary">{{ __('Manage Languages') }}
-                        </a>
-                    @endif
+                    
+                    
                 </div>
             </li>
         </ul>
