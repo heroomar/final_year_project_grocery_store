@@ -133,12 +133,12 @@ use App\Http\Controllers\SSLCommerzPaymentController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::middleware(['web'])->group(function () {
+require __DIR__ . '/auth.php';
+Route::middleware(['auth','web'])->group(function () {
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-require __DIR__ . '/auth.php';
+
 //Route::get('/', [HomeController::class, 'Landing'])->name('landing')->middleware('setlocate');
 
 // Route::get('change-languages/{lang}', [LanguageController::class, 'changelanguage'])->name('changelanguage')->middleware('setlocate');

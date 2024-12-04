@@ -50,7 +50,7 @@ class MainCategoryController extends Controller
     {
         if(auth()->user() && auth()->user()->isAbleTo('Create Product Category'))
         {
-            $store_id = Store::where('id', getCurrentStore())->first();
+            
 
             $validator = \Validator::make(
                 $request->all(), [
@@ -68,8 +68,8 @@ class MainCategoryController extends Controller
             $dir        = 'themes/'.APP_THEME().'/uploads';
             if($request->image) {
                 $image_size = $request->file('image')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                if ($result == 1)
+                
+                if (1)
                 {
                     $fileName = rand(10,100).'_'.time() . "_" . $request->image->getClientOriginalName();
                     $path = Utility::upload_file($request,'image',$fileName,$dir,[]);
@@ -89,8 +89,8 @@ class MainCategoryController extends Controller
 
             if($request->icon_image) {
                 $image_size = $request->file('icon_image')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                if ($result == 1)
+                
+                if (1)
                 {
                     $fileName = rand(10,100).'_'.time() . "_" . $request->icon_image->getClientOriginalName();
                     $paths = Utility::upload_file($request,'icon_image',$fileName,$dir,[]);
@@ -113,8 +113,8 @@ class MainCategoryController extends Controller
             $MainCategory->image_url    = $path['full_url'];
             $MainCategory->image_path   = $path['url'];
             $MainCategory->icon_path    = $paths['url'];
-            $MainCategory->trending     = $request->trending;
-            $MainCategory->status       = $request->status;
+            
+            $MainCategory->status       = 1;
             $MainCategory->theme_id     = APP_THEME();
             $MainCategory->store_id     = getCurrentStore();
 
@@ -181,12 +181,12 @@ class MainCategoryController extends Controller
             if(!empty($request->image)) {
                 $file_path =  $mainCategory->image_path;
                 $image_size = $request->file('image')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                if ($result == 1)
+                
+                if (1)
                 {
                     if (!empty($file_path) && $file_path != '/storage/uploads/default.jpg' && Storage::exists($file_path)) {
                         Storage::delete($file_path);
-                        Utility::changeStorageLimit(\Auth::user()->creatorId(), $file_path);
+                       
                     }
 
                     $fileName = rand(10,100).'_'.time() . "_" . $request->image->getClientOriginalName();
@@ -209,12 +209,12 @@ class MainCategoryController extends Controller
                 $file_path = $mainCategory->icon_path;
 
                 $image_size = $request->file('icon_image')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
+                
 
-                if ($result == 1) {
+                if (1) {
                     if (!empty($file_path) && $file_path != '/storage/uploads/default.jpg' && Storage::exists($file_path)) {
                         Storage::delete($file_path);
-                        Utility::changeStorageLimit(\Auth::user()->creatorId(), $file_path);
+                        
                     }
 
                     $fileName = rand(10, 100) . '_' . time() . "_" . $request->icon_image->getClientOriginalName();
@@ -263,12 +263,12 @@ class MainCategoryController extends Controller
 
             if ($category->image_path !== '/storage/uploads/default.jpg' && File::exists(base_path($category->image_path))) {
                 File::delete(base_path($category->image_path));
-                Utility::changeproductStorageLimit(\Auth::user()->creatorId(), $file_path );
+                
             }
 
             if ($category->icon_path !== '/storage/uploads/default.jpg' && File::exists(base_path($category->icon_path))) {
                 File::delete(base_path($category->icon_path));
-                Utility::changeproductStorageLimit(\Auth::user()->creatorId(), $file_path );
+                
             }
 
             if(!empty($category)) {
@@ -291,8 +291,8 @@ class MainCategoryController extends Controller
 
     public function getProductCategories()
     {
-        $store_id = Store::where('id', getCurrentStore())->first();
-        $productCategory = MainCategory::where('theme_id',$store_id->theme_id)->where('store_id',getCurrentStore())->get();
+        
+        $productCategory = MainCategory::where('store_id',getCurrentStore())->get();
         $html = '<div class="mb-3 mr-2 mx-2 zoom-in ">
                     <div class="card rounded-10 card-stats mb-0 cat-active overflow-hidden" data-id="0">
                     <div class="category-select" data-cat-id="0">

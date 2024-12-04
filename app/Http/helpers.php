@@ -94,3 +94,23 @@ if (!function_exists('bulkDeleteForm')) {
         ];
     }
 }
+
+
+if (!function_exists('APP_THEME')) {
+    function APP_THEME($user_id = null)
+    {
+        
+        return 'grocery';
+        
+    }
+}
+
+function getCurrentStore(){
+    return 1;
+}
+
+
+function get_file($path, $theme_id = '')
+    {
+        return $path;
+    }

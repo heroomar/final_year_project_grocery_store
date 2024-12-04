@@ -28,6 +28,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+    	if(auth()->check()){
+    		
+    		return redirect(url('dashboard'));
+    	}
+
         return view('auth.login');
     }
 
@@ -43,26 +48,24 @@ class AuthenticatedSessionController extends Controller
         if ($user != null) {
             $companyUser = User::where('id', $user->created_by)->first();
         }
+        
 
-        if ($user != null && $user->is_active == 0 && $user->type != 'super admin') {
-            return redirect()->back()->with('status', __('Your Account is de-activate,please contact your Administrator.'));
-        }
+        // if ($user != null && $user->is_active == 0 && $user->type != 'super admin') {
+        //     return redirect()->back()->with('status', __('Your Account is de-activate,please contact your Administrator.'));
+        // }
 
-        if ((($user != null && ($user->is_enable_login == 0) && $user->type != 'super admin') || ((isset($companyUser) && $companyUser != null) && $companyUser->is_enable_login == 0))) {
-            return redirect()->back()->with('status', __('Your Account is disable,please contact your Administrator.'));
-        }
+        // dd(auth()->user());
 
+        // if ((($user != null && ($user->is_enable_login == 0) && $user->type != 'super admin') || ((isset($companyUser) && $companyUser != null) && $companyUser->is_enable_login == 0))) {
+        //     return redirect()->back()->with('status', __('Your Account is disable,please contact your Administrator.'));
+        // }
+        
         $request->authenticate();
         $request->session()->regenerate();
         
-        \App\Models\Utility::addNewData();
+        // \App\Models\Utility::addNewData();
 
-        if (module_is_active('GoogleAuthentication') && isset($user->google2fa_enable) && !empty($user->google2fa_enable)) {
-            return redirect()->route('2fa.dashboard');
-        }
-        elseif (module_is_active('Duo2FA')) {
-            return redirect()->route('duo2fa.form');
-        }
+        
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

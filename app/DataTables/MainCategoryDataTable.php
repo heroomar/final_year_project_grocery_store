@@ -159,8 +159,8 @@ class MainCategoryDataTable extends DataTable
             Column::make('name')->title(__('Name')),
             Column::make('image_path')->title(__('Image')),
             Column::make('icon_path')->title(__('Icon')),
-            Column::make('trending')->title(__('Trending')),
-            Column::make('status')->title(__('Status')),
+            // Column::make('trending')->title(__('Trending')),
+            // Column::make('status')->title(__('Status')),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)

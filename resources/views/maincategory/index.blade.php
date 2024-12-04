@@ -3,7 +3,7 @@
 @section('page-title', __('Main Category'))
 
 @section('action-button')
-   @permission('Create Product Category')
+   
     <div class=" text-end gap-2 d-flex all-button-box justify-content-md-end justify-content-center">
         
         <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true" data-size="md" data-title="Add Main Category"
@@ -11,7 +11,7 @@
             <i class="ti ti-plus"></i>
         </a>
     </div>
-    @endpermission
+    
 @endsection
 
 @section('breadcrumb')
@@ -21,7 +21,7 @@
 @section('content')
     <div class="row">
         <div class="col-xl-12">
-        {!! $dataTable !!}
+        <x-datatable :dataTable="$dataTable" />
         </div>
     </div>
 @endsection
