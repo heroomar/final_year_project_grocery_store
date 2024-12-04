@@ -96,9 +96,7 @@ class MainCategoryDataTable extends DataTable
         ];
 
         $bulkdeleteButtonConfig = [];
-        if (module_is_active('BulkDelete')) {
-            $bulkdeleteButtonConfig = bulkDeleteForm('main-category','maincategory-table');
-        }
+        
 
         $buttonsConfig = array_merge([
             $bulkdeleteButtonConfig,
