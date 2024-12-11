@@ -43,8 +43,8 @@ class SubCategoryController extends Controller
      */
     public function create()
     {
-        $MainCategoryList = MainCategory::where('status', 1)->where('theme_id',APP_THEME())->where('store_id',getCurrentStore())->pluck('name', 'id');
-
+        $MainCategoryList = MainCategory::pluck('name', 'id');
+        // dd($MainCategoryList);
         return view('subcategory.create', compact('MainCategoryList'));
     }
 
@@ -73,30 +73,21 @@ class SubCategoryController extends Controller
             $dir        = 'themes/'.APP_THEME().'/uploads';
             if($request->image) {
                 $image_size = $request->file('image')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                if ($result == 1)
-                {
+                
+                
                     $fileName = rand(10,100).'_'.time() . "_" . $request->image->getClientOriginalName();
                     $path = Utility::upload_file($request,'image',$fileName,$dir,[]);
-                }
-                else{
-                    return redirect()->back()->with('error', $result);
-                }
+                
             }else{
                 $path['full_url'] = asset(Storage::url('uploads/default.jpg'));
                 $path['url'] = Storage::url('uploads/default.jpg');
             }
             if($request->icon_path) {
                 $image_size = $request->file('icon_path')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                if ($result == 1)
-                {
-                    $fileName = rand(10,100).'_'.time() . "_" . $request->icon_path->getClientOriginalName();
-                    $paths = Utility::upload_file($request,'icon_path',$fileName,$dir,[]);
-                }
-                else{
-                    return redirect()->back()->with('error', $result);
-                }
+                
+                $fileName = rand(10,100).'_'.time() . "_" . $request->icon_path->getClientOriginalName();
+                $paths = Utility::upload_file($request,'icon_path',$fileName,$dir,[]);
+                
 
             }else{
                 $paths['url'] = Storage::url('uploads/default.jpg');
@@ -174,9 +165,7 @@ class SubCategoryController extends Controller
             if(!empty($request->icon_path)){
                 $file_path =  $subCategory->icon_path;
                 $image_size = $request->file('icon_path')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                if ($result == 1)
-                {
+                
                     if (!empty($file_path) && $file_path != '/storage/uploads/default.jpg' && Storage::exists($file_path)) {
                         Storage::delete($file_path);
                         Utility::changeStorageLimit(\Auth::user()->creatorId(), $file_path);
@@ -187,19 +176,13 @@ class SubCategoryController extends Controller
                     if($paths['msg'] == 'success') {
                                 $subCategory->icon_path   = $paths['url'];
                             }
-                }
-                else{
-                    return redirect()->back()->with('error', $result);
-                }
+                
 
             }
             if(!empty($request->image)) {
                 $file_path =  $subCategory->image_path;
                 $image_size = $request->file('image')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-
-                if ($result == 1)
-                {
+                
                     if (!empty($file_path) && $file_path != '/storage/uploads/default.jpg' && Storage::exists($file_path)) {
                         Storage::delete($file_path);
                         Utility::changeStorageLimit(\Auth::user()->creatorId(), $file_path);
@@ -211,15 +194,12 @@ class SubCategoryController extends Controller
                         $subCategory->image_url    = $path['full_url'];
                         $subCategory->image_path   = $path['url'];
                     }
-                }
-                else{
-                    return redirect()->back()->with('error', $result);
-                }
+                
             }
 
             $subCategory->name              = $request->name;
             $subCategory->maincategory_id   = $request->maincategory_id;
-            $subCategory->status       = $request->status;
+            $subCategory->status            = $request->status;
             $subCategory->save();
 
             return redirect()->back()->with('success', __('Category successfully updated.'));
@@ -256,8 +236,7 @@ class SubCategoryController extends Controller
                 File::delete(base_path($subCategory->icon_path));
                 Utility::changeproductStorageLimit(\Auth::user()->creatorId(), $file_path );
             }
-            WoocommerceConection::where('module', 'sub_category')->where('original_id', $subCategory->id)->delete();
-            ShopifyConection::where('module', 'sub_category')->where('original_id', $subCategory->id)->delete();
+            
             $subCategory->delete();
             return redirect()->back()->with('success', __('Sub category delete successfully.'));
         }

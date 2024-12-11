@@ -101,12 +101,12 @@ class SubCategoryDataTable extends DataTable
         }
 
         $buttonsConfig = array_merge([
-            $exportButtonConfig,
-            $bulkdeleteButtonConfig,
-            [
-                'extend' => 'reset',
-                'className' => 'btn btn-light-danger me-1',
-            ],
+            // $exportButtonConfig,
+            // $bulkdeleteButtonConfig,
+            // [
+            //     'extend' => 'reset',
+            //     'className' => 'btn btn-light-danger me-1',
+            // ],
             [
                 'extend' => 'reload',
                 'className' => 'btn btn-light-warning',
@@ -140,9 +140,9 @@ class SubCategoryDataTable extends DataTable
 
         $dataTable->language([
             'buttons' => [
-                'create' => __('Create'),
-                'print' => __('Print'),
-                'reset' => __('Reset'),
+                // 'create' => __('Create'),
+                // 'print' => __('Print'),
+                // 'reset' => __('Reset'),
                 'reload' => __('Reload'),
             ]
         ]);

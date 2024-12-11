@@ -232,8 +232,8 @@ class MainCategoryController extends Controller
             }
 
             $MainCategory->slug         =  'collections/' . strtolower(preg_replace("/[^\w]+/", "-", $request->name));
-            $MainCategory->trending     = $request->trending;
-            $MainCategory->status       = $request->status;
+            
+            
             $MainCategory->save();
 
             return redirect()->back()->with('success', __('Category successfully updated.'));
@@ -272,11 +272,6 @@ class MainCategoryController extends Controller
             }
 
             if(!empty($category)) {
-
-                WoocommerceConection::where('module', 'category')->where('original_id', $category->id)->delete();
-
-                ShopifyConection::where('module', 'category')->where('original_id', $category->id)->delete();
-
                 $category->delete();
 
 
