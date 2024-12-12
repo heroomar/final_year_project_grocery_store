@@ -107,6 +107,55 @@ class Utility extends Model
         // }
     }
 
+
+    public static function keyWiseUpload_file($request, $key_name, $name, $path, $data_key, $custom_validation = [])
+    {
+        $multifile = [
+            $key_name => $request->file($key_name)[$data_key],
+        ];
+        try {
+            
+
+                $file = $request->$key_name;
+
+                
+                
+                    
+                        $path = $path . '/';
+                        \Storage::disk('theme')->putFileAs(
+                            $path,
+                            $request->file($key_name)[$data_key],
+                            $name
+                        );
+
+
+                        $path = $path . $name;
+                    
+
+                    $image_url = '';
+                    
+                    $image_url = url($path);
+                    
+
+
+                    $res = [
+                        'flag' => 1,
+                        'msg'  => 'success',
+                        'url'  => $path,
+                        'full_url'  => $image_url
+                    ];
+                    return $res;
+                
+            
+        } catch (\Exception $e) {
+            $res = [
+                'flag' => 0,
+                'msg' => $e->getMessage(),
+            ];
+            return $res;
+        }
+    }
+
     
 }
 

@@ -1,4 +1,17 @@
 <?php
+
+function __route($name, $parameters = [], $absolute = true){
+    try {
+        return route($name, $parameters, $absolute) ;
+    } catch (\Throwable $th) {
+        return url($name);
+    }
+}
+
+function theme_name(){
+    return "dark";
+}
+
 if (!function_exists('generateMenu')) {
     function generateMenu($menuItems, $parent = null)
     {
@@ -21,7 +34,7 @@ if (!function_exists('generateMenu')) {
             } else {
                 $html .= '<li class="dash-item">';
             }
-            $html .= '<a href="' . (!empty($item['route']) ? url($item['route']) : '#!') . '" class="dash-link">';
+            $html .= '<a href="' . (!empty($item['route']) ? __route($item['route']) : '#!') . '" class="dash-link">';
 
             if ($item['parent'] == null) {
                 $html .= ' <span class="dash-micon"><i class="ti ti-' . $item['icon'] . '"></i></span>

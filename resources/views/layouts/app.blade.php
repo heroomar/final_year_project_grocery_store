@@ -68,10 +68,10 @@ $SuperadminData['metaimage'] = '';
     <link rel="stylesheet" href="{{ asset('/assets/fonts/fontawesome.css') }}">
     <link rel="stylesheet" href="{{ asset('/assets/fonts/material.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/customizer.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/css/plugins/dropzone.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('/assets/css/plugins/dropzone.css') }}" type="text/css" />
 
     @if (isset($setting['cust_darklayout']) && isset($setting['SITE_RTL']) && $setting['cust_darklayout'] == 'on' && $setting['SITE_RTL'] == 'on')
-        <link rel="stylesheet" href="{{ asset('public/assets/css/rtl-style-dark.css') }}" id="main-style-link">
+        <link rel="stylesheet" href="{{ asset('/assets/css/rtl-style-dark.css') }}" id="main-style-link">
         <link rel="stylesheet" href="{{ asset('css/rtl-custom.css') }}{{ '?v=' . time() }}"  id="main-style-custom-link">
         <link rel="stylesheet" href="{{ asset('css/rtl-loader.css') }}{{ '?v=' . time() }}" >
     @elseif(isset($setting['cust_darklayout']) && $setting['cust_darklayout'] == 'on')

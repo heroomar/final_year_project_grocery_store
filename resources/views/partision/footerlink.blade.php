@@ -40,12 +40,12 @@ $setting['footer_text'] = '';
 <script src="{{ asset('js/custom.js') }}{{ "?".time() }}"></script>
 <script src="{{ asset('js/jquery.form.js') }}"></script>
 <script src="{{ asset('js/jspdf.umd.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/plugins/dropzone.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/dropzone.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.3/picker.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.3/picker.date.js"></script>
 {{-- select2 --}}
 
-<script src="{{ asset('public/assets/js/plugins/select2.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/select2.min.js') }}"></script>
 <script src="{{ asset('js/loader.js') }}"></script>
 <script src="{{ asset('js/emojionearea.min.js') }}"></script>
 <script src="{{ asset('js/calendar.js') }}"></script>

@@ -13,51 +13,11 @@ class Product extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
-        'slug',
-        'tag_id',
-        'maincategory_id',
-        'subcategory_id',
-        'brand_id',
-        'label_id',
-        'tax_id',
-        'tax_status',
-        'shipping_id',
-        'preview_type' ,
-        'preview_video',
-        'preview_content' ,
-        'trending',
-        'status',
-        'video_url',
-        'track_stock',
-        'stock_order_status',
-        'price',
-        'sale_price',
-        'product_stock',
-        'minimum_quantity',
-        'maximum_quantity',
-        'low_stock_threshold',
-        'downloadable_product',
-        'product_weight',
-        'cover_image_path' ,
-        'cover_image_url' ,
-        'stock_status',
-        'variant_product',
-        'attribute_id',
-        'product_attribute',
-        'custom_field_status',
-        'custom_field',
-        'description',
-        'detail',
-        'specification',
-        'average_rating',
-        'product_type',
-        'theme_id',
-        'store_id'
+        
     ];
 
 
-    protected $appends = ["category_name","sub_category_name","in_cart", "in_whishlist", "final_price"];
+    protected $appends = ["category_name","sub_category_name",  "final_price"];
 
 
     public function getCategoryNameAttribute()
@@ -95,71 +55,20 @@ class Product extends Model
         }
     }
 
-    protected static function getRelatedSlugs($table, $slug, $id = 0)
-    {
-        return DB::table($table)->select()->where('slug', 'like', $slug . '%')->where('id', '<>', $id)->get();
-    }
+    
 
     public function ProductData()
     {
         return $this->hasOne(MainCategory::class, 'id', 'maincategory_id');
     }
 
-    public function brand()
-    {
-        return $this->hasOne(ProductBrand::class, 'id', 'brand_id');
-    }
-
-    public function label() {
-        return $this->hasOne(ProductLabel::class, 'id', 'label_id');
-    }
-
-    public function reviewData()
-    {
-        return $this->hasMany(Testimonial::class, 'id', 'product_id');
-    }
-
-    public function tagData()
-    {
-        if($this->tag_id) {
-            $tagIds = explode(',', $this->tag_id);
-            $tags = Tag::whereIn('id', $tagIds)->select('id', 'name')->get()->toArray();
-            return $tags;
-        }
-        return [];
-    }
-
+    
 
     public function SubCategoryctData()
     {
         return $this->hasOne(SubCategory::class, 'id', 'subcategory_id');
     }
-    public function ProductVariant($sku_name = null)
-    {
-        $ProductStock = ProductVariant::where('product_id', $this->id)->where('variant', $sku_name)->first();
-        return $ProductStock;
-    }
-
-    public static function bestseller_guest($theme_id = null, $storeId = null, $per_page = '6', $destination = 'app')
-    {
-        $bestseller_array_query = Product::where('theme_id', $theme_id)->where('store_id', $storeId)->where('status' , 1);
-        if (!empty($destination) && $destination == 'web') {
-            if ($per_page != 'all') {
-                $bestseller_array_query->limit($per_page);
-            }
-            $bestseller_array = $bestseller_array_query->inRandomOrder()->get();
-        } else {
-            $bestseller_array = $bestseller_array_query->paginate($per_page);
-        }
-        // $bestseller_array = Product::where('theme_id', $theme_id)->where('tag_api', 'best seller')->paginate(6);
-        $cart = 0;
-
-        $return['status'] = 'success';
-        $return['bestseller_array'] = $bestseller_array;
-        $return['cart'] = $cart;
-        return $return;
-    }
-
+    
     public static function Sub_image($product_id = 0)
     {
         $return['status'] = false;
@@ -177,115 +86,7 @@ class Product extends Model
         }
         return $return;
     }
-
-    public function getInWhishlistAttribute()
-    {
-        $id = !empty(auth('customers')->user()) ? auth('customers')->user()->id : 0;
-        if (empty($id)) {
-            $id = auth()->user() ? auth()->user()->id : 0;
-        }
-        $wishlist = Cache::remember("wishlist_{$this->id}_{$id}", 3600, function () use ($id) {
-            return Wishlist::where('product_id', $this->id)->where('customer_id', $id)->exists();
-        });
-        return $wishlist;
-    }
-
-    public function getInCartAttribute()
-    {
-        $id = !empty(auth('customers')->user()) ? auth('customers')->user()->id : 0;
-        return Cart::where('product_id', $this->id)->where('customer_id', $id)->exists();
-    }
-
-
-    public static function productSalesPage($theme, $slug, $productId, $details = false)
-    {
-        $storeId = getCurrenctStoreId($slug);
-        $currentTheme = $theme;
-        date_default_timezone_set('Asia/Kolkata');
-        $currentDateTime = \Carbon\Carbon::now();
-        $sale_product = Cache::remember("flash_sale_{$theme}_{$storeId}", 3600, function () use ($theme, $storeId) {
-            return FlashSale::where('theme_id', $theme)
-            ->where('store_id', $storeId)
-            ->where('is_active', 1)
-            ->get();
-        });
-
-        $latestSales = [];
-
-        foreach ($sale_product as $flashsale) {
-            $saleEnableArray = json_decode($flashsale->sale_product, true);
-            $startDate = \Carbon\Carbon::parse($flashsale->start_date . ' ' . $flashsale->start_time);
-            $endDate = \Carbon\Carbon::parse($flashsale->end_date . ' ' . $flashsale->end_time);
-
-            if ($endDate < $startDate) {
-                $endDate->addDay();
-            }
-            $currentDateTime->setTimezone($startDate->getTimezone());
-
-            if ($currentDateTime >= $startDate && $currentDateTime <= $endDate) {
-                if (is_array($saleEnableArray) && in_array($productId, $saleEnableArray)) {
-                    $latestSales[$productId] = [
-                        'discount_type' => $flashsale->discount_type,
-                        'discount_amount' => $flashsale->discount_amount,
-                        'start_date' => $flashsale->start_date,
-                        'end_date' => $flashsale->end_date,
-                        'start_time' => $flashsale->start_time,
-                        'end_time' => $flashsale->end_time,
-                    ];
-                }
-            }
-        }
-
-        if ($details) {
-            return Cache::remember('product_detail_sale_lable_' . $currentTheme.'_'.$slug, 3600, function () use ($latestSales, $currentTheme) {
-                return view('front_end.sections.product_detail_sale_lable', compact('latestSales','currentTheme'))->render();
-            });
-        }
-        return Cache::remember('product_sales' . $currentTheme.'_'.$slug, 3600, function () use ($latestSales, $currentTheme) {
-            return view('front_end.sections.product_sales', compact('latestSales','currentTheme'))->render();
-        });
-        //return view('front_end.sections.product_sales', compact('latestSales','currentTheme'))->render();
-    }
-
-    public static function productSalesTag($theme, $slug, $productId)
-    {
-        $storeId = getCurrenctStoreId($slug);
-        date_default_timezone_set('Asia/Kolkata');
-        $currentDateTime = \Carbon\Carbon::now();
-        $sale_product = Cache::remember("flash_sale_{$theme}_{$storeId}", 3600, function () use ($theme, $storeId) {
-            return FlashSale::where('theme_id', $theme)
-            ->where('store_id', $storeId)
-            ->where('is_active', 1)
-            ->get();
-        });
-        $latestSales = [];
-
-        foreach ($sale_product as $flashsale) {
-            $saleEnableArray = json_decode($flashsale->sale_product, true);
-            $startDate = \Carbon\Carbon::parse($flashsale->start_date . ' ' . $flashsale->start_time);
-            $endDate = \Carbon\Carbon::parse($flashsale->end_date . ' ' . $flashsale->end_time);
-
-            if ($endDate < $startDate) {
-                $endDate->addDay();
-            }
-            $currentDateTime->setTimezone($startDate->getTimezone());
-
-            if ($currentDateTime >= $startDate && $currentDateTime <= $endDate) {
-                if (is_array($saleEnableArray) && in_array($productId, $saleEnableArray)) {
-                    $latestSales[$productId] = [
-                        'discount_type' => $flashsale->discount_type,
-                        'discount_amount' => $flashsale->discount_amount,
-                        'start_date' => $flashsale->start_date,
-                        'end_date' => $flashsale->end_date,
-                        'start_time' => $flashsale->start_time,
-                        'end_time' => $flashsale->end_time,
-                    ];
-                }
-            }
-        }
-
-       return $latestSales;
-    }
+    
 
     public static function ProductPrice($theme, $slug, $productId,$variantId = 0,$price=0)
     {
@@ -427,52 +228,14 @@ class Product extends Model
         return $price;
     }
 
-    public static function GetLatestProduct($theme, $slug = null, $no = 2)
-    {
-        $storeId = getCurrenctStoreId($slug);
-        $currentTheme = $theme;
-        $lat_products = Product::orderBy('created_at', 'Desc')->where('theme_id', $theme)->where('store_id', $storeId)->where('status' , 1)->limit($no)->get();
-        return view('front_end.sections.homepage_latest_product', compact('currentTheme','theme','slug', 'lat_products'))->render();
-    }
+    
 
-    public static function GetLatProduct($theme, $slug = null, $no = 1)
-    {
-        $storeId = getCurrenctStoreId($slug);
-        $currentTheme = $theme;
-        $latest_pro = Product::orderBy('created_at', 'Desc')->where('theme_id', $theme)->where('store_id', $storeId)->where('status' , 1)->limit($no)->first();
-        $store = Cache::remember('store_' . $slug, 3600, function () use ($slug) {
-                return Store::where('slug',$slug)->first();
-            });
-        return view('front_end.sections.home_latest_product', compact('currentTheme','theme', 'storeId','slug', 'latest_pro','store'))->render();
-    }
+    
 
-    public static function ProductPageBestseller($theme, $slug = null)
-    {
-        $currentTheme = $theme;
-        $storeId = getCurrenctStoreId($slug);
-        $MainCategory = MainCategory::where('theme_id', $theme)->where('store_id', $storeId)->get()->pluck('name', 'id');
-        $MainCategory->prepend('All Products', '0');
-        $homeproducts = Product::where('theme_id', $theme)->where('store_id', $storeId)->where('status' , 1)->get();
-        $store = Cache::remember('store_' . $slug, 3600, function () use ($slug) {
-                return Store::where('slug',$slug)->first();
-            });
-        return view('front_end.sections.bestseller_product', compact('theme','homeproducts', 'MainCategory', 'slug', 'storeId','store', 'currentTheme'))->render();
-    }
+    
 
     // Calculate Product Inclusive amount
-    public static function productTaxIncludeAmount($theme = null, $slug = null, $amount = 0, $taxId = null)
-    {
-        $storeId = getCurrenctStoreId($slug);
-        $tax_price = 0;
-        $tax_option = TaxOption::where('store_id',$storeId)
-        ->where('theme_id',$theme)
-        ->pluck('value', 'name')->toArray();
-        if ($tax_option && $tax_option['price_type'] == 'inclusive') {
-            $tax_price = Cart::getProductTaxAmount($taxId, $amount, $storeId, $theme, null, null, null, true);
-        }
-
-        return $amount + $tax_price;
-    }
+    
 
     public function getOriginalPriceAttribute()
     {
@@ -613,17 +376,7 @@ class Product extends Model
         return $return;
     }
 
-    public static function VariantAttribute($id = 0)
-    {
-        $return = '';
-        if ($id) {
-            $ProductVariant = ProductAttribute::find($id);
-            if (!empty($ProductVariant)) {
-                $return = $ProductVariant;
-            }
-        }
-        return $return;
-    }
+    
 
 
     public static function actionLinks($currentTheme, $slug, $product)
@@ -631,10 +384,7 @@ class Product extends Model
         return view('front_end.hooks.action_link', compact('product', 'currentTheme', 'slug'))->render();
     }
 
-    public function Tax()
-    {
-        return $this->hasOne(Tax::class, 'id', 'tax_id');
-    }
+    
     public static function ProductcardButton($currentTheme, $slug, $product)
     {
         return view('front_end.hooks.card_button', compact('product', 'currentTheme', 'slug'))->render();
@@ -645,28 +395,4 @@ class Product extends Model
         return view('front_end.hooks.product_price', compact('product', 'currentTheme', 'store','slug'))->render();
     }
 
-    public static function ManageProductPrice ($item, $store, $currentTheme) {
-        $slug = $store->slug;
-        return view('front_end.hooks.manage_product_price', compact('item', 'currentTheme', 'store','slug'))->render();
-    }
-
-    public static function ManageCartPrice ($item, $store, $currentTheme) {
-        $slug = $store->slug;
-        return view('front_end.hooks.manage_cart_price', compact('item', 'currentTheme', 'store','slug'))->render();
-    }
-
-    public static function ManageCheckoutPrice ($item, $store, $currentTheme) {
-        $slug = $store->slug;
-        return view('front_end.hooks.manage_checkout_price', compact('item', 'currentTheme', 'store','slug'))->render();
-    }
-
-    public static function ManageCheckoutProductPrice ($item, $store, $currentTheme) {
-        $slug = $store->slug;
-        return view('front_end.hooks.manage_checkout_product_price', compact('item', 'currentTheme', 'store','slug'))->render();
-    }
-
-    public static function ManageCartListPrice ($item, $store, $currentTheme) {
-        $slug = $store->slug;
-        return view('front_end.hooks.manage_cartlist_price', compact('item', 'currentTheme', 'store','slug'))->render();
-    }
 }

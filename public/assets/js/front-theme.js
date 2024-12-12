@@ -241,11 +241,11 @@ function getProducts(value, cat_id) {
 function show_toster(status = '', message = '') {
     if (status == 'Success' || status == 'success') {
         notifier.show('Success', message, 'success', site_url +
-            '/public/assets/images/notification/ok-48.png', 4000);
+            '/assets/images/notification/ok-48.png', 4000);
     }
     if (status == 'Error' || status == 'error') {
         notifier.show('Error', message, 'danger', site_url +
-            '/public/assets/images/notification/high_priority-48.png', 4000);
+            '/assets/images/notification/high_priority-48.png', 4000);
     }
 }
 

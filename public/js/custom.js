@@ -194,10 +194,10 @@ function show_toastr(title, message, type) {
     var cls = '';
     if (type == 'success') {
         cls = 'primary';
-        notifier.show('Success', message, 'success', site_url + '/public/assets/images/notification/ok-48.png', 4000);
+        notifier.show('Success', message, 'success', site_url + '/assets/images/notification/ok-48.png', 4000);
     } else {
         cls = 'danger';
-        notifier.show('Error', message, 'danger', site_url + '/public/assets/images/notification/high_priority-48.png', 4000);
+        notifier.show('Error', message, 'danger', site_url + '/assets/images/notification/high_priority-48.png', 4000);
     }
 }
 
