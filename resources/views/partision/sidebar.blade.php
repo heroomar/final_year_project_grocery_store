@@ -29,11 +29,1173 @@
         <div class="navbar-content">
             <ul class="dash-navbar">
                 <?php
-                $sa='[{"title":"CMS","icon":"package","name":"landing-page","parent":null,"order":220,"ignore_if":[],"depend_on":[],"route":"","module":"LandingPage","permission":"Manage CMS"},{"title":"Landing Page","icon":"settings","name":"","parent":"landing-page","order":1,"ignore_if":[],"depend_on":[],"route":"landingpage.index","module":"LandingPage","permission":""},{"title":"Menus","icon":"settings","name":"","parent":"landing-page","order":3,"ignore_if":[],"depend_on":[],"route":"ownermenus.index","module":"LandingPage","permission":""},{"title":"Custom Page","icon":"settings","name":"","parent":"landing-page","order":4,"ignore_if":[],"depend_on":[],"route":"menu-pages.index","module":"LandingPage","permission":""},{"title":"Dashboard","icon":"home","name":"dashboard","parent":null,"order":1,"ignore_if":[],"depend_on":[],"route":"dashboard","module":"Base","permission":"Manage Dashboard"},{"title":"Add-on Manager","icon":"layout-2","name":"add-on-manager","parent":null,"order":60,"ignore_if":[],"depend_on":[],"route":"module.index","module":"Base","permission":""},{"title":"Users","icon":"user","name":"users","parent":null,"order":80,"ignore_if":[],"depend_on":[],"route":"stores.index","module":"Base","permission":"Manage User"},{"title":"Coupons","icon":"gift","name":"coupon","parent":null,"order":100,"ignore_if":[],"depend_on":[],"route":"plan-coupon.index","module":"Base","permission":"Manage Coupon"},{"title":"Plan","icon":"trophy","name":"plan","parent":null,"order":120,"ignore_if":[],"depend_on":[],"route":"plan.index","module":"Base","permission":"Manage Plan"},{"title":"Plan Request","icon":"arrow-up-right-circle","name":"planrequest","parent":null,"order":140,"ignore_if":[],"depend_on":[],"route":"plan-request.index","module":"Base","permission":"Manage Plan Request"},{"title":"Settings","icon":"settings","name":"settings","parent":null,"order":300,"ignore_if":[],"depend_on":[],"route":"setting.index","module":"Base","permission":"Manage Setting"}]';
-                $com = '[{"title":"Dashboard","icon":"home","name":"admin_dashboard","parent":null,"order":1,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Dashboard"},{"title":"Dashboard","icon":"home","name":"dashboard","parent":"admin_dashboard","order":1,"ignore_if":[],"depend_on":[],"route":"dashboard","module":"Base","permission":"Manage Dashboard"},{"title":"Store Analytics","icon":"","name":"store-analytics","parent":"admin_dashboard","order":2,"ignore_if":[],"depend_on":[],"route":"theme_analytic","module":"Base","permission":"Manage Store Analytics"},{"title":"Theme Preview","icon":"rotate","name":"themepreview","parent":null,"order":20,"ignore_if":[],"depend_on":[],"route":"theme-preview.index","module":"Base","permission":"Manage Themes"},{"title":"Store Setting","icon":"settings-automation","name":"storesetting","parent":null,"order":40,"ignore_if":[],"depend_on":[],"route":"app-setting.index","module":"Base","permission":"Manage Store Setting"},{"title":"Mobile App Settings","icon":"settings-automation","name":"mobilescreensetting","parent":null,"order":60,"ignore_if":[],"depend_on":[],"route":"mobilescreen.content","module":"Base","permission":""},{"title":"Staff","icon":"users","name":"staff","parent":null,"order":80,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage User"},{"title":"Roles","icon":"","name":"roles","parent":"staff","order":1,"ignore_if":[],"depend_on":[],"route":"roles.index","module":"Base","permission":"Manage Role"},{"title":"User","icon":"","name":"user","parent":"staff","order":2,"ignore_if":[],"depend_on":[],"route":"users.index","module":"Base","permission":"Manage User"},{"title":"Delivery Boy","icon":"truck","name":"deliveryboy","parent":null,"order":100,"ignore_if":[],"depend_on":[],"route":"deliveryboy.index","module":"Base","permission":"Manage Deliveryboy"},{"title":"Products","icon":"shopping-cart","name":"products","parent":null,"order":120,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Products"},{"title":"Brand","icon":"home","name":"productBrand","parent":"products","order":1,"ignore_if":[],"depend_on":[],"route":"product-brand.index","module":"Base","permission":"Manage Product Brand"},{"title":"Label","icon":"home","name":"productLabel","parent":"products","order":2,"ignore_if":[],"depend_on":[],"route":"product-label.index","module":"Base","permission":"Manage Product Label"},{"title":"Main Category","icon":"home","name":"maincategory","parent":"products","order":3,"ignore_if":[],"depend_on":[],"route":"main-category","module":"Base","permission":"Manage Product Category"},{"title":"Sub Category","icon":"home","name":"subcategory","parent":"products","order":4,"ignore_if":[],"depend_on":[],"route":"sub-category","module":"Base","permission":"Manage Product Sub Category"},{"title":"Product","icon":"home","name":"product","parent":"products","order":5,"ignore_if":[],"depend_on":[],"route":"product.index","module":"Base","permission":"Manage Products"},{"title":"Attributes","icon":"home","name":"attributes","parent":"products","order":6,"ignore_if":[],"depend_on":[],"route":"product-attributes.index","module":"Base","permission":"Manage Attributes"},{"title":"Testimonial","icon":"home","name":"Testimonial","parent":"products","order":8,"ignore_if":[],"depend_on":[],"route":"testimonial.index","module":"Base","permission":"Manage Testimonial"},{"title":"Question Answer","icon":"home","name":"question_answer","parent":"products","order":9,"ignore_if":[],"depend_on":[],"route":"product-question.index","module":"Base","permission":"Manage Product Question"},{"title":"Shipping","icon":"truck-delivery","name":"shipping","parent":null,"order":140,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Shipping"},{"title":"Shipping Class","icon":"","name":"shipping class","parent":"shipping","order":34,"ignore_if":[],"depend_on":[],"route":"shipping.index","module":"Base","permission":"Manage Shipping Class"},{"title":"Shipping Zone","icon":"","name":"shipping zone","parent":"shipping","order":35,"ignore_if":[],"depend_on":[],"route":"shipping-zone.index","module":"Base","permission":"Manage Shipping Zone"},{"title":"Orders","icon":"briefcase","name":"orders","parent":null,"order":160,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Order"},{"title":"Orders","icon":"user","name":"order","parent":"orders","order":1,"ignore_if":[],"depend_on":[],"route":"order.index","module":"Base","permission":"Manage Order"},{"title":"Order Refund Request","icon":"user","name":"order-refund-request","parent":"orders","order":2,"ignore_if":[],"depend_on":[],"route":"refund-request.index","module":"Base","permission":"Manage Order Refund Request"},{"title":"Customers","icon":"user","name":"customers","parent":null,"order":180,"ignore_if":[],"depend_on":[],"route":"customer.index","module":"Base","permission":"Manage Customer"},{"title":"Reports","icon":"chart-bar","name":"reports","parent":null,"order":200,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Reports"},{"title":"Customer Reports","icon":"home","name":"","parent":"reports","order":1,"ignore_if":[],"depend_on":[],"route":"reports.index","module":"Base","permission":"Manage Reports"},{"title":"Order Reports","icon":"home","name":"order_reports","parent":"reports","order":2,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Order Reports"},{"title":"Sales Report","icon":"home","name":"","parent":"order_reports","order":1,"ignore_if":[],"depend_on":[],"route":"reports.order_report","module":"Base","permission":""},{"title":"Sales Product Report","icon":"home","name":"","parent":"order_reports","order":2,"ignore_if":[],"depend_on":[],"route":"reports.order_product_report","module":"Base","permission":""},{"title":"Sales Category Report","icon":"home","name":"","parent":"order_reports","order":3,"ignore_if":[],"depend_on":[],"route":"reports.order_category_report","module":"Base","permission":""},{"title":"Sales Downloadable Product","icon":"home","name":"","parent":"order_reports","order":4,"ignore_if":[],"depend_on":[],"route":"reports.order_downloadable_report","module":"Base","permission":""},{"title":"Sales Brand Report","icon":"home","name":"","parent":"order_reports","order":5,"ignore_if":[],"depend_on":[],"route":"reports.order_brand_report","module":"Base","permission":""},{"title":"Country Based Order Report","icon":"home","name":"","parent":"order_reports","order":6,"ignore_if":[],"depend_on":[],"route":"reports.orderCountryReport","module":"Base","permission":""},{"title":"Top Sales Reports","icon":"home","name":"","parent":"reports","order":3,"ignore_if":[],"depend_on":[],"route":"reports.top_product","module":"Base","permission":""},{"title":"Order Status Reports","icon":"home","name":"","parent":"order_reports","order":7,"ignore_if":[],"depend_on":[],"route":"reports.orderStatusReport","module":"Base","permission":""},{"title":"Stock Reports","icon":"home","name":"","parent":"reports","order":4,"ignore_if":[],"depend_on":[],"route":"reports.stock_report","module":"Base","permission":"Manage Stock Reports"},{"title":"Marketing","icon":"confetti","name":"marketing","parent":null,"order":220,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Marketing"},{"title":"Coupon","icon":"home","name":"coupon","parent":"marketing","order":1,"ignore_if":[],"depend_on":[],"route":"coupon.index","module":"Base","permission":"Manage Coupon"},{"title":"Newsletter","icon":"home","name":"newsletter","parent":"marketing","order":2,"ignore_if":[],"depend_on":[],"route":"newsletter.index","module":"Base","permission":"Manage Newsletter"},{"title":"Flash Sale","icon":"home","name":"flashsale","parent":"marketing","order":3,"ignore_if":[],"depend_on":[],"route":"flash-sale.index","module":"Base","permission":"Manage Flash Sale"},{"title":"Wishlist","icon":"home","name":"wishlist","parent":"marketing","order":4,"ignore_if":[],"depend_on":[],"route":"wishlist.index","module":"Base","permission":"Manage Wishlist"},{"title":"Abandon Cart","icon":"home","name":"abandon_cart","parent":"marketing","order":5,"ignore_if":[],"depend_on":[],"route":"abandon.carts.handled","module":"Base","permission":"Manage Cart"},{"title":"Support Ticket","icon":"ticket","name":"support_ticket.index","parent":null,"order":280,"ignore_if":[],"depend_on":[],"route":"support_ticket.index","module":"Base","permission":"Manage Support Ticket"},{"title":"POS","icon":"layers-difference","name":"pos","parent":null,"order":300,"ignore_if":[],"depend_on":[],"route":"pos.index","module":"Base","permission":"Manage Pos"},{"title":"CMS","icon":"layout-cards","name":"cms","parent":null,"order":320,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage CMS"},{"title":"Menu","icon":"home","name":"menu","parent":"cms","order":1,"ignore_if":[],"depend_on":[],"route":"menus.index","module":"Base","permission":"Manage Menu"},{"title":"Pages","icon":"home","name":"pages","parent":"cms","order":2,"ignore_if":[],"depend_on":[],"route":"pages.index","module":"Base","permission":"Manage Page"},{"title":"Blog Section","icon":"home","name":"blog_section","parent":"cms","order":3,"ignore_if":[],"depend_on":[],"route":"","module":"Base","permission":"Manage Blog"},{"title":"Blog","icon":"","name":"blog","parent":"blog_section","order":1,"ignore_if":[],"depend_on":[],"route":"blog.index","module":"Base","permission":"Manage Blog"},{"title":"Blog Category","icon":"","name":"blog-category","parent":"blog_section","order":2,"ignore_if":[],"depend_on":[],"route":"blog-category.index","module":"Base","permission":"Manage Blog Category"},{"title":"Faqs","icon":"home","name":"faq","parent":"cms","order":4,"ignore_if":[],"depend_on":[],"route":"faqs.index","module":"Base","permission":"Manage Faqs"},{"title":"Tag","icon":"home","name":"tag","parent":"cms","order":5,"ignore_if":[],"depend_on":[],"route":"tag.index","module":"Base","permission":"Manage Tag"},{"title":"Contact Us","icon":"home","name":"contact-us","parent":"cms","order":6,"ignore_if":[],"depend_on":[],"route":"contacts.index","module":"Base","permission":"Manage Contact Us"},{"title":"Plan","icon":"trophy","name":"plan","parent":null,"order":340,"ignore_if":[],"depend_on":[],"route":"plan.index","module":"Base","permission":"Manage Plan"},{"title":"Settings","icon":"settings","name":"settings","parent":null,"order":360,"ignore_if":[],"depend_on":[],"route":"setting.index","module":"Base","permission":"Manage Setting"}]';
+                $sa=array (
+                    0 => 
+                    array (
+                      'title' => 'CMS',
+                      'icon' => 'package',
+                      'name' => 'landing-page',
+                      'parent' => NULL,
+                      'order' => 220,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'LandingPage',
+                      'permission' => 'Manage CMS',
+                    ),
+                    1 => 
+                    array (
+                      'title' => 'Landing Page',
+                      'icon' => 'settings',
+                      'name' => '',
+                      'parent' => 'landing-page',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'landingpage.index',
+                      'module' => 'LandingPage',
+                      'permission' => '',
+                    ),
+                    2 => 
+                    array (
+                      'title' => 'Menus',
+                      'icon' => 'settings',
+                      'name' => '',
+                      'parent' => 'landing-page',
+                      'order' => 3,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'ownermenus.index',
+                      'module' => 'LandingPage',
+                      'permission' => '',
+                    ),
+                    3 => 
+                    array (
+                      'title' => 'Custom Page',
+                      'icon' => 'settings',
+                      'name' => '',
+                      'parent' => 'landing-page',
+                      'order' => 4,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'menu-pages.index',
+                      'module' => 'LandingPage',
+                      'permission' => '',
+                    ),
+                    4 => 
+                    array (
+                      'title' => 'Dashboard',
+                      'icon' => 'home',
+                      'name' => 'dashboard',
+                      'parent' => NULL,
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'dashboard',
+                      'module' => 'Base',
+                      'permission' => 'Manage Dashboard',
+                    ),
+                    5 => 
+                    array (
+                      'title' => 'Add-on Manager',
+                      'icon' => 'layout-2',
+                      'name' => 'add-on-manager',
+                      'parent' => NULL,
+                      'order' => 60,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'module.index',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    6 => 
+                    array (
+                      'title' => 'Users',
+                      'icon' => 'user',
+                      'name' => 'users',
+                      'parent' => NULL,
+                      'order' => 80,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'stores.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage User',
+                    ),
+                    7 => 
+                    array (
+                      'title' => 'Coupons',
+                      'icon' => 'gift',
+                      'name' => 'coupon',
+                      'parent' => NULL,
+                      'order' => 100,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'plan-coupon.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Coupon',
+                    ),
+                    8 => 
+                    array (
+                      'title' => 'Plan',
+                      'icon' => 'trophy',
+                      'name' => 'plan',
+                      'parent' => NULL,
+                      'order' => 120,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'plan.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Plan',
+                    ),
+                    9 => 
+                    array (
+                      'title' => 'Plan Request',
+                      'icon' => 'arrow-up-right-circle',
+                      'name' => 'planrequest',
+                      'parent' => NULL,
+                      'order' => 140,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'plan-request.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Plan Request',
+                    ),
+                    10 => 
+                    array (
+                      'title' => 'Settings',
+                      'icon' => 'settings',
+                      'name' => 'settings',
+                      'parent' => NULL,
+                      'order' => 300,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'setting.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Setting',
+                    ),
+                  );
+
+
+
+
+
+                $com = array (
+                    0 => 
+                    array (
+                      'title' => 'Dashboard',
+                      'icon' => 'home',
+                      'name' => 'admin_dashboard',
+                      'parent' => NULL,
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Dashboard',
+                    ),
+                    1 => 
+                    array (
+                      'title' => 'Dashboard',
+                      'icon' => 'home',
+                      'name' => 'dashboard',
+                      'parent' => 'admin_dashboard',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'dashboard',
+                      'module' => 'Base',
+                      'permission' => 'Manage Dashboard',
+                    ),
+                    2 => 
+                    array (
+                      'title' => 'Store Analytics',
+                      'icon' => '',
+                      'name' => 'store-analytics',
+                      'parent' => 'admin_dashboard',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'theme_analytic',
+                      'module' => 'Base',
+                      'permission' => 'Manage Store Analytics',
+                    ),
+                    3 => 
+                    array (
+                      'title' => 'Theme Preview',
+                      'icon' => 'rotate',
+                      'name' => 'themepreview',
+                      'parent' => NULL,
+                      'order' => 20,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'theme-preview.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Themes',
+                    ),
+                    4 => 
+                    array (
+                      'title' => 'Store Setting',
+                      'icon' => 'settings-automation',
+                      'name' => 'storesetting',
+                      'parent' => NULL,
+                      'order' => 40,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'app-setting.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Store Setting',
+                    ),
+                    5 => 
+                    array (
+                      'title' => 'Mobile App Settings',
+                      'icon' => 'settings-automation',
+                      'name' => 'mobilescreensetting',
+                      'parent' => NULL,
+                      'order' => 60,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'mobilescreen.content',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    6 => 
+                    array (
+                      'title' => 'Staff',
+                      'icon' => 'users',
+                      'name' => 'staff',
+                      'parent' => NULL,
+                      'order' => 80,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage User',
+                    ),
+                    7 => 
+                    array (
+                      'title' => 'Roles',
+                      'icon' => '',
+                      'name' => 'roles',
+                      'parent' => 'staff',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'roles.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Role',
+                    ),
+                    8 => 
+                    array (
+                      'title' => 'User',
+                      'icon' => '',
+                      'name' => 'user',
+                      'parent' => 'staff',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'users.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage User',
+                    ),
+                    9 => 
+                    array (
+                      'title' => 'Delivery Boy',
+                      'icon' => 'truck',
+                      'name' => 'deliveryboy',
+                      'parent' => NULL,
+                      'order' => 100,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'deliveryboy.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Deliveryboy',
+                    ),
+                    10 => 
+                    array (
+                      'title' => 'Products',
+                      'icon' => 'shopping-cart',
+                      'name' => 'products',
+                      'parent' => NULL,
+                      'order' => 120,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Products',
+                    ),
+                    11 => 
+                    array (
+                      'title' => 'Brand',
+                      'icon' => 'home',
+                      'name' => 'productBrand',
+                      'parent' => 'products',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'product-brand.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Product Brand',
+                    ),
+                    12 => 
+                    array (
+                      'title' => 'Label',
+                      'icon' => 'home',
+                      'name' => 'productLabel',
+                      'parent' => 'products',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'product-label.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Product Label',
+                    ),
+                    13 => 
+                    array (
+                      'title' => 'Main Category',
+                      'icon' => 'home',
+                      'name' => 'maincategory',
+                      'parent' => 'products',
+                      'order' => 3,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'main-category',
+                      'module' => 'Base',
+                      'permission' => 'Manage Product Category',
+                    ),
+                    14 => 
+                    array (
+                      'title' => 'Sub Category',
+                      'icon' => 'home',
+                      'name' => 'subcategory',
+                      'parent' => 'products',
+                      'order' => 4,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'sub-category',
+                      'module' => 'Base',
+                      'permission' => 'Manage Product Sub Category',
+                    ),
+                    15 => 
+                    array (
+                      'title' => 'Product',
+                      'icon' => 'home',
+                      'name' => 'product',
+                      'parent' => 'products',
+                      'order' => 5,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'product.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Products',
+                    ),
+                    16 => 
+                    array (
+                      'title' => 'Attributes',
+                      'icon' => 'home',
+                      'name' => 'attributes',
+                      'parent' => 'products',
+                      'order' => 6,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'product-attributes.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Attributes',
+                    ),
+                    17 => 
+                    array (
+                      'title' => 'Testimonial',
+                      'icon' => 'home',
+                      'name' => 'Testimonial',
+                      'parent' => 'products',
+                      'order' => 8,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'testimonial.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Testimonial',
+                    ),
+                    18 => 
+                    array (
+                      'title' => 'Question Answer',
+                      'icon' => 'home',
+                      'name' => 'question_answer',
+                      'parent' => 'products',
+                      'order' => 9,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'product-question.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Product Question',
+                    ),
+                    19 => 
+                    array (
+                      'title' => 'Shipping',
+                      'icon' => 'truck-delivery',
+                      'name' => 'shipping',
+                      'parent' => NULL,
+                      'order' => 140,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Shipping',
+                    ),
+                    20 => 
+                    array (
+                      'title' => 'Shipping Class',
+                      'icon' => '',
+                      'name' => 'shipping class',
+                      'parent' => 'shipping',
+                      'order' => 34,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'shipping.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Shipping Class',
+                    ),
+                    21 => 
+                    array (
+                      'title' => 'Shipping Zone',
+                      'icon' => '',
+                      'name' => 'shipping zone',
+                      'parent' => 'shipping',
+                      'order' => 35,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'shipping-zone.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Shipping Zone',
+                    ),
+                    22 => 
+                    array (
+                      'title' => 'Orders',
+                      'icon' => 'briefcase',
+                      'name' => 'orders',
+                      'parent' => NULL,
+                      'order' => 160,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Order',
+                    ),
+                    23 => 
+                    array (
+                      'title' => 'Orders',
+                      'icon' => 'user',
+                      'name' => 'order',
+                      'parent' => 'orders',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'order.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Order',
+                    ),
+                    24 => 
+                    array (
+                      'title' => 'Order Refund Request',
+                      'icon' => 'user',
+                      'name' => 'order-refund-request',
+                      'parent' => 'orders',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'refund-request.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Order Refund Request',
+                    ),
+                    25 => 
+                    array (
+                      'title' => 'Customers',
+                      'icon' => 'user',
+                      'name' => 'customers',
+                      'parent' => NULL,
+                      'order' => 180,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'customer.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Customer',
+                    ),
+                    26 => 
+                    array (
+                      'title' => 'Reports',
+                      'icon' => 'chart-bar',
+                      'name' => 'reports',
+                      'parent' => NULL,
+                      'order' => 200,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Reports',
+                    ),
+                    27 => 
+                    array (
+                      'title' => 'Customer Reports',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'reports',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Reports',
+                    ),
+                    28 => 
+                    array (
+                      'title' => 'Order Reports',
+                      'icon' => 'home',
+                      'name' => 'order_reports',
+                      'parent' => 'reports',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Order Reports',
+                    ),
+                    29 => 
+                    array (
+                      'title' => 'Sales Report',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'order_reports',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.order_report',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    30 => 
+                    array (
+                      'title' => 'Sales Product Report',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'order_reports',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.order_product_report',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    31 => 
+                    array (
+                      'title' => 'Sales Category Report',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'order_reports',
+                      'order' => 3,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.order_category_report',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    32 => 
+                    array (
+                      'title' => 'Sales Downloadable Product',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'order_reports',
+                      'order' => 4,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.order_downloadable_report',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    33 => 
+                    array (
+                      'title' => 'Sales Brand Report',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'order_reports',
+                      'order' => 5,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.order_brand_report',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    34 => 
+                    array (
+                      'title' => 'Country Based Order Report',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'order_reports',
+                      'order' => 6,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.orderCountryReport',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    35 => 
+                    array (
+                      'title' => 'Top Sales Reports',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'reports',
+                      'order' => 3,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.top_product',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    36 => 
+                    array (
+                      'title' => 'Order Status Reports',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'order_reports',
+                      'order' => 7,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.orderStatusReport',
+                      'module' => 'Base',
+                      'permission' => '',
+                    ),
+                    37 => 
+                    array (
+                      'title' => 'Stock Reports',
+                      'icon' => 'home',
+                      'name' => '',
+                      'parent' => 'reports',
+                      'order' => 4,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'reports.stock_report',
+                      'module' => 'Base',
+                      'permission' => 'Manage Stock Reports',
+                    ),
+                    38 => 
+                    array (
+                      'title' => 'Marketing',
+                      'icon' => 'confetti',
+                      'name' => 'marketing',
+                      'parent' => NULL,
+                      'order' => 220,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Marketing',
+                    ),
+                    39 => 
+                    array (
+                      'title' => 'Coupon',
+                      'icon' => 'home',
+                      'name' => 'coupon',
+                      'parent' => 'marketing',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'coupon.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Coupon',
+                    ),
+                    40 => 
+                    array (
+                      'title' => 'Newsletter',
+                      'icon' => 'home',
+                      'name' => 'newsletter',
+                      'parent' => 'marketing',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'newsletter.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Newsletter',
+                    ),
+                    41 => 
+                    array (
+                      'title' => 'Flash Sale',
+                      'icon' => 'home',
+                      'name' => 'flashsale',
+                      'parent' => 'marketing',
+                      'order' => 3,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'flash-sale.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Flash Sale',
+                    ),
+                    42 => 
+                    array (
+                      'title' => 'Wishlist',
+                      'icon' => 'home',
+                      'name' => 'wishlist',
+                      'parent' => 'marketing',
+                      'order' => 4,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'wishlist.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Wishlist',
+                    ),
+                    43 => 
+                    array (
+                      'title' => 'Abandon Cart',
+                      'icon' => 'home',
+                      'name' => 'abandon_cart',
+                      'parent' => 'marketing',
+                      'order' => 5,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'abandon.carts.handled',
+                      'module' => 'Base',
+                      'permission' => 'Manage Cart',
+                    ),
+                    44 => 
+                    array (
+                      'title' => 'Support Ticket',
+                      'icon' => 'ticket',
+                      'name' => 'support_ticket.index',
+                      'parent' => NULL,
+                      'order' => 280,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'support_ticket.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Support Ticket',
+                    ),
+                    45 => 
+                    array (
+                      'title' => 'POS',
+                      'icon' => 'layers-difference',
+                      'name' => 'pos',
+                      'parent' => NULL,
+                      'order' => 300,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'pos.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Pos',
+                    ),
+                    46 => 
+                    array (
+                      'title' => 'CMS',
+                      'icon' => 'layout-cards',
+                      'name' => 'cms',
+                      'parent' => NULL,
+                      'order' => 320,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage CMS',
+                    ),
+                    47 => 
+                    array (
+                      'title' => 'Menu',
+                      'icon' => 'home',
+                      'name' => 'menu',
+                      'parent' => 'cms',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'menus.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Menu',
+                    ),
+                    48 => 
+                    array (
+                      'title' => 'Pages',
+                      'icon' => 'home',
+                      'name' => 'pages',
+                      'parent' => 'cms',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'pages.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Page',
+                    ),
+                    49 => 
+                    array (
+                      'title' => 'Blog Section',
+                      'icon' => 'home',
+                      'name' => 'blog_section',
+                      'parent' => 'cms',
+                      'order' => 3,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => '',
+                      'module' => 'Base',
+                      'permission' => 'Manage Blog',
+                    ),
+                    50 => 
+                    array (
+                      'title' => 'Blog',
+                      'icon' => '',
+                      'name' => 'blog',
+                      'parent' => 'blog_section',
+                      'order' => 1,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'blog.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Blog',
+                    ),
+                    51 => 
+                    array (
+                      'title' => 'Blog Category',
+                      'icon' => '',
+                      'name' => 'blog-category',
+                      'parent' => 'blog_section',
+                      'order' => 2,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'blog-category.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Blog Category',
+                    ),
+                    52 => 
+                    array (
+                      'title' => 'Faqs',
+                      'icon' => 'home',
+                      'name' => 'faq',
+                      'parent' => 'cms',
+                      'order' => 4,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'faqs.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Faqs',
+                    ),
+                    53 => 
+                    array (
+                      'title' => 'Tag',
+                      'icon' => 'home',
+                      'name' => 'tag',
+                      'parent' => 'cms',
+                      'order' => 5,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'tag.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Tag',
+                    ),
+                    54 => 
+                    array (
+                      'title' => 'Contact Us',
+                      'icon' => 'home',
+                      'name' => 'contact-us',
+                      'parent' => 'cms',
+                      'order' => 6,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'contacts.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Contact Us',
+                    ),
+                    55 => 
+                    array (
+                      'title' => 'Plan',
+                      'icon' => 'trophy',
+                      'name' => 'plan',
+                      'parent' => NULL,
+                      'order' => 340,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'plan.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Plan',
+                    ),
+                    56 => 
+                    array (
+                      'title' => 'Settings',
+                      'icon' => 'settings',
+                      'name' => 'settings',
+                      'parent' => NULL,
+                      'order' => 360,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'setting.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage Setting',
+                    ),
+                  );
                 $user = auth()->user();
-                $sa  = json_decode($sa,true);
-                $com  = json_decode($com,true);
+                
                 
                 // $menu = array_merge($sa,$com);
                 $menu = $com;
