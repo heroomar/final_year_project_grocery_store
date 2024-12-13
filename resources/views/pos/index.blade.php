@@ -662,6 +662,7 @@
     }
 
     $(document).on('click', '.payment-done-btn', function (e) {
+        // alert('payment-done-btn');
         $('.modal-dialog').removeClass('modal-xl');
         e.preventDefault();
         var ele = $(this);

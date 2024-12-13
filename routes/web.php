@@ -688,7 +688,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
     Route::get('addToCart/{id}/{session}/{variation_id?}', [ProductController::class, 'addToCart'])->name('pos.add.to.cart');
     Route::patch('update-cart', [ProductController::class, 'updateCart']);
     Route::delete('remove-from-cart', [ProductController::class, 'removeFromCart'])->name('remove-from-cart');
-//     Route::get('printview/pos', [PosController::class, 'printView'])->name('pos.printview');
+    Route::get('printview/pos', [PosController::class, 'printView'])->name('pos.printview');
     Route::get('pos/data/store', [PosController::class, 'store'])->name('pos.data.store');
     Route::post('empty-cart', [ProductController::class, 'emptyCart'])->name('empty-cart');
 //     // POS variant Route

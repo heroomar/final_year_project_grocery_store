@@ -1,8 +1,5 @@
 @php
-    $settings = App\Models\Utility::seting();
-    session()->forget('pos_'.getCurrentStore());
-    $store_id = \App\Models\Store::where('id', getCurrentStore())->first();
-    $Tax =  \App\Models\Tax::where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->first();
+    //session()->forget('pos_'.getCurrentStore());
 @endphp
 <div class="pt-0 pb-3 modal-body pos-module" id="printarea" >
     <table class="table pos-module-tbl">

@@ -1,8 +1,8 @@
 
 @php
     $logo= get_file('uploads/logo');
-    $store_id = \App\Models\Store::where('id', getCurrentStore())->first();
-    $Tax =  \App\Models\Tax::where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->first();
+    $store_id = getCurrentStore();
+    $Tax =  [];
 @endphp
 @if (!empty($sales) && count($sales['data']) > 0)
     <div class="card">
@@ -20,7 +20,7 @@
                     </div>
                     <div class="col-6 text-end">
                         <div class="text-dark "><b>{{ __('Store Name') }}: </b>
-                            {!! $details['store']['name'] !!}
+                            {!! $details['store']['name'] ?? '' !!}
                         </div>
                     </div>
                 </div>
