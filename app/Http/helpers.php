@@ -127,3 +127,16 @@ function get_file($path, $theme_id = '')
     {
         return $path;
     }
+
+
+function currency_format_with_sym($a,$b,$c){
+    return $a;
+}
+
+function get_currency(){
+    return 'Rs. ';
+}
+
+function SetNumberFormat($num){
+    return number_format($num,2);
+}

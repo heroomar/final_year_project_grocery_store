@@ -611,44 +611,44 @@
                       'depend_on' => 
                       array (
                       ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage Order',
-                    ),
-                    23 => 
-                    array (
-                      'title' => 'Orders',
-                      'icon' => 'user',
-                      'name' => 'order',
-                      'parent' => 'orders',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
                       'route' => 'order.index',
                       'module' => 'Base',
                       'permission' => 'Manage Order',
                     ),
-                    24 => 
-                    array (
-                      'title' => 'Order Refund Request',
-                      'icon' => 'user',
-                      'name' => 'order-refund-request',
-                      'parent' => 'orders',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'refund-request.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Order Refund Request',
-                    ),
+                    // 23 => 
+                    // array (
+                    //   'title' => 'Orders',
+                    //   'icon' => 'user',
+                    //   'name' => 'order',
+                    //   'parent' => 'orders',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'order.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Order',
+                    // ),
+                    // 24 => 
+                    // array (
+                    //   'title' => 'Order Refund Request',
+                    //   'icon' => 'user',
+                    //   'name' => 'order-refund-request',
+                    //   'parent' => 'orders',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'refund-request.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Order Refund Request',
+                    // ),
                     25 => 
                     array (
                       'title' => 'Customers',

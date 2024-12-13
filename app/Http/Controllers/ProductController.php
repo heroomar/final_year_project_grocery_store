@@ -569,609 +569,514 @@ class ProductController extends Controller
     //     return 1203;
     // }
 
-    // public function searchProducts(Request $request)
-    // {
-    //     $lastsegment = $request->session_key;
-    //     $store_id =  getCurrentStore();
-    //     if ($request->ajax() && isset($lastsegment) && !empty($lastsegment)) {
-    //         $output = "";
-    //         if ($request->cat_id !== '' && $request->search == '') {
-    //             if ($request->cat_id == '0') {
-    //                 $products = Product::where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-    //             } else {
-    //                 $products = Product::where('maincategory_id', $request->cat_id)->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-    //             }
-    //         } else {
-    //             if ($request->cat_id == '0') {
-    //                 $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-    //             } else {
-    //                 $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->Where('maincategory_id', $request->cat_id)->get();
-    //             }
-    //         }
-    //         if (count($products) > 0) {
-    //             foreach ($products as $key => $product) {
-    //                 if (!empty($product->cover_image_path)) {
-    //                     $image_url = get_file($product->cover_image_path, APP_THEME());
-    //                 } else {
-    //                     $image_url = ('uploads/cover_image_path') . '/default.jpg';
-    //                 }
+    public function searchProducts(Request $request)
+    {
+        $lastsegment = $request->session_key;
+        $store_id =  getCurrentStore();
+        // && isset($lastsegment) && !empty($lastsegment)
+        if ($request->ajax() ) {
+            $output = "";
+            if ($request->cat_id !== '' && $request->search == '') {
+                if ($request->cat_id == '0') {
+                    $products = Product::get();
+                } else {
+                    $products = Product::where('maincategory_id', $request->cat_id)->get();
+                }
+            } else {
+                if ($request->cat_id == '0') {
+                    $products = Product::where('name', 'LIKE', "%{$request->search}%")->get();
+                } else {
+                    $products = Product::where('name', 'LIKE', "%{$request->search}%")->Where('maincategory_id', $request->cat_id)->get();
+                }
+            }
+            if (count($products) > 0) {
+                foreach ($products as $key => $product) {
+                    if (!empty($product->cover_image_path)) {
+                        $image_url = get_file($product->cover_image_path, APP_THEME());
+                    } else {
+                        $image_url = ('uploads/cover_image_path') . '/default.jpg';
+                    }
 
-    //                 if ($product->variant_product != '1') {
-    //                     if ($product->track_stock == 0) {
-    //                         $quantity = $product->stock_status;
-    //                         if ($product->stock_status == 'in_stock') {
-    //                             $quantity = 'In Stock';
-    //                         } elseif ($product->stock_status == 'on_backorder') {
-    //                             $quantity = 'On Backorder';
-    //                         } else {
-    //                             $quantity = 'Out of Stock';
-    //                         }
-    //                     } else {
-    //                         $quantity = $product->product_stock . ' Qty';
-    //                     }
-
-    //                     if ($request->session_key == 'purchases') {
-    //                         $productprice = getProductActualPrice($product);
-    //                     } else if ($request->session_key == 'pos_' . getCurrentStore()) {
-    //                         $productprice = getProductActualPrice($product);
-    //                     } else {
-    //                         $productprice = getProductActualPrice($product);
-    //                     }
-
-    //                     $productprice = $productprice;
-    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-    //                                 <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
-    //                                     <div class="position-relative card">
-    //                                         <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-    //                                         <div class="p-0 custom-card-body card-body d-flex ">
-    //                                             <div class="card-body my-2 p-2 text-left card-bottom-content">
-    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-    //                                             <small class="badge badge-primary mb-0">' . $productprice . '</small>
-    //                                             <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
-    //                                         </div>
-    //                                     </div>
-    //                                 </div>
-    //                             </div>
-    //                         </div> ';
-    //                 } else {
-
-    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-    //                             <div class="tab-pane fade show active toacart w-100" data-url="' . url('/pos/product-variant/' . $product->id . '/' . $lastsegment) . '" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant">
-    //                                 <div class="position-relative card">
-    //                                     <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-    //                                     <div class="p-0 custom-card-body card-body d-flex ">
-    //                                         <div class="card-body my-2 p-2 text-left card-bottom-content">
-    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-    //                                             <small class="badge badge-primary mb-0">In Variant</small>
-    //                                         </div>
-    //                                     </div>
-    //                                 </div>
-    //                             </div>
-    //                         </div> ';
-    //                 }
-    //             }
-    //             return Response($output);
-    //         } else {
-    //             $output = '<div class="card card-body col-12 text-center">
-    //                 <h5>' . __("No Product Available") . '</h5>
-    //                 </div>';
-    //             return Response($output);
-    //         }
-    //     }
-    // }
-
-    // public function searchProductsSku(Request $request)
-    // {
-    //     $lastsegment = $request->session_key;
-    //     $store_id =  getCurrentStore();
-    //     if ($request->ajax() && isset($lastsegment) && !empty($lastsegment)) {
-    //         $output = "";
-    //         if ($request->cat_id !== '' && $request->search == '') {
-    //             if ($request->cat_id == '0') {
-    //                 $products = Product::where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-    //             } else {
-    //                 $products = Product::where('maincategory_id', $request->cat_id)->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-    //             }
-    //         } else {
-    //             if ($request->cat_id == '0') {
-    //                 $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-    //             } else {
-    //                 $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->Where('maincategory_id', $request->cat_id)->get();
-    //             }
-    //         }
-    //         if (count($products) > 0) {
-    //             foreach ($products as $key => $product) {
-    //                 if (!empty($product->cover_image_path)) {
-    //                     $image_url = get_file($product->cover_image_path, APP_THEME());
-    //                 } else {
-    //                     $image_url = ('uploads/cover_image_path') . '/default.jpg';
-    //                 }
-
-    //                 if ($product->variant_product != '1') {
-    //                     if ($product->track_stock == 0) {
-    //                         $quantity = $product->stock_status;
-    //                         if ($product->stock_status == 'in_stock') {
-    //                             $quantity = 'In Stock';
-    //                         } elseif ($product->stock_status == 'on_backorder') {
-    //                             $quantity = 'On Backorder';
-    //                         } else {
-    //                             $quantity = 'Out of Stock';
-    //                         }
-    //                     } else {
-    //                         $quantity = $product->product_stock . ' Qty';
-    //                     }
-
-    //                     if ($request->session_key == 'purchases') {
-    //                         $productprice = getProductActualPrice($product);
-    //                     } else if ($request->session_key == 'pos_' . getCurrentStore()) {
-    //                         $productprice = getProductActualPrice($product);
-    //                     } else {
-    //                         $productprice = getProductActualPrice($product);
-    //                     }
-
-    //                     $productprice = currency_format_with_sym($productprice, $store_id, $store_id);
-    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-    //                                 <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
-    //                                     <div class="position-relative card">
-    //                                         <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-    //                                         <div class="p-0 custom-card-body card-body d-flex ">
-    //                                             <div class="card-body my-2 p-2 text-left card-bottom-content">
-    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-    //                                             <small class="badge badge-primary mb-0">' . $productprice . '</small>
-    //                                             <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
-    //                                         </div>
-    //                                     </div>
-    //                                 </div>
-    //                             </div>
-    //                         </div> ';
-    //                 } else {
-
-    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-    //                             <div class="tab-pane fade show active toacart w-100" data-url="' . url('/pos/product-variant/' . $product->id . '/' . $lastsegment) . '" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant">
-    //                                 <div class="position-relative card">
-    //                                     <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-    //                                     <div class="p-0 custom-card-body card-body d-flex ">
-    //                                         <div class="card-body my-2 p-2 text-left card-bottom-content">
-    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-    //                                             <small class="badge badge-primary mb-0">In Variant</small>
-    //                                         </div>
-    //                                     </div>
-    //                                 </div>
-    //                             </div>
-    //                         </div> ';
-    //                 }
-    //             }
-    //             return Response($output);
-    //         } else {
-    //             $output = '<div class="card card-body col-12 text-center">
-    //                 <h5>' . __("No Product Available") . '</h5>
-    //                 </div>';
-    //             return Response($output);
-    //         }
-    //     }
-    // }
-
-    // public function addToCart(Request $request, $id, $session_key, $variant_id = 0)
-    // {
-    //     $store_id =  getCurrentStore();
-
-    //     $product = Product::find($id);
-    //     $settings = Utility::Seting();
-    //     if (!$product) {
-    //         return response()->json(
-    //             [
-    //                 'code' => 404,
-    //                 'status' => 'Error',
-    //                 'error' => __('This product is not found!'),
-    //             ],
-    //             404
-    //         );
-    //     }
-
-    //     $productname = $product->name;
-
-    //     $variant = null;
-    //     $productquantity = $productprice = 0;
-    //     if (isset($request->variants)) {
-    //         $variant = ProductVariant::where('product_id', $id)->where('variant', $request->variants)->first();
-    //         if ($variant) {
-    //             $productquantity = $variant->stock;
-    //             if ($session_key ==  'pos_' . getCurrentStore() && $productquantity <= 0) {
-    //                 return response()->json(
-    //                     [
-    //                         'code' => 404,
-    //                         'status' => 'Error',
-    //                         'error' => __('This product is out of stock!'),
-    //                     ],
-    //                     404
-    //                 );
-    //             }
-
-    //             if ($session_key == 'pos_' . getCurrentStore()) {
-
-    //                 $productprice = getProductActualPrice($product, $variant);
-    //             } else {
-    //                 $productprice = 0;
-    //             }
-    //         }
-    //     } else {
-    //         if (
-    //             $product->track_stock == 0 && $product->stock_status == 'out_of_stock' ||
-    //             ($product->track_stock != 0 && isset($settings['out_of_stock_threshold']) && ($product->product_stock < $settings['out_of_stock_threshold']) && $product->stock_order_status == 'not_allow') ||
-    //             (!$product || ($session_key != 'pos_' . getCurrentStore()))
-    //         ) {
-    //             return response()->json(
-    //                 [
-    //                     'code' => 404,
-    //                     'status' => 'Error',
-    //                     'error' => __('This product is out of stock!'),
-    //                 ],
-    //                 404
-    //             );
-    //         }
-
-    //         $productquantity = $product->product_stock;
-    //         if ($session_key == 'pos_' . getCurrentStore()) {
-
-    //             $productprice = getProductActualPrice($product);
-    //         } else {
-    //             $productprice = 0;
-    //         }
-    //     }
-
-    //     $originalquantity = (int) $productquantity;
-
-    //     $tax_option = TaxOption::where('store_id', $store_id)
-	// 	->where('theme_id', $store_id)
-	// 	->pluck('value', 'name')->toArray();
-
-    //     $Tax = Tax::where('id', $product->tax_id)->where('store_id', $store_id)->where('theme_id', $store_id)->first();
-    //     $tax_price = 0;
-    //     $product_tax = '';
-    //     if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
-    //     {
-    //         if ($Tax && count($Tax->tax_methods()) > 0) {
-    //             foreach ($Tax->tax_methods() as $mkey => $method) {
-    //                 $amount = $method->tax_rate * $productprice / 100;
-    //                 $tax_price += $amount;
-    //                 $cart_array['tax_info'][$mkey]["tax_name"] = $method->name;
-    //                 $cart_array['tax_info'][$mkey]["tax_type"] = $method->tax_rate;
-    //                 $cart_array['tax_info'][$mkey]["tax_amount"] = $amount;
-    //                 $product_tax .= !empty($method) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
-    //                 $cart_array['tax_info'][$mkey]["id"] = $method->id;
-    //                 $cart_array['tax_info'][$mkey]["tax_price"] = SetNumber($amount);
-    //             }
-    //         }
-    //     }
-    //     $subtotal = $productprice + $tax_price;
-    //     $cart            = session()->get($session_key);
-    //     if (!empty($product->cover_image_path)) {
-    //         $image_url = get_file($product->cover_image_path, APP_THEME());
-    //     } else {
-    //         $image_url = ('uploads/is_cover_image') . '/default.jpg';
-    //     }
-
-    //     $model_delete_id = 'delete-form-' . $id;
-
-    //     $carthtml = '';
-
-    //     $carthtml .= '<tr data-product-id="' . $id . '" id="product-id-' . $id . '">
-    //                     <td class="cart-images">
-    //                         <img alt="Image placeholder" src="' . ($image_url) . '" class="card-image avatar shadow hover-shadow-lg">
-    //                     </td>
-
-    //                     <td class="name">' . $productname . '</td>
-
-    //                     <td class="">
-    //                             <span class="quantity buttons_added">
-    //                                     <input type="button" value="-" class="minus">
-    //                                     <input type="number" step="1" min="1" max="" name="quantity" title="' . __('Quantity') . '" class="input-number" size="4" data-url="' . url('update-cart/') . '" data-id="' . $id . '" style="width:50px;">
-    //                                     <input type="button" value="+" class="plus">
-    //                             </span>
-    //                     </td>
-    //                     <td class="tax">' . $product_tax . '</td>
-
-    //                     <td class="price">' . (currency_format_with_sym($productprice, $store_id, $store_id) ?? SetNumberFormat($productprice)) . '</td>
-
-    //                     <td class="total_orignal_price">' . (currency_format_with_sym($subtotal, $store_id, $store_id) ?? SetNumberFormat($subtotal)) . '</td>
-
-    //                     <td class="">
-    //                         <form method="post" class="mb-0" action="' . route('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">
-    //                         <button type="button" class="show_confirm btn btn-sm btn-danger p-2">
-    //                         <span class=""><i class="ti ti-trash"></i></span>
-    //                         </button>
-    //                             <input name="_method" type="hidden" value="DELETE">
-    //                             <input name="_token" type="hidden" value="' . csrf_token() . '">
-    //                             <input type="hidden" name="session_key" value="' . $session_key . '">
-    //                             <input type="hidden" name="id" value="' . $id . '">
-    //                         </form>
-    //                     </td>
-    //                 </td>';
-    //     // if cart is empty then this the first product
-
-    //     if (!$cart) {
-    //         $cart = [
-    //             $id => [
-    //                 "product_id" => $product->id,
-    //                 "name" => $productname,
-    //                 "image" => $product->cover_image_path,
-    //                 "quantity" => 1,
-    //                 "orignal_price" => $productprice,
-    //                 "per_product_discount_price" => $product->discount_amount,
-    //                 "discount_price" => $product->discount_amount,
-    //                 "final_price" => $subtotal,
-    //                 "id" => $id,
-    //                 "tax" => $tax_price,
-    //                 "total_orignal_price" => $subtotal,
-    //                 "originalquantity" => $originalquantity,
-    //                 'variant_id' => $variant->id ?? 0,
-    //                 "variant_name" => $product->variant_attribute,
-    //                 "return" => 0,
-    //             ],
-    //         ];
-
-    //         if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
-    //             return response()->json(
-    //                 [
-    //                     'code' => 404,
-    //                     'status' => 'Error',
-    //                     'error' => __('This product is out of stock!'),
-    //                 ],
-    //                 404
-    //             );
-    //         }
-
-    //         session()->put($session_key, $cart);
-
-    //         return response()->json(
-    //             [
-    //                 'code' => 200,
-    //                 'status' => 'Success',
-    //                 'success' => $productname . __(' added to cart successfully!'),
-    //                 'product' => $cart[$id],
-    //                 'carthtml' => $carthtml,
-    //             ]
-    //         );
-    //     }
-
-    //     // if cart not empty then check if this product exist then increment quantity
-    //     if (isset($cart[$id])) {
-    //         $cartProduct = Product::find($id);
-    //         $cart[$id]['quantity']++;
-    //         $cart[$id]['id'] = $id;
-
-    //         $subtotal = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
-    //         $tax = 0;
-    //         $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
-
-    //         $Tax = Tax::where('id', $cartProduct->tax_id)->where('store_id', $store_id)->where('theme_id', $store_id)->first();
-    //         $tax_price = 0;
-    //         $product_tax = '';
-    //         $price = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
-    //         if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
-    //         {
-    //             if ($Tax && count($Tax->tax_methods()) > 0) {
-    //                 foreach ($Tax->tax_methods() as $mkey => $method) {
-    //                     $amount = $method->tax_rate * $price / 100;
-    //                     $tax_price += $amount;
-    //                     $cart_array['tax_info'][$mkey]["tax_name"] = $method->name;
-    //                     $cart_array['tax_info'][$mkey]["tax_type"] = $method->tax_rate;
-    //                     $cart_array['tax_info'][$mkey]["tax_amount"] = $amount;
-    //                     $product_tax .= !empty($method) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
-    //                     $cart_array['tax_info'][$mkey]["id"] = $method->id;
-    //                     $cart_array['tax_info'][$mkey]["tax_price"] = SetNumber($amount);
-    //                 }
-    //             }
-    //         }
-
-    //         if (!empty($taxes)) {
-    //             $productprice          = $cart[$id]["orignal_price"] *  (float)$cart[$id]["quantity"];
-    //             $subtotal = $productprice +  $tax_price;
-    //         } else {
-
-    //             $productprice          = $cart[$id]["orignal_price"] ?? 0;
-    //             $subtotal = $productprice  *  (float)$cart[$id]["quantity"];
-    //         }
-    //         $cart[$id]["total_orignal_price"] = $subtotal;
-
-    //         $cart[$id]["total_orignal_price"]         = $subtotal + $tax;
-    //         $cart[$id]["originalquantity"] = $originalquantity;
-    //         $cart[$id]["tax"]      = $tax_price;
-    //         if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
-    //             return response()->json(
-    //                 [
-    //                     'code' => 404,
-    //                     'status' => 'Error',
-    //                     'error' => __('This product is out of stock!'),
-    //                 ],
-    //                 404
-    //             );
-    //         }
-
-    //         session()->put($session_key, $cart);
-
-    //         return response()->json(
-    //             [
-    //                 'code' => 200,
-    //                 'status' => 'Success',
-    //                 'success' => $productname . __(' added to cart successfully!'),
-    //                 'product' => $cart[$id],
-    //                 'carttotal' => $cart,
-    //             ]
-    //         );
-    //     }
-
-    //     // if item not exist in cart then add to cart with quantity = 1
-    //     $cart[$id] = [
-    //         "product_id" => $product->id,
-    //         "name" => $productname,
-    //         "image" => $product->cover_image_path,
-    //         "quantity" => 1,
-    //         "orignal_price" => $productprice,
-    //         "per_product_discount_price" => $product->discount_amount,
-    //         "discount_price" => $product->discount_amount,
-    //         "final_price" => $subtotal,
-    //         "id" => $id,
-    //         "tax" => $tax_price,
-    //         "total_orignal_price" => $subtotal,
-    //         "originalquantity" => $originalquantity,
-    //         'variant_id' => $variant->id ?? 0,
-    //         "variant_name" => $product->variant_attribute,
-    //         "return" => 0,
-    //     ];
-    //     if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
-    //         return response()->json(
-    //             [
-    //                 'code' => 404,
-    //                 'status' => 'Error',
-    //                 'error' => __('This product is out of stock!'),
-    //             ],
-    //             404
-    //         );
-    //     }
-
-    //     session()->put($session_key, $cart);
-    //     return response()->json(
-    //         [
-    //             'code' => 200,
-    //             'status' => 'Success',
-    //             'success' => $productname . __(' added to cart successfully!'),
-    //             'product' => $cart[$id],
-    //             'carthtml' => $carthtml,
-    //             'carttotal' => $cart,
-    //         ]
-    //     );
-    // }
-
-    // public function updateCart(Request $request)
-    // {
-    //     $id          = $request->id;
-    //     $quantity    = $request->quantity;
-    //     $discount    = $request->discount;
-    //     $session_key = $request->session_key;
-    //     $store_id = getCurrentStore();
-
-    //     if ($request->ajax() && isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
-    //         $cart = session()->get($session_key);
-
-    //         if (isset($cart[$id]) && $quantity == 0) {
-    //             unset($cart[$id]);
-    //         }
-
-    //         if ($quantity && !empty($quantity)) {
-
-    //             $cart[$id]["quantity"] = $quantity;
-    //             $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
-
-    //             $price = ($cart[$id]["orignal_price"] ?? 0) * $quantity;
-
-    //             $tax_option = TaxOption::where('store_id', $store_id)
-    //                         ->where('theme_id', $store_id)
-    //                         ->pluck('value', 'name')->toArray();
+                    if (1) {
+                        
+                            $quantity = $product->product_stock;
+                        if ($quantity == 0){
                             
-    //             $product = Product::where('id', $id)->first();
-    //             $Tax = Tax::where('store_id', $store_id)->where('id', $product->tax_id)->where('theme_id', $store_id)->first();
-    //             $tax_price = 0;
-    //             $product_tax = '';
-    //             if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
-    //             {
-    //                 if ($Tax) {
-    //                     if (count($Tax->tax_methods()) > 0) {
-    //                         foreach ($Tax->tax_methods() as $mkey => $method) {
-    //                             $tax_price += $method->tax_rate * $price / 100;
-    //                             $product_tax .= !empty($Tax) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
-    //                         }
-    //                     }
-    //                 }
-    //             }
+                                $quantity = 'Out of Stock';
+                            
+                        } else {
+                            $quantity = $product->product_stock . ' Qty';
+                        }
 
-    //             $subtotal = $price + $tax_price;
-    //             $cart[$id]["tax"] = $tax_price;
-    //             $producttax = 0;
-    //             if (!empty($taxes)) {
-    //                 $productprice          = $cart[$id]["orignal_price"] *  (float)$quantity;
-    //                 $subtotal = $productprice +  $tax_price;
-    //             } else {
-    //                 $productprice          = $cart[$id]["orignal_price"] ?? 0;
-    //                 $subtotal = ($productprice  *  (float) $quantity) + $tax_price;
-    //             }
+                        if ($request->session_key == 'purchases') {
+                            $productprice = get_currency().' '.($product->price);
+                        } else if ($request->session_key == 'pos_' . getCurrentStore()) {
+                            $productprice = get_currency().' '.($product->price);
+                        } else {
+                            $productprice = get_currency().' '.($product->price);
+                        }
 
-    //             $cart[$id]["total_orignal_price"] = $subtotal;
-    //         }
+                        $productprice = $productprice;
+                        $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+                                    <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
+                                        <div class="position-relative card">
+                                            <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
+                                            <div class="p-0 custom-card-body card-body d-flex ">
+                                                <div class="card-body my-2 p-2 text-left card-bottom-content">
+                                                <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
+                                                <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
+                                                <small class="badge badge-primary mb-0">' . $productprice . '</small>
+                                                <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> ';
+                    } else {
 
-    //         if (isset($cart[$id]) && isset($cart[$id]["originalquantity"]) < $cart[$id]['quantity'] && $session_key == 'pos_' . getCurrentStore()) {
-    //             return response()->json(
-    //                 [
-    //                     'code' => 404,
-    //                     'status' => 'Error',
-    //                     'error' => __('This product is out of stock!'),
-    //                 ],
-    //                 404
-    //             );
-    //         }
+                        $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+                                <div class="tab-pane fade show active toacart w-100" data-url="' . url('/pos/product-variant/' . $product->id . '/' . $lastsegment) . '" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant">
+                                    <div class="position-relative card">
+                                        <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
+                                        <div class="p-0 custom-card-body card-body d-flex ">
+                                            <div class="card-body my-2 p-2 text-left card-bottom-content">
+                                                <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
+                                                <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
+                                                <small class="badge badge-primary mb-0">In Variant</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> ';
+                    }
+                }
+                return Response($output);
+            } else {
+                $output = '<div class="card card-body col-12 text-center">
+                    <h5>' . __("No Product Available") . '</h5>
+                    </div>';
+                return Response($output);
+            }
+        }
+    }
 
-    //         $subtotal = array_sum(array_column($cart, 'total_orignal_price'));
-    //         $discount = $request->discount;
-    //         $total = $subtotal - (float)$discount;
-    //         $totalDiscount = currency_format_with_sym($total, $store_id, $store_id) ?? SetNumberFormat($total);
-    //         $discount = $totalDiscount;
+    public function searchProductsSku(Request $request)
+    {
+        $lastsegment = $request->session_key;
+        $store_id =  getCurrentStore();
+        if ($request->ajax() && isset($lastsegment) && !empty($lastsegment)) {
+            $output = "";
+            if ($request->cat_id !== '' && $request->search == '') {
+                if ($request->cat_id == '0') {
+                    $products = Product::where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+                } else {
+                    $products = Product::where('maincategory_id', $request->cat_id)->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+                }
+            } else {
+                if ($request->cat_id == '0') {
+                    $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+                } else {
+                    $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->Where('maincategory_id', $request->cat_id)->get();
+                }
+            }
+            if (count($products) > 0) {
+                foreach ($products as $key => $product) {
+                    if (!empty($product->cover_image_path)) {
+                        $image_url = get_file($product->cover_image_path, APP_THEME());
+                    } else {
+                        $image_url = ('uploads/cover_image_path') . '/default.jpg';
+                    }
 
-    //         session()->put($session_key, $cart);
-    //         return response()->json(
-    //             [
-    //                 'code' => 200,
-    //                 'success' => __('Cart updated successfully!'),
-    //                 'product' => $cart,
-    //                 'discount' => $discount,
-    //             ]
-    //         );
-    //     } else {
-    //         return response()->json(
-    //             [
-    //                 'code' => 404,
-    //                 'status' => 'Error',
-    //                 'error' => __('This Product is not found!'),
-    //             ],
-    //             404
-    //         );
-    //     }
-    // }
+                    if ($product->variant_product != '1') {
+                        if ($product->track_stock == 0) {
+                            $quantity = $product->stock_status;
+                            if ($product->stock_status == 'in_stock') {
+                                $quantity = 'In Stock';
+                            } elseif ($product->stock_status == 'on_backorder') {
+                                $quantity = 'On Backorder';
+                            } else {
+                                $quantity = 'Out of Stock';
+                            }
+                        } else {
+                            $quantity = $product->product_stock . ' Qty';
+                        }
 
-    // public function removeFromCart(Request $request)
-    // {
-    //     $id          = $request->id;
-    //     $session_key = $request->session_key;
-    //     if (isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
-    //         $cart = session()->get($session_key);
-    //         if (isset($cart[$id])) {
-    //             unset($cart[$id]);
-    //             session()->put($session_key, $cart);
-    //         }
-    //         return redirect()->back()->with('success', __('Product removed from cart!'));
-    //     } else {
-    //         return redirect()->back()->with('error', __('This Product is not found!'));
-    //     }
-    // }
+                        if ($request->session_key == 'purchases') {
+                            $productprice = getProductActualPrice($product);
+                        } else if ($request->session_key == 'pos_' . getCurrentStore()) {
+                            $productprice = getProductActualPrice($product);
+                        } else {
+                            $productprice = getProductActualPrice($product);
+                        }
 
-    // public function emptyCart(Request $request)
-    // {
-    //     $session_key = $request->session_key;
+                        $productprice = currency_format_with_sym($productprice, $store_id, $store_id);
+                        $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+                                    <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
+                                        <div class="position-relative card">
+                                            <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
+                                            <div class="p-0 custom-card-body card-body d-flex ">
+                                                <div class="card-body my-2 p-2 text-left card-bottom-content">
+                                                <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
+                                                <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
+                                                <small class="badge badge-primary mb-0">' . $productprice . '</small>
+                                                <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> ';
+                    } 
+                }
+                return Response($output);
+            } else {
+                $output = '<div class="card card-body col-12 text-center">
+                    <h5>' . __("No Product Available") . '</h5>
+                    </div>';
+                return Response($output);
+            }
+        }
+    }
 
-    //     if (isset($session_key) && !empty($session_key)) {
-    //         $cart = session()->get($session_key);
-    //         if (isset($cart) && count($cart) > 0) {
-    //             session()->forget($session_key);
-    //         }
+    public function addToCart(Request $request, $id, $session_key, $variant_id = 0)
+    {
+        $store_id =  getCurrentStore();
 
-    //         return redirect()->back()->with('success', __('Cart is empty!'));
-    //     } else {
-    //         return redirect()->back()->with('error', __('Cart cannot be empty!.'));
-    //     }
-    // }
+        $product = Product::find($id);
+        
+        if (!$product) {
+            return response()->json(
+                [
+                    'code' => 404,
+                    'status' => 'Error',
+                    'error' => __('This product is not found!'),
+                ],
+                404
+            );
+        }
+
+        $productname = $product->name;
+
+        $variant = null;
+        $productquantity = $productprice = 0;
+        if(1) {
+            if (
+                $product->product_stock == 0 
+            ) {
+                return response()->json(
+                    [
+                        'code' => 404,
+                        'status' => 'Error',
+                        'error' => __('This product is out of stock!'),
+                    ],
+                    404
+                );
+            }
+
+            $productquantity = $product->product_stock;
+            if ($session_key == 'pos_' . getCurrentStore()) {
+
+                $productprice = ($product->price);
+            } else {
+                $productprice = 0;
+            }
+        }
+
+        $originalquantity = (int) $productquantity;
+
+        $tax_price = 0;
+        $product_tax = '';
+        
+        $subtotal = $productprice + $tax_price;
+        $cart            = session()->get($session_key);
+        if (!empty($product->cover_image_path)) {
+            $image_url = get_file($product->cover_image_path, APP_THEME());
+        } else {
+            $image_url = ('uploads/is_cover_image') . '/default.jpg';
+        }
+
+        $model_delete_id = 'delete-form-' . $id;
+
+        $carthtml = '';
+
+        $carthtml .= '<tr data-product-id="' . $id . '" id="product-id-' . $id . '">
+                        <td class="cart-images">
+                            <img alt="Image placeholder" src="' . ($image_url) . '" class="card-image avatar shadow hover-shadow-lg">
+                        </td>
+
+                        <td class="name">' . $productname . '</td>
+
+                        <td class="">
+                                <span class="quantity buttons_added">
+                                        <input type="button" value="-" class="minus">
+                                        <input type="number" step="1" min="1" max="" name="quantity" title="' . __('Quantity') . '" class="input-number" size="4" data-url="' . url('update-cart/') . '" data-id="' . $id . '" style="width:50px;">
+                                        <input type="button" value="+" class="plus">
+                                </span>
+                        </td>
+                        <td class="tax">' . $product_tax . '</td>
+
+                        <td class="price">' . (currency_format_with_sym($productprice, $store_id, $store_id) ?? SetNumberFormat($productprice)) . '</td>
+
+                        <td class="total_orignal_price">' . (currency_format_with_sym($subtotal, $store_id, $store_id) ?? SetNumberFormat($subtotal)) . '</td>
+
+                        <td class="">
+                            <form method="post" class="mb-0" action="' . route('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">
+                            <button type="button" class="show_confirm btn btn-sm btn-danger p-2">
+                            <span class=""><i class="ti ti-trash"></i></span>
+                            </button>
+                                <input name="_method" type="hidden" value="DELETE">
+                                <input name="_token" type="hidden" value="' . csrf_token() . '">
+                                <input type="hidden" name="session_key" value="' . $session_key . '">
+                                <input type="hidden" name="id" value="' . $id . '">
+                            </form>
+                        </td>
+                    </td>';
+        // if cart is empty then this the first product
+
+        if (!$cart) {
+            $cart = [
+                $id => [
+                    "product_id" => $product->id,
+                    "name" => $productname,
+                    "image" => $product->cover_image_path,
+                    "quantity" => 1,
+                    "orignal_price" => $productprice,
+                    "per_product_discount_price" => $product->discount_amount,
+                    "discount_price" => $product->discount_amount,
+                    "final_price" => $subtotal,
+                    "id" => $id,
+                    "tax" => $tax_price,
+                    "total_orignal_price" => $subtotal,
+                    "originalquantity" => $originalquantity,
+                    'variant_id' => $variant->id ?? 0,
+                    "variant_name" => $product->variant_attribute,
+                    "return" => 0,
+                ],
+            ];
+
+            if (($originalquantity < $cart[$id]['quantity']) && $session_key != 'pos_' . getCurrentStore()) {
+                return response()->json(
+                    [
+                        'code' => 404,
+                        'status' => 'Error',
+                        'error' => __('This product is out of stock!'),
+                    ],
+                    404
+                );
+            }
+
+            session()->put($session_key, $cart);
+
+            return response()->json(
+                [
+                    'code' => 200,
+                    'status' => 'Success',
+                    'success' => $productname . __(' added to cart successfully!'),
+                    'product' => $cart[$id],
+                    'carthtml' => $carthtml,
+                ]
+            );
+        }
+
+        // if cart not empty then check if this product exist then increment quantity
+        if (isset($cart[$id])) {
+            $cartProduct = Product::find($id);
+            $cart[$id]['quantity']++;
+            $cart[$id]['id'] = $id;
+
+            $subtotal = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
+            $tax = 0;
+            $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
+
+            $tax_price = 0;
+            $product_tax = '';
+            $price = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
+            
+            
+            $productprice          = $cart[$id]["orignal_price"] ?? 0;
+            $subtotal = $productprice  *  (float)$cart[$id]["quantity"];
+            
+            $cart[$id]["total_orignal_price"] = $subtotal;
+
+            $cart[$id]["total_orignal_price"]         = $subtotal + $tax;
+            $cart[$id]["originalquantity"] = $originalquantity;
+            $cart[$id]["tax"]      = $tax_price;
+            if ($product->product_stock == 0 && $session_key != 'pos_' . getCurrentStore()) {
+                return response()->json(
+                    [
+                        'code' => 404,
+                        'status' => 'Error',
+                        'error' => __('This product is out of stock!'),
+                    ],
+                    404
+                );
+            }
+
+            session()->put($session_key, $cart);
+
+            return response()->json(
+                [
+                    'code' => 200,
+                    'status' => 'Success',
+                    'success' => $productname . __(' added to cart successfully!'),
+                    'product' => $cart[$id],
+                    'carttotal' => $cart,
+                ]
+            );
+        }
+
+        // if item not exist in cart then add to cart with quantity = 1
+        $cart[$id] = [
+            "product_id" => $product->id,
+            "name" => $productname,
+            "image" => $product->cover_image_path,
+            "quantity" => 1,
+            "orignal_price" => $productprice,
+            "per_product_discount_price" => $product->discount_amount,
+            "discount_price" => $product->discount_amount,
+            "final_price" => $subtotal,
+            "id" => $id,
+            "tax" => $tax_price,
+            "total_orignal_price" => $subtotal,
+            "originalquantity" => $originalquantity,
+            'variant_id' => $variant->id ?? 0,
+            "variant_name" => $product->variant_attribute,
+            "return" => 0,
+        ];
+        if (($product->product_stock != 0 && $originalquantity < $cart[$id]['quantity']) ||  $session_key != 'pos_' . getCurrentStore()) {
+            return response()->json(
+                [
+                    'code' => 404,
+                    'status' => 'Error',
+                    'error' => __('This product is out of stock!'),
+                ],
+                404
+            );
+        }
+
+        session()->put($session_key, $cart);
+        return response()->json(
+            [
+                'code' => 200,
+                'status' => 'Success',
+                'success' => $productname . __(' added to cart successfully!'),
+                'product' => $cart[$id],
+                'carthtml' => $carthtml,
+                'carttotal' => $cart,
+            ]
+        );
+    }
+
+    public function updateCart(Request $request)
+    {
+        $id          = $request->id;
+        $quantity    = $request->quantity;
+        $discount    = $request->discount;
+        $session_key = $request->session_key;
+        $store_id = getCurrentStore();
+
+        if ($request->ajax() && isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
+            $cart = session()->get($session_key);
+
+            if (isset($cart[$id]) && $quantity == 0) {
+                unset($cart[$id]);
+            }
+
+            if ($quantity && !empty($quantity)) {
+
+                $cart[$id]["quantity"] = $quantity;
+                $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
+
+                $price = ($cart[$id]["orignal_price"] ?? 0) * $quantity;
+
+                $tax_option = [];
+                            
+                $product = Product::where('id', $id)->first();
+                $tax_price = 0;
+                $product_tax = '';
+                
+                $subtotal = $price + $tax_price;
+                $cart[$id]["tax"] = $tax_price;
+                $producttax = 0;
+                if (!empty($taxes)) {
+                    $productprice          = $cart[$id]["orignal_price"] *  (float)$quantity;
+                    $subtotal = $productprice +  $tax_price;
+                } else {
+                    $productprice          = $cart[$id]["orignal_price"] ?? 0;
+                    $subtotal = ($productprice  *  (float) $quantity) + $tax_price;
+                }
+
+                $cart[$id]["total_orignal_price"] = $subtotal;
+            }
+
+            if (isset($cart[$id]) && isset($cart[$id]["originalquantity"]) < $cart[$id]['quantity'] && $session_key == 'pos_' . getCurrentStore()) {
+                return response()->json(
+                    [
+                        'code' => 404,
+                        'status' => 'Error',
+                        'error' => __('This product is out of stock!'),
+                    ],
+                    404
+                );
+            }
+
+            $subtotal = array_sum(array_column($cart, 'total_orignal_price'));
+            $discount = $request->discount;
+            $total = $subtotal - (float)$discount;
+            $totalDiscount = currency_format_with_sym($total, $store_id, $store_id) ?? SetNumberFormat($total);
+            $discount = $totalDiscount;
+
+            session()->put($session_key, $cart);
+            return response()->json(
+                [
+                    'code' => 200,
+                    'success' => __('Cart updated successfully!'),
+                    'product' => $cart,
+                    'discount' => $discount,
+                ]
+            );
+        } else {
+            return response()->json(
+                [
+                    'code' => 404,
+                    'status' => 'Error',
+                    'error' => __('This Product is not found!'),
+                ],
+                404
+            );
+        }
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $id          = $request->id;
+        $session_key = $request->session_key;
+        if (isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
+            $cart = session()->get($session_key);
+            if (isset($cart[$id])) {
+                unset($cart[$id]);
+                session()->put($session_key, $cart);
+            }
+            return redirect()->back()->with('success', __('Product removed from cart!'));
+        } else {
+            return redirect()->back()->with('error', __('This Product is not found!'));
+        }
+    }
+
+    public function emptyCart(Request $request)
+    {
+        $session_key = $request->session_key;
+
+        if (isset($session_key) && !empty($session_key)) {
+            $cart = session()->get($session_key);
+            if (isset($cart) && count($cart) > 0) {
+                session()->forget($session_key);
+            }
+
+            return redirect()->back()->with('success', __('Cart is empty!'));
+        } else {
+            return redirect()->back()->with('error', __('Cart cannot be empty!.'));
+        }
+    }
 
     // public function productVariant(Request $request, $id, $session_key)
     // {

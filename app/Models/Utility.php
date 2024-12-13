@@ -164,6 +164,10 @@ class Utility extends Model
         // }
     }
 
+    public static function GetValueByName($CURRENCY, $APPTHEME, $getCurrentStore){
+        return 'Rs.';
+    }
+
     
 }
 

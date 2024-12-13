@@ -544,7 +544,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::post('site-setting', [AppSettingController::class, 'SiteSetting'])->name('site.setting');
 //     // Coupon Routes
 //     Route::get('coupon/export', [CouponController::class, 'fileExport'])->name('coupon.export');
-//     Route::resource('coupon', CouponController::class);
+    Route::resource('coupon', CouponController::class);
 
 //     //Woocommerce
 //     Route::post('woocommerce-settings', [SettingController::class, 'WoocommerceSettings'])->name('woocommerce.settings');
@@ -668,9 +668,9 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::post('generate/response', [AITemplateController::class, 'aiGenerate'])->name('generate.response');
 
 //     // Customer Route
-//     Route::resource('customer', CustomerController::class);
-//     Route::get('/customer-filter', [CustomerController::class, 'CustomFilter'])->name('customer.filter');
-//     Route::get('/customer-filter-data', [CustomerController::class, 'CustomFilterData'])->name('customer.filter.data');
+    Route::resource('customer', CustomerController::class);
+    // Route::get('/customer-filter', [CustomerController::class, 'CustomFilter'])->name('customer.filter');
+    // Route::get('/customer-filter-data', [CustomerController::class, 'CustomFilterData'])->name('customer.filter.data');
 //     Route::get('/customer-status', [CustomerController::class, 'customerStatus'])->name('update.customer.status');
 //     Route::get('/customer-timeline/{id}', [CustomerController::class, 'customerTimeline'])->name('customer.timeline');
 
@@ -680,17 +680,17 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::get('order/all', [OrderController::class, 'allOrders']);
 //     Route::get('order-view/{id}', [OrderController::class, 'order_view'])->name('order.view');
 //     // Pos Route
-//     Route::resource('pos', PosController::class);
-//     Route::get('product-categories', [MainCategoryController::class, 'getProductCategories'])->name('product.categories');
-//     Route::get('search-products', [ProductController::class, 'searchProducts'])->name('search.products');
-//     Route::get('search-products-sku', [ProductController::class, 'searchProductsSku'])->name('search.products.sku');
-//     Route::post('/cartdiscount', [PosController::class, 'cartDiscount'])->name('cartdiscount');
-//     Route::get('addToCart/{id}/{session}/{variation_id?}', [ProductController::class, 'addToCart'])->name('pos.add.to.cart');
-//     Route::patch('update-cart', [ProductController::class, 'updateCart']);
-//     Route::delete('remove-from-cart', [ProductController::class, 'removeFromCart'])->name('remove-from-cart');
+    Route::resource('pos', PosController::class);
+    Route::get('product-categories', [MainCategoryController::class, 'getProductCategories'])->name('product.categories');
+    Route::get('search-products', [ProductController::class, 'searchProducts'])->name('search.products');
+    // Route::get('search-products-sku', [ProductController::class, 'searchProductsSku'])->name('search.products.sku');
+    Route::post('/cartdiscount', [PosController::class, 'cartDiscount'])->name('cartdiscount');
+    Route::get('addToCart/{id}/{session}/{variation_id?}', [ProductController::class, 'addToCart'])->name('pos.add.to.cart');
+    Route::patch('update-cart', [ProductController::class, 'updateCart']);
+    Route::delete('remove-from-cart', [ProductController::class, 'removeFromCart'])->name('remove-from-cart');
 //     Route::get('printview/pos', [PosController::class, 'printView'])->name('pos.printview');
-//     Route::get('pos/data/store', [PosController::class, 'store'])->name('pos.data.store');
-//     Route::post('empty-cart', [ProductController::class, 'emptyCart'])->name('empty-cart');
+    Route::get('pos/data/store', [PosController::class, 'store'])->name('pos.data.store');
+    Route::post('empty-cart', [ProductController::class, 'emptyCart'])->name('empty-cart');
 //     // POS variant Route
 //     Route::get('pos/product-variant/{id}/{session}', [ProductController::class, 'productVariant'])->name('pos.product.variant');
 //     Route::get('pos/add-cart-variant/{id}/{session}/{variation_id?}', [ProductController::class, 'addToCartVariant'])->name('addToCartVariant');
@@ -757,7 +757,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //   Route::get('{storeSlug}/order/{id}', [OrderController::class, 'orderdetails'])->name('order.details')->middleware('themelanguage');
 //   Route::post('update-order-status/{id}', [OrderController::class, 'updateStatus'])->name('order.order_status_update')->middleware('themelanguage');
 
-//   Route::post('order-return-request', [OrderController::class, 'order_return_request'])->name('order.return.request')->middleware('themelanguage');
+  Route::post('order-return-request', [OrderController::class, 'order_return_request'])->name('order.return.request')->middleware('themelanguage');
 //   Route::get('order-view/{id}', [OrderController::class, 'order_view'])->name('order.view')->middleware('themelanguage');
 //   Route::get('{storeSlug?}/customerorder/{id}', [AccountProfileController::class, 'customerorder'])->name('customer.order')->middleware('themelanguage');
 //   Route::post('{storeSlug}/downloadable_prodcut', [AccountProfileController::class, 'downloadable_prodcut'])->name('user.downloadable_prodcut')->middleware('themelanguage');
