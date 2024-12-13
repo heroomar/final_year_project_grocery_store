@@ -113,8 +113,16 @@ class Utility extends Model
         $multifile = [
             $key_name => $request->file($key_name)[$data_key],
         ];
-        try {
-            
+        // try {
+                
+                $_name = explode('.',$name);
+                $ext ='';
+                if (count($_name) > 1){
+                    $ext = $_name[count($_name)-1];
+                    $name = time().rand(1111,9999).'.'.$ext;
+                }
+                // dd($name);
+                
 
                 $file = $request->$key_name;
 
@@ -122,7 +130,7 @@ class Utility extends Model
                 
                     
                         $path = $path . '/';
-                        \Storage::disk('theme')->putFileAs(
+                        \Storage::disk('public')->putFileAs(
                             $path,
                             $request->file($key_name)[$data_key],
                             $name
@@ -147,13 +155,13 @@ class Utility extends Model
                     return $res;
                 
             
-        } catch (\Exception $e) {
-            $res = [
-                'flag' => 0,
-                'msg' => $e->getMessage(),
-            ];
-            return $res;
-        }
+        // } catch (\Exception $e) {
+        //     $res = [
+        //         'flag' => 0,
+        //         'msg' => $e->getMessage(),
+        //     ];
+        //     return $res;
+        // }
     }
 
     

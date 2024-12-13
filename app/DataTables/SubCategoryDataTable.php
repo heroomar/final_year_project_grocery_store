@@ -72,7 +72,7 @@ class SubCategoryDataTable extends DataTable
 
         $dataTable = $this->builder()
             ->setTableId('subcategory-table')
-            ->columns(array_merge(bulkDeleteCloneCheckboxColumn(), $this->getColumns()))
+            ->columns( $this->getColumns())
             ->minifiedAjax()
             ->orderBy(0)
             ->language([

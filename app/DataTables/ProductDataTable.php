@@ -33,52 +33,15 @@ class ProductDataTable extends DataTable
             ->editColumn('subcategory_id', function (Product $product) {
                 return !empty($product->SubCategoryctData) ? $product->SubCategoryctData->name : '-';
             })
-            ->editColumn('brand_id', function (Product $product) {
-                return !empty($product->brand) ? $product->brand->name : '-';
-            })
-            ->editColumn('label_id', function (Product $product) {
-                return !empty($product->label) ? $product->label->name : '-';
-            })
-            ->editColumn('variant_product', function (Product $product) {
-                return $product->variant_product == 1 ? 'has variant' : 'no variant';
-            })
-            ->editColumn('average_rating', function (Product $product) {
-                return '<i class="ti ti-star text-warning"></i> ' . $product->average_rating;
-            })
+           
+            
             ->editColumn('price', function (Product $product) {
-                if ($product->variant_product == 0) {
-                    return currency_format_with_sym($product->price, auth()->user()->current_store, APP_THEME()) ?? SetNumberFormat($product->price);
-                } else {
-                    return __('In Variant');
-                }
+                return 'Rs. '.$product->price;
             })
-            ->addColumn('stock_status', function ($product)  {
-                if ($product->variant_product == 1) {
-                    return '<span class="badge badge-80 rounded p-2 f-w-600 bg-light-warning">' . __('In Variant') . '</span>';
-                } else {
-                    if ($product->track_stock == 0) {
-                        if ($product->stock_status == 'out_of_stock') {
-                            return '<span class="badge badge-80 rounded p-2 f-w-600 bg-light-danger">' . __('Out of stock') . '</span>';
-                        } elseif ($product->stock_status == 'on_backorder') {
-                            return '<span class="badge badge-80 rounded p-2 f-w-600 bg-light-warning">' . __('On Backorder') . '</span>';
-                        } else {
-                            return '<span class="badge badge-80 rounded p-2 f-w-600 bg-light-primary">' . __('In stock') . '</span>';
-                        }
-                    } else {
-                        if ($product->product_stock <=  0) {
-                            return '<span class="badge badge-80 rounded p-2 f-w-600 bg-light-danger">' . __('Out of stock') . '</span>';
-                        } else {
-                            return '<span class="badge badge-80 rounded p-2 f-w-600 bg-light-primary">' . __('In stock') . '</span>';
-                        }
-                    }
-                }
-            })
+            
             ->addColumn('product_stock', function ($product) {
-                if ($product->variant_product == 1) {
-                    return '-';
-                } else {
-                    return $product->product_stock > 0 ? $product->product_stock : '-';
-                }
+                
+                    return $product->product_stock;
             })
             ->editColumn('cover_image_path', function (Product $product) {
                 if (isset($product->cover_image_path) && !empty($product->cover_image_path)) {
@@ -105,7 +68,7 @@ class ProductDataTable extends DataTable
     {
         $dataTable = $this->builder()
             ->setTableId('maincategory-table')
-            ->columns(array_merge(bulkDeleteCloneCheckboxColumn(), $this->getColumns()))
+            ->columns( $this->getColumns())
             ->minifiedAjax()
             ->orderBy(0)
             ->language([
@@ -193,13 +156,9 @@ class ProductDataTable extends DataTable
             Column::make('name')->title(__('Name')),
             Column::make('maincategory_id')->title(__('Category')),
             Column::make('subcategory_id')->title(__('Sub Category')),
-            Column::make('brand_id')->title(__('Brand')),
-            Column::make('label_id')->title(__('Label')),
+            
             Column::make('cover_image_path')->title(__('Cover Image')),
-            Column::make('variant_product')->title(__('Variant')),
-            Column::make('average_rating')->title(__('Review')),
             Column::make('price')->title(__('Price')),
-            Column::make('stock_status')->title(__('Stock Status')),
             Column::make('product_stock')->title(__('Stock Quantity')),
             Column::computed('action')
                 ->exportable(false)

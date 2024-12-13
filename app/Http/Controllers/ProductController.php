@@ -76,6 +76,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         if (auth()->user() && auth()->user()->isAbleTo('Create Product')) {
             // try {
                 $user = \Auth::user();
@@ -104,7 +105,7 @@ class ProductController extends Controller
                 }
 
                 $dir        = 'themes/' . APP_THEME() . '/uploads';
-                if ($request->variant_product == 0) {
+                if (1) {
                     if (1) {
                         $input = $request->all();
                         
@@ -190,94 +191,63 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
-    {
+    // public function show(Product $product)
+    // {
         
-        $link = env('APP_URL') .'/product/';
-        $MainCategory = MainCategory::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Category', '');
-        $SubCategory = SubCategory::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Category', '');
-        $Tax = Tax::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id');
-        $Tax_status = Tax::Taxstatus();
-        $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Shipping', '');
-        $preview_type = [
-            'Video File' => 'Video File',
-            'Video Url' => 'Video Url',
-            'iFrame' => 'iFrame'
-        ];
-        $ProductAttribute = ProductAttribute::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id');
-        $product_image = ProductImage::where('product_id', $product->id)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->get();
-        $get_tax = explode(',', $product->tax_id);
-        $get_datas = explode(',', $product->attribute_id);
-        $tag = Tag::where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->pluck('name', 'id');
-        $get_tags = explode(',', $product->tag_id);
+    //     $link = env('APP_URL') .'/product/';
+    //     $MainCategory = MainCategory::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Category', '');
+    //     $SubCategory = SubCategory::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Category', '');
+    //     $Tax = Tax::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id');
+    //     $Tax_status = Tax::Taxstatus();
+    //     $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Shipping', '');
+    //     $preview_type = [
+    //         'Video File' => 'Video File',
+    //         'Video Url' => 'Video Url',
+    //         'iFrame' => 'iFrame'
+    //     ];
+    //     $ProductAttribute = ProductAttribute::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id');
+    //     $product_image = ProductImage::where('product_id', $product->id)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->get();
+    //     $get_tax = explode(',', $product->tax_id);
+    //     $get_datas = explode(',', $product->attribute_id);
+    //     $tag = Tag::where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->pluck('name', 'id');
+    //     $get_tags = explode(',', $product->tag_id);
 
-        $brands = ProductBrand::where('status', 1)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Brand', '');
-        $labels = ProductLabel::where('status', 1)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Label', '');
+    //     $brands = ProductBrand::where('status', 1)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Brand', '');
+    //     $labels = ProductLabel::where('status', 1)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Label', '');
 
-        $compact = ['link', 'product', 'MainCategory', 'Tax', 'Tax_status', 'Shipping', 'preview_type', 'ProductAttribute', 'SubCategory', 'product_image', 'get_tax', 'get_datas', 'tag', 'get_tags', 'brands', 'labels'];
-        return view('product.show', compact($compact));
-    }
+    //     $compact = ['link', 'product', 'MainCategory', 'Tax', 'Tax_status', 'Shipping', 'preview_type', 'ProductAttribute', 'SubCategory', 'product_image', 'get_tax', 'get_datas', 'tag', 'get_tags', 'brands', 'labels'];
+    //     return view('product.show', compact($compact));
+    // }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // /**
+    //  * Show the form for editing the specified resource.
+    //  */
     public function edit(Product $product)
     {
          
         $link = env('APP_URL') .'/product/';
         $MainCategory = MainCategory::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Category', '');
         $SubCategory = SubCategory::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Category', '');
-        $Tax = Tax::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id');
-        $Tax_status = Tax::Taxstatus();
-        $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Shipping', '');
-        $preview_type = [
-            'Video File' => 'Video File',
-            'Video Url' => 'Video Url',
-            'iFrame' => 'iFrame'
-        ];
-        $ProductAttribute = ProductAttribute::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id');
         $product_image = ProductImage::where('product_id', $product->id)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->get();
-        $get_tax = explode(',', $product->tax_id);
-        $get_datas = explode(',', $product->attribute_id);
-        $tag = Tag::where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->pluck('name', 'id');
-        $get_tags = explode(',', $product->tag_id);
-
-        $brands = ProductBrand::where('status', 1)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Brand', '');
-        $labels = ProductLabel::where('status', 1)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Select Label', '');
-
-        $compact = ['link', 'product', 'MainCategory', 'Tax', 'Tax_status', 'Shipping', 'preview_type', 'ProductAttribute', 'SubCategory', 'product_image', 'get_tax', 'get_datas', 'tag', 'get_tags', 'brands', 'labels'];
+        
+        $compact = ['link', 'product', 'MainCategory', 'SubCategory', 'product_image'];
         return view('product.edit', compact($compact));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // /**
+    //  * Update the specified resource in storage.
+    //  */
     public function update(Request $request, Product $product)
     {
         if (auth()->user() && auth()->user()->isAbleTo('Edit Products')) {
             $dir        = 'themes/' . APP_THEME() . '/uploads';
-            if ($request->variant_product == 0) {
                 $rules = [
                     'name' => 'required',
                     'maincategory_id' => 'required',
-                    'status' => 'required',
-                    'variant_product' => 'required',
-                    'brand_id' => 'nullable',
-                    'label_id' => 'nullable',
                     'price' => 'numeric|min:0',
                     'sale_price' => 'numeric|min:0|lt:price', 
                 ];
-            }else
-            {
-                $rules = [
-                    'name' => 'required',
-                    'maincategory_id' => 'required',
-                    'status' => 'required',
-                    'variant_product' => 'required',
-                    'brand_id' => 'nullable',
-                    'label_id' => 'nullable',
-                ];
-            }
+            
             
             $validator = \Validator::make($request->all(), $rules,[
                 'sale_price.lt' => __('The sale price must be less than the regular price.')
@@ -318,139 +288,17 @@ class ProductController extends Controller
             if (isset($request->slug) && !empty($request->slug)) {
                 $product->slug = $request->slug;
             } else {
-                $product->slug = Product::slugs($request->name);
+                $product->slug = str_replace(' ','-',$request->name);
             }
             $product->description = $request->description;
             $product->specification = $request->specification;
             $product->detail = $request->detail;
-            $product->stock_status = $request->stock_status;
             $product->product_weight = $request->product_weight;
-            $tag_id = $request->tag;
             $product->maincategory_id = $request->maincategory_id;
             $product->subcategory_id = $request->subcategory_id;
-            if ($request->brand_id) {
-                $product->brand_id = $request->brand_id ?? null;
-            }
-            if ($request->label_id) {
-                $product->label_id = $request->label_id ?? null;
-            }
-
-            $product->tax_status = $request->tax_status;
-
-            if (!empty($request->tax_id)) {
-                $product->tax_id = implode(',', $request->tax_id);
-            } elseif(empty($request->tax_id)){
-                $product->tax_id = null;
-            }else {
-                $tax = Tax::where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->first();
-                if (isset($tax)) {
-                    $product->tax_id = $tax->id;
-                }
-            }
-            $product->preview_type = $request->preview_type;
-            if (!empty($request->video_url)) {
-                $product->preview_content = $request->video_url;
-            }
-            if (!empty($request->preview_video)) {
-                $ext = $request->file('preview_video')->getClientOriginalExtension();
-                $fileName = 'video_' . time() . rand() . '.' . $ext;
-
-                $dir_video = 'themes/' . APP_THEME() . '/uploads/preview_image';
-
-                $file_paths = $product->preview_video;
-                $image_size = $request->file('preview_video')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                if ($result == 1) {
-                    Utility::changeStorageLimit(\Auth::user()->creatorId(), $file_paths);
-                    $path_video = Utility::upload_file($request, 'preview_video', $fileName, $dir_video, []);
-                    if ($path_video['flag'] == 1) {
-                        $url = $path_video['url'];
-                    } else {
-                        $msg['flag'] = 'error';
-                        $msg['msg'] = $path_video['msg'];
-                        return $msg;
-                    }
-                } else {
-                    $msg['flag'] = 'error';
-                    $msg['msg'] = $result;
-                    return $msg;
-                }
-
-
-
-                $product->preview_content = $path_video['url'];
-            }
-
-            if (!empty($request->preview_iframe)) {
-                $product->preview_content = $request->preview_iframe;
-            }
-            $product->variant_product = $request->variant_product;
-            $product->shipping_id = $request->shipping_id;
-            $product->status = $request->status;
-            $product->trending = $request->trending;
-
-
-            if ($request->track_stock == 1) {
-                $product->track_stock = $request->track_stock;
-                $product->stock_order_status = $request->stock_order_status;
-                $product->low_stock_threshold = !empty($request->low_stock_threshold) ? $request->low_stock_threshold : 0;
-            } else {
-                $product->track_stock = $request->track_stock;
-                $product->stock_order_status = '';
-                $product->low_stock_threshold = !empty($request->low_stock_threshold) ? $request->low_stock_threshold : 0;
-            }
-
-            if ($request->custom_field_status == '1') {
-                $product->custom_field_status = '1';
-                if (isset($request->custom_field_repeater_basic)) {
-                    // Create a new array to hold the filtered data
-                    $filteredCustomData = [];
-
-                    // Iterate through the 'custom_field_repeater_basic' array
-                    foreach ($request->custom_field_repeater_basic as $info) {
-                        // Check for the 'custom_field' and 'custom_value' keys and if they are null
-                        if (!(array_key_exists('custom_field', $info) && $info['custom_field'] === null && array_key_exists('custom_value', $info) && $info['custom_value'] === null)) {
-                            // Add the info to the filtered data array
-                            $filteredCustomData[] = $info;
-                        }
-                    }
-
-                    if (count($filteredCustomData) > 0) {
-                        $product->custom_field = json_encode($filteredCustomData);
-                    } else {
-                        $product->custom_field = null;
-                    }
-
-                } else {
-                    $product->custom_field = null;
-                    $product->custom_field_status = '0';
-                }
-            } else {
-                $product->custom_field = NULL;
-            }
-
-            if (!empty($request->downloadable_product)) {
-                $image_size = $request->file('downloadable_product')->getSize();
-                $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                $file_paths = $product->downloadable_product;
-
-                if ($result == 1) {
-                    Utility::changeStorageLimit(\Auth::user()->creatorId(), $file_paths);
-
-                    $fileName = rand(10, 100) . '_' . time() . "_" . $request->downloadable_product->getClientOriginalName();
-                    $path = Utility::upload_file($request, 'downloadable_product', $fileName, $dir, []);
-                    if (File::exists(base_path($product->downloadable_product))) {
-                        File::delete(base_path($product->downloadable_product));
-                    }
-                } else {
-
-                    $msg['flag'] = 'error';
-                    $msg['msg'] = $result;
-                    return $msg;
-                }
-                $product->downloadable_product = $path['url'];
-            }
-
+            
+            $product->status = 1;
+            
 
             if (!empty($request->product_image)) {
 
@@ -458,16 +306,9 @@ class ProductController extends Controller
                     $theme_image = $image;
 
                     $image_size = File::size($theme_image);
-                    $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                    if ($result == 1) {
-                        $fileName = rand(10, 100) . '_' . time() . "_" . $image->getClientOriginalName();
-                        $pathss = Utility::keyWiseUpload_file($request, 'product_image', $fileName, $dir, $key, []);
-                    } else {
-                        $msg['flag'] = 'error';
-                        $msg['msg'] =  $result;
-
-                        return $msg;
-                    }
+                    $fileName = rand(10, 100) . '_' . time() . "_" . $image->getClientOriginalName();
+                    $pathss = Utility::keyWiseUpload_file($request, 'product_image', $fileName, $dir, $key, []);
+                    
 
                     if (isset($pathss['url'])) {
                         $ProductImage = new ProductImage();
@@ -481,419 +322,20 @@ class ProductController extends Controller
                 }
             }
 
-            if ($request->variant_product == 0) {
-
-
+           
                 $product->price = $request->price;
                 $product->sale_price = $request->sale_price;
-
-
-                if ($request->track_stock == 0) {
-                    $product->product_stock = 0;
-                } else {
-                    $product->product_stock = $request->product_stock;
-                }
+                $product->product_stock = $request->product_stock;
+                
 
 
                 $input = $request->all();
 
-                $input['attribute_options'] = [];
-                if ($request->has('attribute_no')) {
-                    foreach ($request->attribute_no as $key => $no) {
-                        $str = 'attribute_options_' . $no;
-                        $enable_option = $input['visible_attribute_' . $no];
-                        $variation_option = $input['for_variation_' . $no];
 
-                        $item['attribute_id'] = $no;
-
-                        $optionValues = [];
-                        if (isset($request[$str])) {
-                            foreach ($request[$str] as $fValue) {
-                                $id = ProductAttributeOption::where('terms', $fValue)->first()->toArray();
-                                $optionValues[] = $id['id'];
-                            }
-                        }
-
-                        $item['values'] = explode(',', implode('|', $optionValues));
-                        $item['visible_attribute_' . $no] = $enable_option;
-                        $item['for_variation_' . $no] = $variation_option;
-                        array_push($input['attribute_options'], $item);
-                    }
-                }
-
-                if (!empty($request->attribute_no)) {
-                    $input['product_attributes'] = implode(',', $request->attribute_no);
-                } else {
-                    $input['product_attributes'] = 0;
-                }
-                $input['attribute_options'] = json_encode($input['attribute_options']);
-                $product->attribute_id = $input['product_attributes'];
-                $product->product_attribute = $input['attribute_options'];
-                $tag_data_id = [];
-                $tag_ids = [];
-
-                if (isset($request->tag_id)) {
-
-                    foreach ($request->tag_id as $tag) {
-
-                        $tags = Tag::where('id', $tag)->where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->first();
-
-                        if (!empty($tags)) {
-                            $tag_id = $tags->id;
-                            $tag_ids[] = $tag_id;
-                        } else {
-                            $tag_id = 0;
-                        }
-                        if ($tag_id != $tag) {
-                            $tag_data = new Tag();
-                            $tag_data->name = $tag;
-                            $tag_data->slug = Tag::slugs($tag);
-                            $tag_data->store_id = getCurrentStore();
-                            $tag_data->theme_id = APP_THEME();
-                            $tag_data->created_by = \Auth::user()->id;
-                            $tag_data->save();
-
-                            $tag_data_id[] = $tag_data->id;
-                        }
-                    }
-                    $tag_product_id = array_merge($tag_data_id, $tag_ids);
-
-                    if (!empty($tag_product_id)) {
-                        $product->tag_id =  implode(',', $tag_product_id);
-                    }
-                }
-
-                if (module_is_active('CartQuantityControl')) {
-                    \Workdo\CartQuantityControl\app\Models\CartQuantityControl::saveData($product, $request->minimum_quantity, $request->maximum_quantity);
-                }
+                
 
                 $product->save();
-            } else {
-
-                $input = $request->all();
-                $input['choice_options'] = [];
-                $input['attribute_options'] = [];
-                if ($request->has('choice_no')) {
-                    foreach ($request->choice_no as $key => $no) {
-                        $str = 'choice_options_' . $no;
-
-                        $item['attribute_id'] = $no;
-                        $item['values'] = explode(',', implode('|', $request[$str]));
-                        array_push($input['choice_options'], $item);
-                    }
-                }
-
-                if (!empty($request->choice_no)) {
-                    $input['attributes'] = json_encode($request->choice_no);
-                } else {
-                    $input['attributes'] = json_encode([]);
-                }
-
-                $input['choice_options'] = json_encode($input['choice_options']);
-                $input['slug'] = $input['name'];
-
-                if ($request->has('attribute_no')) {
-                    foreach ($request->attribute_no as $key => $no) {
-                        $str = 'attribute_options_' . $no;
-                        $enable_option = $input['visible_attribute_' . $no];
-                        $variation_option = $input['for_variation_' . $no];
-
-                        $item['attribute_id'] = $no;
-                        $optionValues = [];
-                        if (isset($request[$str])) {
-                            foreach ($request[$str] as $fValue) {
-                                $id = ProductAttributeOption::where('terms', $fValue)->first()->toArray();
-                                $optionValues[] = $id['id'];
-                            }
-                        }
-                        $item['values'] = explode(',', implode('|', $optionValues));
-                        $item['visible_attribute_' . $no] = $enable_option;
-                        $item['for_variation_' . $no] = $variation_option;
-                        array_push($input['attribute_options'], $item);
-                    }
-                }
-
-                if (!empty($request->attribute_no)) {
-                    $input['product_attributes'] = implode(',', $request->attribute_no);
-                } else {
-                    $input['product_attributes'] = json_encode([]);
-                }
-                $input['attribute_options'] = json_encode($input['attribute_options']);
-
-                $product->price = 0;
-                $product->product_stock = 0;
-                $product->attribute_id = $input['product_attributes'];
-                $product->product_attribute = $input['attribute_options'];
-
-                $product->preview_type = $request->preview_type;
-                if (!empty($request->video_url)) {
-                    $product->preview_content = $request->video_url;
-                }
-                if (!empty($request->preview_video)) {
-                    $ext = $request->file('preview_video')->getClientOriginalExtension();
-                    $fileName = 'video_' . time() . rand() . '.' . $ext;
-
-                    $dir_video = 'themes/' . APP_THEME() . '/uploads/preview_image';
-                    $file_paths = $product->preview_video;
-                    $image_size = $request->file('preview_video')->getSize();
-                    $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-                    if ($result == 1) {
-                        $path_video = Utility::upload_file($request, 'preview_video', $fileName, $dir_video, []);
-                        if ($path_video['flag'] == 1) {
-                            $url = $path_video['url'];
-                        } else {
-                            return redirect()->back()->with('error', __($path_video['msg']));
-                        }
-                    } else {
-                        return redirect()->back()->with('error', $result);
-                    }
-                    $product->preview_content = $path_video['url'];
-                }
-                if (!empty($request->preview_iframe)) {
-                    $product->preview_content = $request->preview_iframe;
-                }
-                $product->shipping_id = $request->shipping_id;
-                if ($request->custom_field_status == '1') {
-                    $product->custom_field = json_encode($request->custom_field_repeater_basic);
-                } else {
-                    $product->custom_field = NULL;
-                }
-                $product->save();
-
-                $options = [];
-                if ($request->has('choice_no')) {
-                    foreach ($request->choice_no as $key => $no) {
-                        $name = 'choice_options_' . $no;
-                        $my_str = implode('|', $request[$name]);
-                        array_push($options, explode(',', $my_str));
-                    }
-                }
-
-                $sku_array = [];
-                $total_stock = 0;
-                $combinations = $this->combinations($options);
-                if (count($combinations[0]) > 0) {
-                    $product->variant_product = 1;
-                    foreach ($combinations as $key => $combination) {
-                        $str = '';
-                        foreach ($combination as $key => $item) {
-                            if ($key > 0) {
-                                $str .= '-' . str_replace(' ', '', $item);
-                            } else {
-                                $str .= str_replace(' ', '', $item);
-                            }
-                        }
-
-                        $product_stock = ProductVariant::where('product_id', $product->id)->where('variant', $str)->first();
-                        if ($product_stock == null) {
-                            $product_stock = new ProductVariant;
-                            $product_stock->product_id = $product->id;
-                        }
-                        array_push($sku_array, $str);
-
-                        $sku = str_replace(' ', '_', $request->name) . $request['sku_' . str_replace('.', '_', $str)];
-                        $total_stock += $request['stock_' . str_replace('.', '_', $str)];
-                        $product_stock->variant = $str;
-                        $product_stock->price = $request['price_' . str_replace('.', '_', $str)];
-                        $product_stock->sku = $sku;
-                        $product_stock->stock = $request['stock_' . str_replace('.', '_', $str)];
-                        $product_stock->theme_id = APP_THEME();
-
-
-                        $product_stock->save();
-
-
-                        if ($request->default_variant == '-' . $str) {
-                            $product_update = Product::find($product->id);
-                            $product_update->default_variant_id = $product_stock->id;
-                            $product_update->save();
-                        }
-                    }
-                    ProductVariant::where('product_id', $product->id)->where('theme_id', APP_THEME())->whereNotIn('variant', $sku_array)->delete();
-                    $product->product_stock = $total_stock;
-                    $tag_data_id = [];
-                    $tag_ids = [];
-                    if (isset($request->tag_id)) {
-
-                        foreach ($request->tag_id as $tag) {
-                            $tags = Tag::where('id', $tag)->where('store_id', getCurrentStore())->where('theme_id', APP_THEME())->first();
-                            if (!empty($tags)) {
-                                $tag_id = $tags->id;
-                                $tag_ids[] = $tag_id;
-                            } else {
-                                $tag_id = 0;
-                            }
-                            if ($tag_id != $tag) {
-                                $tag_data = new Tag();
-                                $tag_data->name = $tag;
-                                $tag_data->store_id = getCurrentStore();
-                                $tag_data->theme_id = APP_THEME();
-                                $tag_data->created_by = \Auth::user()->id;
-                                $tag_data->save();
-
-                                $tag_data_id[] = $tag_data->id;
-                            }
-                        }
-                    }
-                    $tag_product_id = array_merge($tag_data_id, $tag_ids);
-                    if (!empty($tag_product_id)) {
-
-                        $product->tag_id =  implode(',', $tag_product_id);
-                    }
-                    $product->save();
-                } else {
-                    $product->variant_product = 0;
-                }
-
-                $attribute_option = [];
-                if ($request->attribute_no) {
-                    foreach ($request->attribute_no as $key => $no) {
-                        $forVariationName = 'for_variation_' . $no;
-                        if ($request->has($forVariationName) && $request->input($forVariationName) == 1) {
-                            $name = 'attribute_options_' . $no;
-                            $options_data = 'options_datas';
-                            $for_variation = isset($request->{'for_variation_' . $no}) ? $request->{'for_variation_' . $no} : 0;
-                            if ($for_variation == 1) {
-                                if ($request->has($options_data) && is_array($request[$options_data])) {
-                                    $my_str = $request[$options_data];
-                                    $optionValues = [];
-
-                                    foreach ($request[$options_data] as $term) {
-
-                                        $optionValues[] = $term;
-                                    }
-
-                                    array_push($attribute_option, $my_str);
-                                }
-                            }
-                        }
-                    }
-                }
-                if ($attribute_option) {
-                    if (count($attribute_option[0]) > 0) {
-                        $product->variant_product = 1;
-                        $is_in_stock = false;
-                        foreach ($attribute_option as $key => $com) {
-                            $str = '';
-                            foreach ($com as $key => $item) {
-                                $str = $item;
-
-                                $product_stock = ProductVariant::where('product_id', $product->id)->where('variant', $str)->first();
-                                if ($product_stock == null) {
-                                    $product_stock = new ProductVariant;
-                                    $product_stock->product_id = $product->id;
-                                }
-
-                                $theme_name = APP_THEME();
-                                if ($request['downloadable_product_' . str_replace('.', '_', $str)]) {
-                                    $fileName = rand(10, 100) . '_' . time() . "_" . $request->file('downloadable_product_' . $str)->getClientOriginalName();
-
-                                    $path1 = Utility::upload_file($request, 'downloadable_product_' . $str, $fileName, $dir, []);
-                                    $product_stock->downloadable_product = $path1['url'];
-                                }
-
-
-                                $var_option = "";
-                                $variation_option = !empty($request['variation_option_' . str_replace('.', '_', $str)]) ? $request['variation_option_' . str_replace('.', '_', $str)] : '';
-
-                                if (is_array($variation_option)) {
-                                    foreach ($variation_option as $option) {
-                                        $var_option .= $option . ",";
-                                    }
-                                }
-
-                                $sku = str_replace(' ', '_', $request->name) . $request['product_sku_' . str_replace('.', '_', $str)];
-                                $product_stock->variant = $str;
-
-                                if ($product_stock->track_stock == 1) {
-                                    $product_stock->stock_status = '';
-                                } else {
-
-                                    $product_stock->stock_status = !empty($request['stock_status_' . str_replace('.', '_', $str)]) ? $request['stock_status_' . str_replace('.', '_', $str)] : '';
-                                }
-
-                                $product_stock->variation_option = $var_option;
-
-                                $product_stock->price = !empty($request['product_sale_price_' . str_replace('.', '_', $str)]) ? $request['product_sale_price_' . str_replace('.', '_', $str)] : 0;
-
-                                $product_stock->variation_price = !empty($request['product_variation_price_' . str_replace('.', '_', $str)]) ? $request['product_variation_price_' . str_replace('.', '_', $str)] : 0;
-                                $product_stock->sku = $sku;
-
-                                $product_stock->stock = !empty($request['product_stock_' . str_replace('.', '_', $str)]) ? $request['product_stock_' . str_replace('.', '_', $str)] : 0;
-
-                                $product_stock->low_stock_threshold = !empty($request['low_stock_threshold_' . str_replace('.', '_', $str)]) ? $request['low_stock_threshold_' . str_replace('.', '_', $str)] : 0;
-
-                                $product_stock->weight = !empty($request['product_weight_' . str_replace('.', '_', $str)]) ? $request['product_weight_' . str_replace('.', '_', $str)] : 0;
-
-                                $product_stock->stock_order_status = !empty($request['stock_order_status_' . str_replace('.', '_', $str)]) ? $request['stock_order_status_' . str_replace('.', '_', $str)] : 0;
-
-                                $product_stock->description = !empty($request['product_description_' . str_replace('.', '_', $str)]) ? $request['product_description_' . str_replace('.', '_', $str)] : '';
-
-                                $product_stock->shipping = !empty($request['shipping_id_' . str_replace('.', '_', $str)]) ? $request['shipping_id_' . str_replace('.', '_', $str)] : 'same_as_parent';
-
-                                $product_stock->theme_id = APP_THEME();
-                                $product_stock->store_id = getCurrentStore();
-
-                                if (module_is_active('CartQuantityControl')) {
-                                    \Workdo\CartQuantityControl\app\Models\CartQuantityControl::variantSaveData($request, $product_stock, $str);
-                                }
-
-                                $product_stock->save();
-
-                                if ($request->default_variant ==  '-' . $str) {
-                                    $product_update = Product::find($product->id);
-                                    $product_update->default_variant_id = $product_stock->id;
-                                    $product_update->save();
-                                }
-
-                                if ($product_stock->stock == 'in_stock') {
-                                    $is_in_stock = true;
-                                }
-                            }
-                            ProductVariant::where('product_id', $product->id)
-                                ->whereNotIn('variant', $com)
-                                ->delete();
-                        }
-                        if (!$is_in_stock) {
-                            $product->stock = 'out_of_stock';
-                        }
-                    } else {
-                        $product->variant_product = 0;
-                    }
-                }
-            }
-
-
-            $firebase_enabled = Utility::GetValueByName('firebase_enabled');
-            if (!empty($firebase_enabled) && $firebase_enabled == 'on') {
-                $fcm_Key = Utility::GetValueByName('fcm_Key');
-                if (!empty($fcm_Key)) {
-                    $NotifyUsers = NotifyUser::where('product_id', $product->id)->get();
-                    if (!empty($NotifyUsers)) {
-                        foreach ($NotifyUsers as $key => $value) {
-                            $User_data = User::find($value->user_id);
-                            if (!empty($User_data->firebase_token)) {
-                                $device_id = $User_data->firebase_token;
-                                $message = 'now ' . $product->name . ' is available in stock';
-                                Utility::sendFCM($device_id, $fcm_Key, $message);
-                                NotifyUser::where('product_id', $product->id)->where('user_id', $User_data->id)->delete();
-                            }
-                        }
-                    }
-                }
-            }
-            if (module_is_active('SizeGuideline')) {
-                \Workdo\SizeGuideline\app\Models\SizeGuideline::saveUpdateData($product, $request->size_chart_title,$request->size_chart_information,$request->all());
-            }
-            if (module_is_active('WholesaleProduct')) {
-                \Workdo\WholesaleProduct\app\Models\WholesaleProduct::saveUpdateData($product, $request->wholesale_repeater_basic);
-            }
-            if (module_is_active('ProductBarCode')) {
-                \Workdo\ProductBarCode\app\Models\ProductBarCode::saveData($product);
-            }
-            if (module_is_active('PartialPayments')) {
-                \Workdo\PartialPayments\app\Models\PartialPayments::saveData($product,$request->all());
-            }
+            
             $msg['flag'] = 'success';
             $msg['msg'] =__('Product update successfully.');
             return $msg;
@@ -902,9 +344,9 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // /**
+    //  * Remove the specified resource from storage.
+    //  */
     public function destroy(Product $product)
     {
         if (auth()->user() && auth()->user()->isAbleTo('Delete Products')) {
@@ -917,7 +359,6 @@ class ProductController extends Controller
             }
             $file_paths2[] = $Product->cover_image_path;
             $file_path = array_merge($file_path1, $file_paths2);
-            Utility::changeproductStorageLimit(\Auth::user()->creatorId(), $file_path, $file_path1);
             if (!empty($ProductImages)) {
                 // image remove from product variant image
                 foreach ($ProductImages as $key => $ProductImage) {
@@ -929,47 +370,19 @@ class ProductController extends Controller
 
             ProductImage::where('product_id', $product->id)->delete();
 
-            ProductVariant::where('product_id', $product->id)->delete();
-
-            Cart::where('product_id', $product->id)->delete();
-
-            $Product = Product::find($product->id);
-            if (!empty($Product)) {
-                // image remove from description json
-                $description_json = $Product->other_description_api;
-                if (!empty($description_json)) {
-                    $description_json = json_decode($Product->other_description_api, true);
-                    foreach ($description_json['product-other-description'] as $key => $value) {
-                        if ($value['field_type'] == 'photo upload') {
-                            if (File::exists(base_path($value['value']))) {
-                                File::delete(base_path($value['value']));
-                            }
-                        }
-                    }
-                }
-
-                // image remove from cover image
-                if (File::exists(base_path($Product->cover_image_path))) {
-                    File::delete(base_path($Product->cover_image_path));
-                }
-
-                WoocommerceConection::where('module', 'product')->where('original_id', $product->id)->delete();
-
-                ShopifyConection::where('module', 'product')->where('original_id', $product->id)->delete();
-
-                Product::where('id', $product->id)->delete();
-            }
+            
+              Product::where('id', $product->id)->delete();
             return redirect()->back()->with('success', __('Product delete successfully.'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
 
-    public function get_slug(Request $request)
-    {
-        $result = Product::slugs($request->value);
-        return response()->json(['result' => $result]);
-    }
+    // public function get_slug(Request $request)
+    // {
+    //     $result = Product::slugs($request->value);
+    //     return response()->json(['result' => $result]);
+    // }
 
     public function get_subcategory(Request $request)
     {
@@ -988,112 +401,112 @@ class ProductController extends Controller
         return response()->json($return);
     }
 
-    public function attribute_option(Request $request)
-    {
-        $Attribute_option = ProductAttributeOption::where('attribute_id', $request->attribute_id)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())
-            ->get()->pluck('terms', 'id')->toArray();
+    // public function attribute_option(Request $request)
+    // {
+    //     $Attribute_option = ProductAttributeOption::where('attribute_id', $request->attribute_id)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())
+    //         ->get()->pluck('terms', 'id')->toArray();
 
-        return response()->json($Attribute_option);
-    }
+    //     return response()->json($Attribute_option);
+    // }
 
-    public function attribute_combination(Request $request)
-    {
+    // public function attribute_combination(Request $request)
+    // {
 
-        $options = array();
-        $unit_price = !empty($request->price) ? $request->price : 0;
-        $product_name = !empty($request->sku) ? $request->sku : '';
-        $stock = !empty($request->product_stock) ? $request->product_stock : 0;
-        $input = $request->all();
+    //     $options = array();
+    //     $unit_price = !empty($request->price) ? $request->price : 0;
+    //     $product_name = !empty($request->sku) ? $request->sku : '';
+    //     $stock = !empty($request->product_stock) ? $request->product_stock : 0;
+    //     $input = $request->all();
 
-        foreach ($request->attribute_no as $key => $no) {
-            $forVariationName = 'for_variation_' . $no;
-            $for_variation = isset($request->{'for_variation_' . $no}) ? $request->{'for_variation_' . $no} : 0;
+    //     foreach ($request->attribute_no as $key => $no) {
+    //         $forVariationName = 'for_variation_' . $no;
+    //         $for_variation = isset($request->{'for_variation_' . $no}) ? $request->{'for_variation_' . $no} : 0;
 
-            if ($request->has($forVariationName) && $request->input($forVariationName) == 1) {
-                $name = 'attribute_options_' . $no;
-                $value = 'options_' . $no;
-                if ($for_variation == 1) {
-                    if ($request->has($name) && is_array($request[$name])) {
-                        $my_str = $request[$name];
-                        $optionValues = [];
+    //         if ($request->has($forVariationName) && $request->input($forVariationName) == 1) {
+    //             $name = 'attribute_options_' . $no;
+    //             $value = 'options_' . $no;
+    //             if ($for_variation == 1) {
+    //                 if ($request->has($name) && is_array($request[$name])) {
+    //                     $my_str = $request[$name];
+    //                     $optionValues = [];
 
-                        foreach ($request[$name] as $id) {
-                            $option = ProductAttributeOption::where('id', $id)->first();
+    //                     foreach ($request[$name] as $id) {
+    //                         $option = ProductAttributeOption::where('id', $id)->first();
 
-                            if ($option) {
-                                $optionValues[] = $option->terms;
-                            }
-                        }
+    //                         if ($option) {
+    //                             $optionValues[] = $option->terms;
+    //                         }
+    //                     }
 
-                        array_push($options, $optionValues);
-                    }
-                }
-            }
-        }
+    //                     array_push($options, $optionValues);
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        $combinations = $this->combination($options);
+    //     $combinations = $this->combination($options);
 
-        $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Same as Parent', '');
+    //     $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Same as Parent', '');
 
-        return view('product.attribute_combinations', compact('combinations', 'input', 'unit_price', 'product_name', 'stock', 'Shipping'));
-    }
+    //     return view('product.attribute_combinations', compact('combinations', 'input', 'unit_price', 'product_name', 'stock', 'Shipping'));
+    // }
 
-    public function sku_combination(Request $request)
-    {
-        $options = array();
-        $unit_price = !empty($request->price) ? $request->price : 0;
-        $product_name = !empty($request->sku) ? $request->sku : '';
-        $stock = !empty($request->product_stock) ? $request->product_stock : 0;
+    // public function sku_combination(Request $request)
+    // {
+    //     $options = array();
+    //     $unit_price = !empty($request->price) ? $request->price : 0;
+    //     $product_name = !empty($request->sku) ? $request->sku : '';
+    //     $stock = !empty($request->product_stock) ? $request->product_stock : 0;
 
-        if ($request->has('choice_no')) {
-            foreach ($request->choice_no as $key => $no) {
-                $name = 'choice_options_' . $no;
-                $my_str = implode('', $request[$name]);
-                array_push($options, explode(',', $my_str));
-            }
-        }
-        $combinations = $this->combinations($options);
-        return view('product.sku_combinations', compact('combinations', 'unit_price', 'product_name', 'stock'));
-    }
+    //     if ($request->has('choice_no')) {
+    //         foreach ($request->choice_no as $key => $no) {
+    //             $name = 'choice_options_' . $no;
+    //             $my_str = implode('', $request[$name]);
+    //             array_push($options, explode(',', $my_str));
+    //         }
+    //     }
+    //     $combinations = $this->combinations($options);
+    //     return view('product.sku_combinations', compact('combinations', 'unit_price', 'product_name', 'stock'));
+    // }
 
-    public function attribute_combination_data(Request $request)
-    {
-        $product_stock = ProductVariant::where('product_id', $request->id)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())
-            ->get();
-        $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Same as parent', '');
-        return view('product.attribute_combinations_data', compact('product_stock', 'Shipping'));
-    }
+    // public function attribute_combination_data(Request $request)
+    // {
+    //     $product_stock = ProductVariant::where('product_id', $request->id)->where('theme_id', APP_THEME())->where('store_id', getCurrentStore())
+    //         ->get();
+    //     $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Same as parent', '');
+    //     return view('product.attribute_combinations_data', compact('product_stock', 'Shipping'));
+    // }
 
-    public function combinations($arrays)
-    {
+    // public function combinations($arrays)
+    // {
 
-        $result = array(array());
-        foreach ($arrays as $property => $property_values) {
-            $tmp = array();
-            foreach ($result as $result_item) {
-                foreach ($property_values as $property_value) {
-                    $tmp[] = array_merge($result_item, array($property => $property_value));
-                }
-            }
-            $result = $tmp;
-        }
-        return $result;
-    }
+    //     $result = array(array());
+    //     foreach ($arrays as $property => $property_values) {
+    //         $tmp = array();
+    //         foreach ($result as $result_item) {
+    //             foreach ($property_values as $property_value) {
+    //                 $tmp[] = array_merge($result_item, array($property => $property_value));
+    //             }
+    //         }
+    //         $result = $tmp;
+    //     }
+    //     return $result;
+    // }
 
-    public function combination($arrays)
-    {
-        $result = array(array());
-        foreach ($arrays as $property => $property_values) {
-            $tmp = array();
-            foreach ($result as $result_item) {
-                foreach ($property_values as $property_value) {
-                    $tmp[] = array_merge($result_item, array($property => $property_value));
-                }
-            }
-            $result = $tmp;
-        }
-        return $result;
-    }
+    // public function combination($arrays)
+    // {
+    //     $result = array(array());
+    //     foreach ($arrays as $property => $property_values) {
+    //         $tmp = array();
+    //         foreach ($result as $result_item) {
+    //             foreach ($property_values as $property_value) {
+    //                 $tmp[] = array_merge($result_item, array($property => $property_value));
+    //             }
+    //         }
+    //         $result = $tmp;
+    //     }
+    //     return $result;
+    // }
 
     public function file_delete($id)
     {
@@ -1111,715 +524,715 @@ class ProductController extends Controller
         return $msg;
     }
 
-    public function attribute_combination_edit(Request $request)
-    {
-        $product = Product::find($request->id);
-        $options = array();
-        $product_name = !empty($request->sku) ? $request->sku : '';
-        $unit_price = !empty($request->price) ? $request->price : 0;
+    // public function attribute_combination_edit(Request $request)
+    // {
+    //     $product = Product::find($request->id);
+    //     $options = array();
+    //     $product_name = !empty($request->sku) ? $request->sku : '';
+    //     $unit_price = !empty($request->price) ? $request->price : 0;
 
-        foreach ($request->attribute_no as $key => $no) {
-            $forVariationName = 'for_variation_' . $no;
-            $for_variation = isset($request->{'for_variation_' . $no}) ? $request->{'for_variation_' . $no} : 0;
-            if ($for_variation == 1) {
-                if ($request->has($forVariationName) && $request->input($forVariationName) == 1) {
-                    $name = 'attribute_options_' . $no;
+    //     foreach ($request->attribute_no as $key => $no) {
+    //         $forVariationName = 'for_variation_' . $no;
+    //         $for_variation = isset($request->{'for_variation_' . $no}) ? $request->{'for_variation_' . $no} : 0;
+    //         if ($for_variation == 1) {
+    //             if ($request->has($forVariationName) && $request->input($forVariationName) == 1) {
+    //                 $name = 'attribute_options_' . $no;
 
-                    if ($request->has($name) && is_array($request[$name])) {
-                        $my_str = $request[$name];
-                        $optionValues = [];
-                        array_push($options, $my_str);
-                    }
-                }
-            }
-        }
+    //                 if ($request->has($name) && is_array($request[$name])) {
+    //                     $my_str = $request[$name];
+    //                     $optionValues = [];
+    //                     array_push($options, $my_str);
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        $combinations = $this->combination($options);
-        $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Same as parent', '');
-        return view('product.attribute_combinations_edit', compact('combinations', 'unit_price', 'product_name', 'product', 'Shipping'));
-    }
+    //     $combinations = $this->combination($options);
+    //     $Shipping = Shipping::where('theme_id', APP_THEME())->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Same as parent', '');
+    //     return view('product.attribute_combinations_edit', compact('combinations', 'unit_price', 'product_name', 'product', 'Shipping'));
+    // }
 
-    public function product_attribute_delete($id)
-    {
-        $attribute = ProductVariant::findOrFail($id);
-        $attribute->delete();
+    // public function product_attribute_delete($id)
+    // {
+    //     $attribute = ProductVariant::findOrFail($id);
+    //     $attribute->delete();
 
-        return "true";
-    }
+    //     return "true";
+    // }
 
-    public function collectionAll($storeSlug, Request $request, $list)
-    {
-    }
+    // public function collectionAll($storeSlug, Request $request, $list)
+    // {
+    // }
 
-    public function product_price(Request $request, $slug)
-    {
-        return 1203;
-    }
+    // public function product_price(Request $request, $slug)
+    // {
+    //     return 1203;
+    // }
 
-    public function searchProducts(Request $request)
-    {
-        $lastsegment = $request->session_key;
-        $store_id =  getCurrentStore();
-        if ($request->ajax() && isset($lastsegment) && !empty($lastsegment)) {
-            $output = "";
-            if ($request->cat_id !== '' && $request->search == '') {
-                if ($request->cat_id == '0') {
-                    $products = Product::where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-                } else {
-                    $products = Product::where('maincategory_id', $request->cat_id)->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-                }
-            } else {
-                if ($request->cat_id == '0') {
-                    $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-                } else {
-                    $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->Where('maincategory_id', $request->cat_id)->get();
-                }
-            }
-            if (count($products) > 0) {
-                foreach ($products as $key => $product) {
-                    if (!empty($product->cover_image_path)) {
-                        $image_url = get_file($product->cover_image_path, APP_THEME());
-                    } else {
-                        $image_url = ('uploads/cover_image_path') . '/default.jpg';
-                    }
+    // public function searchProducts(Request $request)
+    // {
+    //     $lastsegment = $request->session_key;
+    //     $store_id =  getCurrentStore();
+    //     if ($request->ajax() && isset($lastsegment) && !empty($lastsegment)) {
+    //         $output = "";
+    //         if ($request->cat_id !== '' && $request->search == '') {
+    //             if ($request->cat_id == '0') {
+    //                 $products = Product::where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+    //             } else {
+    //                 $products = Product::where('maincategory_id', $request->cat_id)->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+    //             }
+    //         } else {
+    //             if ($request->cat_id == '0') {
+    //                 $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+    //             } else {
+    //                 $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->Where('maincategory_id', $request->cat_id)->get();
+    //             }
+    //         }
+    //         if (count($products) > 0) {
+    //             foreach ($products as $key => $product) {
+    //                 if (!empty($product->cover_image_path)) {
+    //                     $image_url = get_file($product->cover_image_path, APP_THEME());
+    //                 } else {
+    //                     $image_url = ('uploads/cover_image_path') . '/default.jpg';
+    //                 }
 
-                    if ($product->variant_product != '1') {
-                        if ($product->track_stock == 0) {
-                            $quantity = $product->stock_status;
-                            if ($product->stock_status == 'in_stock') {
-                                $quantity = 'In Stock';
-                            } elseif ($product->stock_status == 'on_backorder') {
-                                $quantity = 'On Backorder';
-                            } else {
-                                $quantity = 'Out of Stock';
-                            }
-                        } else {
-                            $quantity = $product->product_stock . ' Qty';
-                        }
+    //                 if ($product->variant_product != '1') {
+    //                     if ($product->track_stock == 0) {
+    //                         $quantity = $product->stock_status;
+    //                         if ($product->stock_status == 'in_stock') {
+    //                             $quantity = 'In Stock';
+    //                         } elseif ($product->stock_status == 'on_backorder') {
+    //                             $quantity = 'On Backorder';
+    //                         } else {
+    //                             $quantity = 'Out of Stock';
+    //                         }
+    //                     } else {
+    //                         $quantity = $product->product_stock . ' Qty';
+    //                     }
 
-                        if ($request->session_key == 'purchases') {
-                            $productprice = getProductActualPrice($product);
-                        } else if ($request->session_key == 'pos_' . getCurrentStore()) {
-                            $productprice = getProductActualPrice($product);
-                        } else {
-                            $productprice = getProductActualPrice($product);
-                        }
+    //                     if ($request->session_key == 'purchases') {
+    //                         $productprice = getProductActualPrice($product);
+    //                     } else if ($request->session_key == 'pos_' . getCurrentStore()) {
+    //                         $productprice = getProductActualPrice($product);
+    //                     } else {
+    //                         $productprice = getProductActualPrice($product);
+    //                     }
 
-                        $productprice = $productprice;
-                        $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-                                    <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
-                                        <div class="position-relative card">
-                                            <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-                                            <div class="p-0 custom-card-body card-body d-flex ">
-                                                <div class="card-body my-2 p-2 text-left card-bottom-content">
-                                                <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-                                                <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-                                                <small class="badge badge-primary mb-0">' . $productprice . '</small>
-                                                <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> ';
-                    } else {
+    //                     $productprice = $productprice;
+    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+    //                                 <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
+    //                                     <div class="position-relative card">
+    //                                         <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
+    //                                         <div class="p-0 custom-card-body card-body d-flex ">
+    //                                             <div class="card-body my-2 p-2 text-left card-bottom-content">
+    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
+    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
+    //                                             <small class="badge badge-primary mb-0">' . $productprice . '</small>
+    //                                             <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </div> ';
+    //                 } else {
 
-                        $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-                                <div class="tab-pane fade show active toacart w-100" data-url="' . url('/pos/product-variant/' . $product->id . '/' . $lastsegment) . '" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant">
-                                    <div class="position-relative card">
-                                        <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-                                        <div class="p-0 custom-card-body card-body d-flex ">
-                                            <div class="card-body my-2 p-2 text-left card-bottom-content">
-                                                <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-                                                <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-                                                <small class="badge badge-primary mb-0">In Variant</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> ';
-                    }
-                }
-                return Response($output);
-            } else {
-                $output = '<div class="card card-body col-12 text-center">
-                    <h5>' . __("No Product Available") . '</h5>
-                    </div>';
-                return Response($output);
-            }
-        }
-    }
+    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+    //                             <div class="tab-pane fade show active toacart w-100" data-url="' . url('/pos/product-variant/' . $product->id . '/' . $lastsegment) . '" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant">
+    //                                 <div class="position-relative card">
+    //                                     <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
+    //                                     <div class="p-0 custom-card-body card-body d-flex ">
+    //                                         <div class="card-body my-2 p-2 text-left card-bottom-content">
+    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
+    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
+    //                                             <small class="badge badge-primary mb-0">In Variant</small>
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </div> ';
+    //                 }
+    //             }
+    //             return Response($output);
+    //         } else {
+    //             $output = '<div class="card card-body col-12 text-center">
+    //                 <h5>' . __("No Product Available") . '</h5>
+    //                 </div>';
+    //             return Response($output);
+    //         }
+    //     }
+    // }
 
-    public function searchProductsSku(Request $request)
-    {
-        $lastsegment = $request->session_key;
-        $store_id =  getCurrentStore();
-        if ($request->ajax() && isset($lastsegment) && !empty($lastsegment)) {
-            $output = "";
-            if ($request->cat_id !== '' && $request->search == '') {
-                if ($request->cat_id == '0') {
-                    $products = Product::where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-                } else {
-                    $products = Product::where('maincategory_id', $request->cat_id)->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-                }
-            } else {
-                if ($request->cat_id == '0') {
-                    $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
-                } else {
-                    $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->Where('maincategory_id', $request->cat_id)->get();
-                }
-            }
-            if (count($products) > 0) {
-                foreach ($products as $key => $product) {
-                    if (!empty($product->cover_image_path)) {
-                        $image_url = get_file($product->cover_image_path, APP_THEME());
-                    } else {
-                        $image_url = ('uploads/cover_image_path') . '/default.jpg';
-                    }
+    // public function searchProductsSku(Request $request)
+    // {
+    //     $lastsegment = $request->session_key;
+    //     $store_id =  getCurrentStore();
+    //     if ($request->ajax() && isset($lastsegment) && !empty($lastsegment)) {
+    //         $output = "";
+    //         if ($request->cat_id !== '' && $request->search == '') {
+    //             if ($request->cat_id == '0') {
+    //                 $products = Product::where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+    //             } else {
+    //                 $products = Product::where('maincategory_id', $request->cat_id)->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+    //             }
+    //         } else {
+    //             if ($request->cat_id == '0') {
+    //                 $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->get();
+    //             } else {
+    //                 $products = Product::where('slug', 'LIKE', "%{$request->search}%")->where('store_id', getCurrentStore())->where('theme_id', $store_id)->Where('maincategory_id', $request->cat_id)->get();
+    //             }
+    //         }
+    //         if (count($products) > 0) {
+    //             foreach ($products as $key => $product) {
+    //                 if (!empty($product->cover_image_path)) {
+    //                     $image_url = get_file($product->cover_image_path, APP_THEME());
+    //                 } else {
+    //                     $image_url = ('uploads/cover_image_path') . '/default.jpg';
+    //                 }
 
-                    if ($product->variant_product != '1') {
-                        if ($product->track_stock == 0) {
-                            $quantity = $product->stock_status;
-                            if ($product->stock_status == 'in_stock') {
-                                $quantity = 'In Stock';
-                            } elseif ($product->stock_status == 'on_backorder') {
-                                $quantity = 'On Backorder';
-                            } else {
-                                $quantity = 'Out of Stock';
-                            }
-                        } else {
-                            $quantity = $product->product_stock . ' Qty';
-                        }
+    //                 if ($product->variant_product != '1') {
+    //                     if ($product->track_stock == 0) {
+    //                         $quantity = $product->stock_status;
+    //                         if ($product->stock_status == 'in_stock') {
+    //                             $quantity = 'In Stock';
+    //                         } elseif ($product->stock_status == 'on_backorder') {
+    //                             $quantity = 'On Backorder';
+    //                         } else {
+    //                             $quantity = 'Out of Stock';
+    //                         }
+    //                     } else {
+    //                         $quantity = $product->product_stock . ' Qty';
+    //                     }
 
-                        if ($request->session_key == 'purchases') {
-                            $productprice = getProductActualPrice($product);
-                        } else if ($request->session_key == 'pos_' . getCurrentStore()) {
-                            $productprice = getProductActualPrice($product);
-                        } else {
-                            $productprice = getProductActualPrice($product);
-                        }
+    //                     if ($request->session_key == 'purchases') {
+    //                         $productprice = getProductActualPrice($product);
+    //                     } else if ($request->session_key == 'pos_' . getCurrentStore()) {
+    //                         $productprice = getProductActualPrice($product);
+    //                     } else {
+    //                         $productprice = getProductActualPrice($product);
+    //                     }
 
-                        $productprice = currency_format_with_sym($productprice, $store_id, $store_id);
-                        $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-                                    <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
-                                        <div class="position-relative card">
-                                            <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-                                            <div class="p-0 custom-card-body card-body d-flex ">
-                                                <div class="card-body my-2 p-2 text-left card-bottom-content">
-                                                <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-                                                <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-                                                <small class="badge badge-primary mb-0">' . $productprice . '</small>
-                                                <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> ';
-                    } else {
+    //                     $productprice = currency_format_with_sym($productprice, $store_id, $store_id);
+    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+    //                                 <div class="tab-pane fade show active toacart w-100" data-url="' . url('/addToCart/' . $product->id . '/' . $lastsegment) . '">
+    //                                     <div class="position-relative card">
+    //                                         <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
+    //                                         <div class="p-0 custom-card-body card-body d-flex ">
+    //                                             <div class="card-body my-2 p-2 text-left card-bottom-content">
+    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
+    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
+    //                                             <small class="badge badge-primary mb-0">' . $productprice . '</small>
+    //                                             <small class="top-badge badge badge-danger mb-0">' . $quantity . '</small>
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </div> ';
+    //                 } else {
 
-                        $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-                                <div class="tab-pane fade show active toacart w-100" data-url="' . url('/pos/product-variant/' . $product->id . '/' . $lastsegment) . '" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant">
-                                    <div class="position-relative card">
-                                        <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
-                                        <div class="p-0 custom-card-body card-body d-flex ">
-                                            <div class="card-body my-2 p-2 text-left card-bottom-content">
-                                                <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-                                                <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
-                                                <small class="badge badge-primary mb-0">In Variant</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> ';
-                    }
-                }
-                return Response($output);
-            } else {
-                $output = '<div class="card card-body col-12 text-center">
-                    <h5>' . __("No Product Available") . '</h5>
-                    </div>';
-                return Response($output);
-            }
-        }
-    }
+    //                     $output .= ' <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+    //                             <div class="tab-pane fade show active toacart w-100" data-url="' . url('/pos/product-variant/' . $product->id . '/' . $lastsegment) . '" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant">
+    //                                 <div class="position-relative card">
+    //                                     <img alt="Image placeholder" src="' . asset($image_url) . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
+    //                                     <div class="p-0 custom-card-body card-body d-flex ">
+    //                                         <div class="card-body my-2 p-2 text-left card-bottom-content">
+    //                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
+    //                                             <p class="mb-2 text-dark product-title-name small">' . $product->slug . '</p>
+    //                                             <small class="badge badge-primary mb-0">In Variant</small>
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </div> ';
+    //                 }
+    //             }
+    //             return Response($output);
+    //         } else {
+    //             $output = '<div class="card card-body col-12 text-center">
+    //                 <h5>' . __("No Product Available") . '</h5>
+    //                 </div>';
+    //             return Response($output);
+    //         }
+    //     }
+    // }
 
-    public function addToCart(Request $request, $id, $session_key, $variant_id = 0)
-    {
-        $store_id =  getCurrentStore();
+    // public function addToCart(Request $request, $id, $session_key, $variant_id = 0)
+    // {
+    //     $store_id =  getCurrentStore();
 
-        $product = Product::find($id);
-        $settings = Utility::Seting();
-        if (!$product) {
-            return response()->json(
-                [
-                    'code' => 404,
-                    'status' => 'Error',
-                    'error' => __('This product is not found!'),
-                ],
-                404
-            );
-        }
+    //     $product = Product::find($id);
+    //     $settings = Utility::Seting();
+    //     if (!$product) {
+    //         return response()->json(
+    //             [
+    //                 'code' => 404,
+    //                 'status' => 'Error',
+    //                 'error' => __('This product is not found!'),
+    //             ],
+    //             404
+    //         );
+    //     }
 
-        $productname = $product->name;
+    //     $productname = $product->name;
 
-        $variant = null;
-        $productquantity = $productprice = 0;
-        if (isset($request->variants)) {
-            $variant = ProductVariant::where('product_id', $id)->where('variant', $request->variants)->first();
-            if ($variant) {
-                $productquantity = $variant->stock;
-                if ($session_key ==  'pos_' . getCurrentStore() && $productquantity <= 0) {
-                    return response()->json(
-                        [
-                            'code' => 404,
-                            'status' => 'Error',
-                            'error' => __('This product is out of stock!'),
-                        ],
-                        404
-                    );
-                }
+    //     $variant = null;
+    //     $productquantity = $productprice = 0;
+    //     if (isset($request->variants)) {
+    //         $variant = ProductVariant::where('product_id', $id)->where('variant', $request->variants)->first();
+    //         if ($variant) {
+    //             $productquantity = $variant->stock;
+    //             if ($session_key ==  'pos_' . getCurrentStore() && $productquantity <= 0) {
+    //                 return response()->json(
+    //                     [
+    //                         'code' => 404,
+    //                         'status' => 'Error',
+    //                         'error' => __('This product is out of stock!'),
+    //                     ],
+    //                     404
+    //                 );
+    //             }
 
-                if ($session_key == 'pos_' . getCurrentStore()) {
+    //             if ($session_key == 'pos_' . getCurrentStore()) {
 
-                    $productprice = getProductActualPrice($product, $variant);
-                } else {
-                    $productprice = 0;
-                }
-            }
-        } else {
-            if (
-                $product->track_stock == 0 && $product->stock_status == 'out_of_stock' ||
-                ($product->track_stock != 0 && isset($settings['out_of_stock_threshold']) && ($product->product_stock < $settings['out_of_stock_threshold']) && $product->stock_order_status == 'not_allow') ||
-                (!$product || ($session_key != 'pos_' . getCurrentStore()))
-            ) {
-                return response()->json(
-                    [
-                        'code' => 404,
-                        'status' => 'Error',
-                        'error' => __('This product is out of stock!'),
-                    ],
-                    404
-                );
-            }
+    //                 $productprice = getProductActualPrice($product, $variant);
+    //             } else {
+    //                 $productprice = 0;
+    //             }
+    //         }
+    //     } else {
+    //         if (
+    //             $product->track_stock == 0 && $product->stock_status == 'out_of_stock' ||
+    //             ($product->track_stock != 0 && isset($settings['out_of_stock_threshold']) && ($product->product_stock < $settings['out_of_stock_threshold']) && $product->stock_order_status == 'not_allow') ||
+    //             (!$product || ($session_key != 'pos_' . getCurrentStore()))
+    //         ) {
+    //             return response()->json(
+    //                 [
+    //                     'code' => 404,
+    //                     'status' => 'Error',
+    //                     'error' => __('This product is out of stock!'),
+    //                 ],
+    //                 404
+    //             );
+    //         }
 
-            $productquantity = $product->product_stock;
-            if ($session_key == 'pos_' . getCurrentStore()) {
+    //         $productquantity = $product->product_stock;
+    //         if ($session_key == 'pos_' . getCurrentStore()) {
 
-                $productprice = getProductActualPrice($product);
-            } else {
-                $productprice = 0;
-            }
-        }
+    //             $productprice = getProductActualPrice($product);
+    //         } else {
+    //             $productprice = 0;
+    //         }
+    //     }
 
-        $originalquantity = (int) $productquantity;
+    //     $originalquantity = (int) $productquantity;
 
-        $tax_option = TaxOption::where('store_id', $store_id)
-		->where('theme_id', $store_id)
-		->pluck('value', 'name')->toArray();
+    //     $tax_option = TaxOption::where('store_id', $store_id)
+	// 	->where('theme_id', $store_id)
+	// 	->pluck('value', 'name')->toArray();
 
-        $Tax = Tax::where('id', $product->tax_id)->where('store_id', $store_id)->where('theme_id', $store_id)->first();
-        $tax_price = 0;
-        $product_tax = '';
-        if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
-        {
-            if ($Tax && count($Tax->tax_methods()) > 0) {
-                foreach ($Tax->tax_methods() as $mkey => $method) {
-                    $amount = $method->tax_rate * $productprice / 100;
-                    $tax_price += $amount;
-                    $cart_array['tax_info'][$mkey]["tax_name"] = $method->name;
-                    $cart_array['tax_info'][$mkey]["tax_type"] = $method->tax_rate;
-                    $cart_array['tax_info'][$mkey]["tax_amount"] = $amount;
-                    $product_tax .= !empty($method) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
-                    $cart_array['tax_info'][$mkey]["id"] = $method->id;
-                    $cart_array['tax_info'][$mkey]["tax_price"] = SetNumber($amount);
-                }
-            }
-        }
-        $subtotal = $productprice + $tax_price;
-        $cart            = session()->get($session_key);
-        if (!empty($product->cover_image_path)) {
-            $image_url = get_file($product->cover_image_path, APP_THEME());
-        } else {
-            $image_url = ('uploads/is_cover_image') . '/default.jpg';
-        }
+    //     $Tax = Tax::where('id', $product->tax_id)->where('store_id', $store_id)->where('theme_id', $store_id)->first();
+    //     $tax_price = 0;
+    //     $product_tax = '';
+    //     if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
+    //     {
+    //         if ($Tax && count($Tax->tax_methods()) > 0) {
+    //             foreach ($Tax->tax_methods() as $mkey => $method) {
+    //                 $amount = $method->tax_rate * $productprice / 100;
+    //                 $tax_price += $amount;
+    //                 $cart_array['tax_info'][$mkey]["tax_name"] = $method->name;
+    //                 $cart_array['tax_info'][$mkey]["tax_type"] = $method->tax_rate;
+    //                 $cart_array['tax_info'][$mkey]["tax_amount"] = $amount;
+    //                 $product_tax .= !empty($method) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
+    //                 $cart_array['tax_info'][$mkey]["id"] = $method->id;
+    //                 $cart_array['tax_info'][$mkey]["tax_price"] = SetNumber($amount);
+    //             }
+    //         }
+    //     }
+    //     $subtotal = $productprice + $tax_price;
+    //     $cart            = session()->get($session_key);
+    //     if (!empty($product->cover_image_path)) {
+    //         $image_url = get_file($product->cover_image_path, APP_THEME());
+    //     } else {
+    //         $image_url = ('uploads/is_cover_image') . '/default.jpg';
+    //     }
 
-        $model_delete_id = 'delete-form-' . $id;
+    //     $model_delete_id = 'delete-form-' . $id;
 
-        $carthtml = '';
+    //     $carthtml = '';
 
-        $carthtml .= '<tr data-product-id="' . $id . '" id="product-id-' . $id . '">
-                        <td class="cart-images">
-                            <img alt="Image placeholder" src="' . ($image_url) . '" class="card-image avatar shadow hover-shadow-lg">
-                        </td>
+    //     $carthtml .= '<tr data-product-id="' . $id . '" id="product-id-' . $id . '">
+    //                     <td class="cart-images">
+    //                         <img alt="Image placeholder" src="' . ($image_url) . '" class="card-image avatar shadow hover-shadow-lg">
+    //                     </td>
 
-                        <td class="name">' . $productname . '</td>
+    //                     <td class="name">' . $productname . '</td>
 
-                        <td class="">
-                                <span class="quantity buttons_added">
-                                        <input type="button" value="-" class="minus">
-                                        <input type="number" step="1" min="1" max="" name="quantity" title="' . __('Quantity') . '" class="input-number" size="4" data-url="' . url('update-cart/') . '" data-id="' . $id . '" style="width:50px;">
-                                        <input type="button" value="+" class="plus">
-                                </span>
-                        </td>
-                        <td class="tax">' . $product_tax . '</td>
+    //                     <td class="">
+    //                             <span class="quantity buttons_added">
+    //                                     <input type="button" value="-" class="minus">
+    //                                     <input type="number" step="1" min="1" max="" name="quantity" title="' . __('Quantity') . '" class="input-number" size="4" data-url="' . url('update-cart/') . '" data-id="' . $id . '" style="width:50px;">
+    //                                     <input type="button" value="+" class="plus">
+    //                             </span>
+    //                     </td>
+    //                     <td class="tax">' . $product_tax . '</td>
 
-                        <td class="price">' . (currency_format_with_sym($productprice, $store_id, $store_id) ?? SetNumberFormat($productprice)) . '</td>
+    //                     <td class="price">' . (currency_format_with_sym($productprice, $store_id, $store_id) ?? SetNumberFormat($productprice)) . '</td>
 
-                        <td class="total_orignal_price">' . (currency_format_with_sym($subtotal, $store_id, $store_id) ?? SetNumberFormat($subtotal)) . '</td>
+    //                     <td class="total_orignal_price">' . (currency_format_with_sym($subtotal, $store_id, $store_id) ?? SetNumberFormat($subtotal)) . '</td>
 
-                        <td class="">
-                            <form method="post" class="mb-0" action="' . route('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">
-                            <button type="button" class="show_confirm btn btn-sm btn-danger p-2">
-                            <span class=""><i class="ti ti-trash"></i></span>
-                            </button>
-                                <input name="_method" type="hidden" value="DELETE">
-                                <input name="_token" type="hidden" value="' . csrf_token() . '">
-                                <input type="hidden" name="session_key" value="' . $session_key . '">
-                                <input type="hidden" name="id" value="' . $id . '">
-                            </form>
-                        </td>
-                    </td>';
-        // if cart is empty then this the first product
+    //                     <td class="">
+    //                         <form method="post" class="mb-0" action="' . route('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">
+    //                         <button type="button" class="show_confirm btn btn-sm btn-danger p-2">
+    //                         <span class=""><i class="ti ti-trash"></i></span>
+    //                         </button>
+    //                             <input name="_method" type="hidden" value="DELETE">
+    //                             <input name="_token" type="hidden" value="' . csrf_token() . '">
+    //                             <input type="hidden" name="session_key" value="' . $session_key . '">
+    //                             <input type="hidden" name="id" value="' . $id . '">
+    //                         </form>
+    //                     </td>
+    //                 </td>';
+    //     // if cart is empty then this the first product
 
-        if (!$cart) {
-            $cart = [
-                $id => [
-                    "product_id" => $product->id,
-                    "name" => $productname,
-                    "image" => $product->cover_image_path,
-                    "quantity" => 1,
-                    "orignal_price" => $productprice,
-                    "per_product_discount_price" => $product->discount_amount,
-                    "discount_price" => $product->discount_amount,
-                    "final_price" => $subtotal,
-                    "id" => $id,
-                    "tax" => $tax_price,
-                    "total_orignal_price" => $subtotal,
-                    "originalquantity" => $originalquantity,
-                    'variant_id' => $variant->id ?? 0,
-                    "variant_name" => $product->variant_attribute,
-                    "return" => 0,
-                ],
-            ];
+    //     if (!$cart) {
+    //         $cart = [
+    //             $id => [
+    //                 "product_id" => $product->id,
+    //                 "name" => $productname,
+    //                 "image" => $product->cover_image_path,
+    //                 "quantity" => 1,
+    //                 "orignal_price" => $productprice,
+    //                 "per_product_discount_price" => $product->discount_amount,
+    //                 "discount_price" => $product->discount_amount,
+    //                 "final_price" => $subtotal,
+    //                 "id" => $id,
+    //                 "tax" => $tax_price,
+    //                 "total_orignal_price" => $subtotal,
+    //                 "originalquantity" => $originalquantity,
+    //                 'variant_id' => $variant->id ?? 0,
+    //                 "variant_name" => $product->variant_attribute,
+    //                 "return" => 0,
+    //             ],
+    //         ];
 
-            if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
-                return response()->json(
-                    [
-                        'code' => 404,
-                        'status' => 'Error',
-                        'error' => __('This product is out of stock!'),
-                    ],
-                    404
-                );
-            }
+    //         if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
+    //             return response()->json(
+    //                 [
+    //                     'code' => 404,
+    //                     'status' => 'Error',
+    //                     'error' => __('This product is out of stock!'),
+    //                 ],
+    //                 404
+    //             );
+    //         }
 
-            session()->put($session_key, $cart);
+    //         session()->put($session_key, $cart);
 
-            return response()->json(
-                [
-                    'code' => 200,
-                    'status' => 'Success',
-                    'success' => $productname . __(' added to cart successfully!'),
-                    'product' => $cart[$id],
-                    'carthtml' => $carthtml,
-                ]
-            );
-        }
+    //         return response()->json(
+    //             [
+    //                 'code' => 200,
+    //                 'status' => 'Success',
+    //                 'success' => $productname . __(' added to cart successfully!'),
+    //                 'product' => $cart[$id],
+    //                 'carthtml' => $carthtml,
+    //             ]
+    //         );
+    //     }
 
-        // if cart not empty then check if this product exist then increment quantity
-        if (isset($cart[$id])) {
-            $cartProduct = Product::find($id);
-            $cart[$id]['quantity']++;
-            $cart[$id]['id'] = $id;
+    //     // if cart not empty then check if this product exist then increment quantity
+    //     if (isset($cart[$id])) {
+    //         $cartProduct = Product::find($id);
+    //         $cart[$id]['quantity']++;
+    //         $cart[$id]['id'] = $id;
 
-            $subtotal = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
-            $tax = 0;
-            $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
+    //         $subtotal = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
+    //         $tax = 0;
+    //         $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
 
-            $Tax = Tax::where('id', $cartProduct->tax_id)->where('store_id', $store_id)->where('theme_id', $store_id)->first();
-            $tax_price = 0;
-            $product_tax = '';
-            $price = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
-            if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
-            {
-                if ($Tax && count($Tax->tax_methods()) > 0) {
-                    foreach ($Tax->tax_methods() as $mkey => $method) {
-                        $amount = $method->tax_rate * $price / 100;
-                        $tax_price += $amount;
-                        $cart_array['tax_info'][$mkey]["tax_name"] = $method->name;
-                        $cart_array['tax_info'][$mkey]["tax_type"] = $method->tax_rate;
-                        $cart_array['tax_info'][$mkey]["tax_amount"] = $amount;
-                        $product_tax .= !empty($method) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
-                        $cart_array['tax_info'][$mkey]["id"] = $method->id;
-                        $cart_array['tax_info'][$mkey]["tax_price"] = SetNumber($amount);
-                    }
-                }
-            }
+    //         $Tax = Tax::where('id', $cartProduct->tax_id)->where('store_id', $store_id)->where('theme_id', $store_id)->first();
+    //         $tax_price = 0;
+    //         $product_tax = '';
+    //         $price = $cart[$id]["orignal_price"] * $cart[$id]["quantity"];
+    //         if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
+    //         {
+    //             if ($Tax && count($Tax->tax_methods()) > 0) {
+    //                 foreach ($Tax->tax_methods() as $mkey => $method) {
+    //                     $amount = $method->tax_rate * $price / 100;
+    //                     $tax_price += $amount;
+    //                     $cart_array['tax_info'][$mkey]["tax_name"] = $method->name;
+    //                     $cart_array['tax_info'][$mkey]["tax_type"] = $method->tax_rate;
+    //                     $cart_array['tax_info'][$mkey]["tax_amount"] = $amount;
+    //                     $product_tax .= !empty($method) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
+    //                     $cart_array['tax_info'][$mkey]["id"] = $method->id;
+    //                     $cart_array['tax_info'][$mkey]["tax_price"] = SetNumber($amount);
+    //                 }
+    //             }
+    //         }
 
-            if (!empty($taxes)) {
-                $productprice          = $cart[$id]["orignal_price"] *  (float)$cart[$id]["quantity"];
-                $subtotal = $productprice +  $tax_price;
-            } else {
+    //         if (!empty($taxes)) {
+    //             $productprice          = $cart[$id]["orignal_price"] *  (float)$cart[$id]["quantity"];
+    //             $subtotal = $productprice +  $tax_price;
+    //         } else {
 
-                $productprice          = $cart[$id]["orignal_price"] ?? 0;
-                $subtotal = $productprice  *  (float)$cart[$id]["quantity"];
-            }
-            $cart[$id]["total_orignal_price"] = $subtotal;
+    //             $productprice          = $cart[$id]["orignal_price"] ?? 0;
+    //             $subtotal = $productprice  *  (float)$cart[$id]["quantity"];
+    //         }
+    //         $cart[$id]["total_orignal_price"] = $subtotal;
 
-            $cart[$id]["total_orignal_price"]         = $subtotal + $tax;
-            $cart[$id]["originalquantity"] = $originalquantity;
-            $cart[$id]["tax"]      = $tax_price;
-            if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
-                return response()->json(
-                    [
-                        'code' => 404,
-                        'status' => 'Error',
-                        'error' => __('This product is out of stock!'),
-                    ],
-                    404
-                );
-            }
+    //         $cart[$id]["total_orignal_price"]         = $subtotal + $tax;
+    //         $cart[$id]["originalquantity"] = $originalquantity;
+    //         $cart[$id]["tax"]      = $tax_price;
+    //         if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
+    //             return response()->json(
+    //                 [
+    //                     'code' => 404,
+    //                     'status' => 'Error',
+    //                     'error' => __('This product is out of stock!'),
+    //                 ],
+    //                 404
+    //             );
+    //         }
 
-            session()->put($session_key, $cart);
+    //         session()->put($session_key, $cart);
 
-            return response()->json(
-                [
-                    'code' => 200,
-                    'status' => 'Success',
-                    'success' => $productname . __(' added to cart successfully!'),
-                    'product' => $cart[$id],
-                    'carttotal' => $cart,
-                ]
-            );
-        }
+    //         return response()->json(
+    //             [
+    //                 'code' => 200,
+    //                 'status' => 'Success',
+    //                 'success' => $productname . __(' added to cart successfully!'),
+    //                 'product' => $cart[$id],
+    //                 'carttotal' => $cart,
+    //             ]
+    //         );
+    //     }
 
-        // if item not exist in cart then add to cart with quantity = 1
-        $cart[$id] = [
-            "product_id" => $product->id,
-            "name" => $productname,
-            "image" => $product->cover_image_path,
-            "quantity" => 1,
-            "orignal_price" => $productprice,
-            "per_product_discount_price" => $product->discount_amount,
-            "discount_price" => $product->discount_amount,
-            "final_price" => $subtotal,
-            "id" => $id,
-            "tax" => $tax_price,
-            "total_orignal_price" => $subtotal,
-            "originalquantity" => $originalquantity,
-            'variant_id' => $variant->id ?? 0,
-            "variant_name" => $product->variant_attribute,
-            "return" => 0,
-        ];
-        if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
-            return response()->json(
-                [
-                    'code' => 404,
-                    'status' => 'Error',
-                    'error' => __('This product is out of stock!'),
-                ],
-                404
-            );
-        }
+    //     // if item not exist in cart then add to cart with quantity = 1
+    //     $cart[$id] = [
+    //         "product_id" => $product->id,
+    //         "name" => $productname,
+    //         "image" => $product->cover_image_path,
+    //         "quantity" => 1,
+    //         "orignal_price" => $productprice,
+    //         "per_product_discount_price" => $product->discount_amount,
+    //         "discount_price" => $product->discount_amount,
+    //         "final_price" => $subtotal,
+    //         "id" => $id,
+    //         "tax" => $tax_price,
+    //         "total_orignal_price" => $subtotal,
+    //         "originalquantity" => $originalquantity,
+    //         'variant_id' => $variant->id ?? 0,
+    //         "variant_name" => $product->variant_attribute,
+    //         "return" => 0,
+    //     ];
+    //     if ((($product->track_stock != 0 && $originalquantity < $cart[$id]['quantity']) || ($product->track_stock == 0 && $product->stock_status == 'out_of_stock')) && $session_key != 'pos_' . getCurrentStore()) {
+    //         return response()->json(
+    //             [
+    //                 'code' => 404,
+    //                 'status' => 'Error',
+    //                 'error' => __('This product is out of stock!'),
+    //             ],
+    //             404
+    //         );
+    //     }
 
-        session()->put($session_key, $cart);
-        return response()->json(
-            [
-                'code' => 200,
-                'status' => 'Success',
-                'success' => $productname . __(' added to cart successfully!'),
-                'product' => $cart[$id],
-                'carthtml' => $carthtml,
-                'carttotal' => $cart,
-            ]
-        );
-    }
+    //     session()->put($session_key, $cart);
+    //     return response()->json(
+    //         [
+    //             'code' => 200,
+    //             'status' => 'Success',
+    //             'success' => $productname . __(' added to cart successfully!'),
+    //             'product' => $cart[$id],
+    //             'carthtml' => $carthtml,
+    //             'carttotal' => $cart,
+    //         ]
+    //     );
+    // }
 
-    public function updateCart(Request $request)
-    {
-        $id          = $request->id;
-        $quantity    = $request->quantity;
-        $discount    = $request->discount;
-        $session_key = $request->session_key;
-        $store_id = getCurrentStore();
+    // public function updateCart(Request $request)
+    // {
+    //     $id          = $request->id;
+    //     $quantity    = $request->quantity;
+    //     $discount    = $request->discount;
+    //     $session_key = $request->session_key;
+    //     $store_id = getCurrentStore();
 
-        if ($request->ajax() && isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
-            $cart = session()->get($session_key);
+    //     if ($request->ajax() && isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
+    //         $cart = session()->get($session_key);
 
-            if (isset($cart[$id]) && $quantity == 0) {
-                unset($cart[$id]);
-            }
+    //         if (isset($cart[$id]) && $quantity == 0) {
+    //             unset($cart[$id]);
+    //         }
 
-            if ($quantity && !empty($quantity)) {
+    //         if ($quantity && !empty($quantity)) {
 
-                $cart[$id]["quantity"] = $quantity;
-                $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
+    //             $cart[$id]["quantity"] = $quantity;
+    //             $taxes            = !empty($cart[$id]["tax"]) ? $cart[$id]["tax"] : '';
 
-                $price = ($cart[$id]["orignal_price"] ?? 0) * $quantity;
+    //             $price = ($cart[$id]["orignal_price"] ?? 0) * $quantity;
 
-                $tax_option = TaxOption::where('store_id', $store_id)
-                            ->where('theme_id', $store_id)
-                            ->pluck('value', 'name')->toArray();
+    //             $tax_option = TaxOption::where('store_id', $store_id)
+    //                         ->where('theme_id', $store_id)
+    //                         ->pluck('value', 'name')->toArray();
                             
-                $product = Product::where('id', $id)->first();
-                $Tax = Tax::where('store_id', $store_id)->where('id', $product->tax_id)->where('theme_id', $store_id)->first();
-                $tax_price = 0;
-                $product_tax = '';
-                if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
-                {
-                    if ($Tax) {
-                        if (count($Tax->tax_methods()) > 0) {
-                            foreach ($Tax->tax_methods() as $mkey => $method) {
-                                $tax_price += $method->tax_rate * $price / 100;
-                                $product_tax .= !empty($Tax) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
-                            }
-                        }
-                    }
-                }
+    //             $product = Product::where('id', $id)->first();
+    //             $Tax = Tax::where('store_id', $store_id)->where('id', $product->tax_id)->where('theme_id', $store_id)->first();
+    //             $tax_price = 0;
+    //             $product_tax = '';
+    //             if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
+    //             {
+    //                 if ($Tax) {
+    //                     if (count($Tax->tax_methods()) > 0) {
+    //                         foreach ($Tax->tax_methods() as $mkey => $method) {
+    //                             $tax_price += $method->tax_rate * $price / 100;
+    //                             $product_tax .= !empty($Tax) ? "<span class='badge bg-primary'>" . $method->name . ' (' . $method->tax_rate . '%)' . "</span><br>" : '';
+    //                         }
+    //                     }
+    //                 }
+    //             }
 
-                $subtotal = $price + $tax_price;
-                $cart[$id]["tax"] = $tax_price;
-                $producttax = 0;
-                if (!empty($taxes)) {
-                    $productprice          = $cart[$id]["orignal_price"] *  (float)$quantity;
-                    $subtotal = $productprice +  $tax_price;
-                } else {
-                    $productprice          = $cart[$id]["orignal_price"] ?? 0;
-                    $subtotal = ($productprice  *  (float) $quantity) + $tax_price;
-                }
+    //             $subtotal = $price + $tax_price;
+    //             $cart[$id]["tax"] = $tax_price;
+    //             $producttax = 0;
+    //             if (!empty($taxes)) {
+    //                 $productprice          = $cart[$id]["orignal_price"] *  (float)$quantity;
+    //                 $subtotal = $productprice +  $tax_price;
+    //             } else {
+    //                 $productprice          = $cart[$id]["orignal_price"] ?? 0;
+    //                 $subtotal = ($productprice  *  (float) $quantity) + $tax_price;
+    //             }
 
-                $cart[$id]["total_orignal_price"] = $subtotal;
-            }
+    //             $cart[$id]["total_orignal_price"] = $subtotal;
+    //         }
 
-            if (isset($cart[$id]) && isset($cart[$id]["originalquantity"]) < $cart[$id]['quantity'] && $session_key == 'pos_' . getCurrentStore()) {
-                return response()->json(
-                    [
-                        'code' => 404,
-                        'status' => 'Error',
-                        'error' => __('This product is out of stock!'),
-                    ],
-                    404
-                );
-            }
+    //         if (isset($cart[$id]) && isset($cart[$id]["originalquantity"]) < $cart[$id]['quantity'] && $session_key == 'pos_' . getCurrentStore()) {
+    //             return response()->json(
+    //                 [
+    //                     'code' => 404,
+    //                     'status' => 'Error',
+    //                     'error' => __('This product is out of stock!'),
+    //                 ],
+    //                 404
+    //             );
+    //         }
 
-            $subtotal = array_sum(array_column($cart, 'total_orignal_price'));
-            $discount = $request->discount;
-            $total = $subtotal - (float)$discount;
-            $totalDiscount = currency_format_with_sym($total, $store_id, $store_id) ?? SetNumberFormat($total);
-            $discount = $totalDiscount;
+    //         $subtotal = array_sum(array_column($cart, 'total_orignal_price'));
+    //         $discount = $request->discount;
+    //         $total = $subtotal - (float)$discount;
+    //         $totalDiscount = currency_format_with_sym($total, $store_id, $store_id) ?? SetNumberFormat($total);
+    //         $discount = $totalDiscount;
 
-            session()->put($session_key, $cart);
-            return response()->json(
-                [
-                    'code' => 200,
-                    'success' => __('Cart updated successfully!'),
-                    'product' => $cart,
-                    'discount' => $discount,
-                ]
-            );
-        } else {
-            return response()->json(
-                [
-                    'code' => 404,
-                    'status' => 'Error',
-                    'error' => __('This Product is not found!'),
-                ],
-                404
-            );
-        }
-    }
+    //         session()->put($session_key, $cart);
+    //         return response()->json(
+    //             [
+    //                 'code' => 200,
+    //                 'success' => __('Cart updated successfully!'),
+    //                 'product' => $cart,
+    //                 'discount' => $discount,
+    //             ]
+    //         );
+    //     } else {
+    //         return response()->json(
+    //             [
+    //                 'code' => 404,
+    //                 'status' => 'Error',
+    //                 'error' => __('This Product is not found!'),
+    //             ],
+    //             404
+    //         );
+    //     }
+    // }
 
-    public function removeFromCart(Request $request)
-    {
-        $id          = $request->id;
-        $session_key = $request->session_key;
-        if (isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
-            $cart = session()->get($session_key);
-            if (isset($cart[$id])) {
-                unset($cart[$id]);
-                session()->put($session_key, $cart);
-            }
-            return redirect()->back()->with('success', __('Product removed from cart!'));
-        } else {
-            return redirect()->back()->with('error', __('This Product is not found!'));
-        }
-    }
+    // public function removeFromCart(Request $request)
+    // {
+    //     $id          = $request->id;
+    //     $session_key = $request->session_key;
+    //     if (isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
+    //         $cart = session()->get($session_key);
+    //         if (isset($cart[$id])) {
+    //             unset($cart[$id]);
+    //             session()->put($session_key, $cart);
+    //         }
+    //         return redirect()->back()->with('success', __('Product removed from cart!'));
+    //     } else {
+    //         return redirect()->back()->with('error', __('This Product is not found!'));
+    //     }
+    // }
 
-    public function emptyCart(Request $request)
-    {
-        $session_key = $request->session_key;
+    // public function emptyCart(Request $request)
+    // {
+    //     $session_key = $request->session_key;
 
-        if (isset($session_key) && !empty($session_key)) {
-            $cart = session()->get($session_key);
-            if (isset($cart) && count($cart) > 0) {
-                session()->forget($session_key);
-            }
+    //     if (isset($session_key) && !empty($session_key)) {
+    //         $cart = session()->get($session_key);
+    //         if (isset($cart) && count($cart) > 0) {
+    //             session()->forget($session_key);
+    //         }
 
-            return redirect()->back()->with('success', __('Cart is empty!'));
-        } else {
-            return redirect()->back()->with('error', __('Cart cannot be empty!.'));
-        }
-    }
+    //         return redirect()->back()->with('success', __('Cart is empty!'));
+    //     } else {
+    //         return redirect()->back()->with('error', __('Cart cannot be empty!.'));
+    //     }
+    // }
 
-    public function productVariant(Request $request, $id, $session_key)
-    {
-        $product = Product::where('id', $id)->first();
-        $product_variant_names = ProductVariant::where('product_id', $product->id)->get();
+    // public function productVariant(Request $request, $id, $session_key)
+    // {
+    //     $product = Product::where('id', $id)->first();
+    //     $product_variant_names = ProductVariant::where('product_id', $product->id)->get();
 
-        return view('pos.product_variant', compact('product', 'product_variant_names', 'session_key'));
-    }
+    //     return view('pos.product_variant', compact('product', 'product_variant_names', 'session_key'));
+    // }
 
-    public function getProductsVariantQuantity(Request $request)
-    {
-        $status = false;
-        $quantity = $variant_id = 0;
-        $quantityHTML = '<strong>' . __('Please select variants to get available quantity.') . '</strong>';
-        $priceHTML = '';
-        $product = Product::find($request->product_id);
-        $price = currency_format_with_sym($product->price, getCurrentStore(), APP_THEME());
-        $status = false;
+    // public function getProductsVariantQuantity(Request $request)
+    // {
+    //     $status = false;
+    //     $quantity = $variant_id = 0;
+    //     $quantityHTML = '<strong>' . __('Please select variants to get available quantity.') . '</strong>';
+    //     $priceHTML = '';
+    //     $product = Product::find($request->product_id);
+    //     $price = currency_format_with_sym($product->price, getCurrentStore(), APP_THEME());
+    //     $status = false;
 
         
 
-        return response()->json(
-            [
-                'status' => $status,
-                'price' => $price,
-                'quantity' => $quantity,
-                'variant_id' => $variant_id
-            ]
-        );
-    }
+    //     return response()->json(
+    //         [
+    //             'status' => $status,
+    //             'price' => $price,
+    //             'quantity' => $quantity,
+    //             'variant_id' => $variant_id
+    //         ]
+    //     );
+    // }
 
-    public function VariantDelete(Request $request, $id, $product_id)
-    {
-        if (auth()->user() && auth()->user()->can('Delete Variants')) {
-            $product = Product::find($product_id);
-            if (!empty($product->variants_json) && ProductVariantOption::find($id)->exists()) {
-                $var_json = json_decode($product->variants_json, true);
+    // public function VariantDelete(Request $request, $id, $product_id)
+    // {
+    //     if (auth()->user() && auth()->user()->can('Delete Variants')) {
+    //         $product = Product::find($product_id);
+    //         if (!empty($product->variants_json) && ProductVariantOption::find($id)->exists()) {
+    //             $var_json = json_decode($product->variants_json, true);
 
-                $i = 0;
-                foreach ($var_json[0] as $key => $value) {
-                    $var_ops = explode(' : ', ProductVariantOption::find($id)->name);
-                    $count = ProductVariantOption::where('product_id', $product->id)->where('name', 'LIKE', '%' . $var_ops[0] . '%')->count();
-                    if ($count == 1 && $i == 0) {
-                        $unsetIndex = array_search($var_ops[0], $var_json[0]['variant_options'], true);
-                        unset($var_json[0]['variant_options'][$unsetIndex]);
-                    }
-                    $i++;
-                }
-                $variants = ProductVariantOption::where('product_id', $product->id)->count();
-                if ($variants == 1) {
-                    $product->variants_json = '{}';
-                    $product->update();
-                } else {
-                    $product->variants_json = json_encode($var_json);
-                    $product->update();
-                }
-            }
-            ProductVariantOption::find($id)->delete();
-            return redirect()->back()->with('success', __('Variant successfully deleted.'));
-        } else {
-            return redirect()->back()->with('error', 'Permission denied.');
-        }
-    }
+    //             $i = 0;
+    //             foreach ($var_json[0] as $key => $value) {
+    //                 $var_ops = explode(' : ', ProductVariantOption::find($id)->name);
+    //                 $count = ProductVariantOption::where('product_id', $product->id)->where('name', 'LIKE', '%' . $var_ops[0] . '%')->count();
+    //                 if ($count == 1 && $i == 0) {
+    //                     $unsetIndex = array_search($var_ops[0], $var_json[0]['variant_options'], true);
+    //                     unset($var_json[0]['variant_options'][$unsetIndex]);
+    //                 }
+    //                 $i++;
+    //             }
+    //             $variants = ProductVariantOption::where('product_id', $product->id)->count();
+    //             if ($variants == 1) {
+    //                 $product->variants_json = '{}';
+    //                 $product->update();
+    //             } else {
+    //                 $product->variants_json = json_encode($var_json);
+    //                 $product->update();
+    //             }
+    //         }
+    //         ProductVariantOption::find($id)->delete();
+    //         return redirect()->back()->with('success', __('Variant successfully deleted.'));
+    //     } else {
+    //         return redirect()->back()->with('error', 'Permission denied.');
+    //     }
+    // }
 }

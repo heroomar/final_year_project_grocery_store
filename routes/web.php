@@ -525,7 +525,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 
 //     Route::post('products/sku_combination', [ProductController::class, 'sku_combination'])->name('products.sku_combination');
 
-//     Route::delete('products/{id}/delete', [ProductController::class, 'file_delete'])->name('products.file.detele');
+    Route::delete('products/{id}/delete', [ProductController::class, 'file_delete'])->name('products.file.detele');
 
 //     Route::put('products/attribute_combination/edit', [ProductController::class, 'attribute_combination_edit'])->name('products.attribute_combination_edit');
 //     Route::put('products/sku_combination/edit', [ProductController::class, 'sku_combination_edit'])->name('products.sku_combination_edit');
@@ -676,7 +676,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 
 //     // Order Route
 //     Route::get('order/export', [OrderController::class, 'fileExport'])->name('order.export');
-//     Route::resource('order', OrderController::class);
+    Route::resource('order', OrderController::class);
 //     Route::get('order/all', [OrderController::class, 'allOrders']);
 //     Route::get('order-view/{id}', [OrderController::class, 'order_view'])->name('order.view');
 //     // Pos Route

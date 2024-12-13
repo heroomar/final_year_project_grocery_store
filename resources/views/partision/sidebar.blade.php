@@ -411,40 +411,40 @@
                       'module' => 'Base',
                       'permission' => 'Manage Products',
                     ),
-                    11 => 
-                    array (
-                      'title' => 'Brand',
-                      'icon' => 'home',
-                      'name' => 'productBrand',
-                      'parent' => 'products',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'product-brand.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Product Brand',
-                    ),
-                    12 => 
-                    array (
-                      'title' => 'Label',
-                      'icon' => 'home',
-                      'name' => 'productLabel',
-                      'parent' => 'products',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'product-label.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Product Label',
-                    ),
+                    // 11 => 
+                    // array (
+                    //   'title' => 'Brand',
+                    //   'icon' => 'home',
+                    //   'name' => 'productBrand',
+                    //   'parent' => 'products',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'product-brand.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Product Brand',
+                    // ),
+                    // 12 => 
+                    // array (
+                    //   'title' => 'Label',
+                    //   'icon' => 'home',
+                    //   'name' => 'productLabel',
+                    //   'parent' => 'products',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'product-label.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Product Label',
+                    // ),
                     13 => 
                     array (
                       'title' => 'Main Category',
@@ -496,57 +496,57 @@
                       'module' => 'Base',
                       'permission' => 'Manage Products',
                     ),
-                    16 => 
-                    array (
-                      'title' => 'Attributes',
-                      'icon' => 'home',
-                      'name' => 'attributes',
-                      'parent' => 'products',
-                      'order' => 6,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'product-attributes.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Attributes',
-                    ),
-                    17 => 
-                    array (
-                      'title' => 'Testimonial',
-                      'icon' => 'home',
-                      'name' => 'Testimonial',
-                      'parent' => 'products',
-                      'order' => 8,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'testimonial.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Testimonial',
-                    ),
-                    18 => 
-                    array (
-                      'title' => 'Question Answer',
-                      'icon' => 'home',
-                      'name' => 'question_answer',
-                      'parent' => 'products',
-                      'order' => 9,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'product-question.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Product Question',
-                    ),
+                    // 16 => 
+                    // array (
+                    //   'title' => 'Attributes',
+                    //   'icon' => 'home',
+                    //   'name' => 'attributes',
+                    //   'parent' => 'products',
+                    //   'order' => 6,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'product-attributes.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Attributes',
+                    // ),
+                    // 17 => 
+                    // array (
+                    //   'title' => 'Testimonial',
+                    //   'icon' => 'home',
+                    //   'name' => 'Testimonial',
+                    //   'parent' => 'products',
+                    //   'order' => 8,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'testimonial.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Testimonial',
+                    // ),
+                    // 18 => 
+                    // array (
+                    //   'title' => 'Question Answer',
+                    //   'icon' => 'home',
+                    //   'name' => 'question_answer',
+                    //   'parent' => 'products',
+                    //   'order' => 9,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'product-question.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Product Question',
+                    // ),
                     19 => 
                     array (
                       'title' => 'Shipping',
