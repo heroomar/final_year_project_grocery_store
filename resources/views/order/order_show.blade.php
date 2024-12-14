@@ -96,7 +96,7 @@
         </div>
         @if ($orders->delivery_id != 0)
             @php
-                $shipping = \App\Models\Shipping::find($orders->delivery_id);
+                
             @endphp
             <div class="col-md-6">
                 <b class="col-sm-3 h6 text-sm mx-2 ">{{ __('Shipping Method') }}</b>
@@ -120,7 +120,7 @@
                 <tbody>
                     @foreach ($order['product'] as $item)
                         @php
-                            $variant = \App\Models\ProductVariant::where('id', $item['variant_id'])->first();
+                            
                             $product = \App\Models\Product::where('id', $item['product_id'])->first();
                         @endphp
 
@@ -131,11 +131,11 @@
                                 <span class="text-sm"> {{ $item['variant_name'] }} </span>
                             </td>
                             <td>
-                                @if ($order['paymnet_type'] == 'POS')
-                                    {{ $item['quantity'] }}
-                                @else
-                                    {{ $item['qty'] }}
-                                @endif
+                                
+                                    {{ $item['quantity'] ?? $item['qty'] }}
+                                
+                                    
+                                
                             </td>
                             <td>
                                 @if ($order['paymnet_type'] == 'POS')
@@ -191,7 +191,7 @@
             @endif
         </div>
         <div class="col-md-2 text-end">
-            <a href="{{ route('order.view', \Illuminate\Support\Facades\Crypt::encrypt($order['id'])) }}"
+            <a href="{{ route('order.view', ($order['id'])) }}"
                 class="btn btn-sm btn-success me-2">
                 {{ __('Edit Order') }}
             </a>

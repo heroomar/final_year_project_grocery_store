@@ -56,11 +56,17 @@ class PosController extends Controller
                     'date' => date('Y-m-d'),
                     'pay' => 'show',
                 ];
+                
                 if (!empty($details['customer']) || isset($customer_detail))
                 {
-                    $storedetails = '<h7 class="text-dark">' . ucfirst($details['store']['name'])  . '</p></h7>';
+                    $storedetails = '<h7 class="text-dark"></p></h7>';
+                    
 
                    if(!empty($details['customer'])){
+                    $details['customer']['address'] = $details['customer']['address'] ?? ''; 
+                    $details['customer']['city_name'] = $details['customer']['city_name'] ?? ''; 
+                    $details['customer']['country_name'] = $details['customer']['country_name'] ?? ''; 
+                    $details['customer']['postcode'] = $details['customer']['postcode'] ?? ''; 
                         $customerdetails = '<h6 class="text-dark">' . ucfirst($customer_detail->name) . '</h6> <p class="m-0 h6 font-weight-normal">' . $customer_detail->phone . '</p>' . '<p class="m-0 h6 font-weight-normal">' .  $details['customer']['address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['city_name'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['country_name'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['postcode'] ?? '' . '</p>';
 
                         $shippdetails = '<h6 class="text-dark"><b>' . ucfirst($customer_detail->name) . '</h6> </b>' . '<p class="m-0 h6 font-weight-normal">' . $customer_detail->phone . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['city_name']  . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['country_name'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['postcode'] . '</p>';
@@ -154,6 +160,7 @@ class PosController extends Controller
             }
             
             $sales  = session()->get('pos_'.getCurrentStore());
+            // dd($sales);
             $loopPrice = 0;
             $loopQty = 0;
             if (isset($sales) && !empty($sales) && count($sales) > 0) {
@@ -168,9 +175,8 @@ class PosController extends Controller
                     $loopPrice += $value['orignal_price'];
                     $loopQty += $value['quantity'];
                     $tax_amount = 0;
-                    if(!empty($value['tax'])){
-                        $tax_amount = $value['tax'];
-                    }
+                    // $price += $value['total_orignal_price'];
+                    
                 }
                 $is_guest = 1;
                 if(auth()->check()) {
@@ -180,7 +186,10 @@ class PosController extends Controller
                 $new_pos_id = session()->get('new_pos_id_'.getCurrentStore());
                 // session()->forget('new_pos_id_'.getCurrentStore());
 
+                session()->forget('pos_'.getCurrentStore());
+
                 $pos                  = new Order();
+                $pos->delivered_status = 4;
                 $pos->product_order_id = $new_pos_id;
                 $pos->order_date = date('Y-m-d H:i:s');
                 $pos->customer_id            = isset($customer->id) ? $customer->id : '0' ;
@@ -190,12 +199,10 @@ class PosController extends Controller
                 $pos->final_price = $price;
                 
                             
-                if((isset($tax_option['price_type']) && $tax_option['price_type'] != 'inclusive') && (isset($tax_option['shop_price']) && $tax_option['shop_price'] != 'including'))
-                {
-                    $pos->product_price = $loopPrice * $loopQty;
-                }else{
+                
+                
                     $pos->product_price = $price;
-                }
+                
                 $pos->coupon_price = (float)$discount;
                 $pos->delivery_price = 0;
                 $pos->tax_price = $tax_amount;
@@ -207,11 +214,13 @@ class PosController extends Controller
 
                 //webhook
                 $module = 'New Order';
+
+                // dd($sales);
                 
                 foreach ($sales as $product_id) {
                     $purchased_products = new PurchasedProducts();
                     $purchased_products->product_id = $product_id['id'];
-                    $purchased_products->customer_id = isset($cust_details->id) ? $cust_details->id : '';
+                    $purchased_products->customer_id = isset($cust_details->id) ? $cust_details->id : 0;
                     $purchased_products->order_id = $pos->id;
                     $purchased_products->theme_id = $theme_id;
                     $purchased_products->store_id = getCurrentStore();
@@ -273,12 +282,19 @@ class PosController extends Controller
         ];
         if (!empty($details['customer']) || !empty($customer_detail))
         {
-            $storedetails = '<h7 class="text-dark">' . ucfirst($details['store'])  . '</p></h7>';
+            $storedetails = '<h7 class="text-dark"></p></h7>';
+
+
 
             if(!empty($details['customer'])){
-                $customerdetails = '<h6 class="text-dark">' . ucfirst($customer_detail->name) . '</h6> <p class="m-0 h6 font-weight-normal">' . $customer_detail->phone . '</p>' . '<p class="m-0 h6 font-weight-normal">' .  $details['customer'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer'] ?? '' . '</p>';
+                
+                $details['customer']['address'] = $details['customer']['address'] ?? ''; 
+                    $details['customer']['city_name'] = $details['customer']['city_name'] ?? ''; 
+                    $details['customer']['country_name'] = $details['customer']['country_name'] ?? ''; 
+                    $details['customer']['postcode'] = $details['customer']['postcode'] ?? ''; 
+                        $customerdetails = '<h6 class="text-dark">' . ucfirst($customer_detail->name) . '</h6> <p class="m-0 h6 font-weight-normal">' . $customer_detail->phone . '</p>' . '<p class="m-0 h6 font-weight-normal">' .  $details['customer']['address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['city_name'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['country_name'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['postcode'] ?? '' . '</p>';
 
-                $shippdetails = '<h6 class="text-dark"><b>' . ucfirst($customer_detail->name) . '</h6> </b>' . '<p class="m-0 h6 font-weight-normal">' . $customer_detail->phone . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']  . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer'] . '</p>';
+                        $shippdetails = '<h6 class="text-dark"><b>' . ucfirst($customer_detail->name) . '</h6> </b>' . '<p class="m-0 h6 font-weight-normal">' . $customer_detail->phone . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['city_name']  . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['country_name'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['postcode'] . '</p>';
             }
             else{
                 $customerdetails = '<h2 class="h6"><b>' . ucfirst($customer_detail->name) . '</b><h2>';

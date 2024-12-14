@@ -602,7 +602,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::post('theme-enable', [AddonController::class, 'ThemeEnable'])->name('theme.enable');
 
 //     // Report
-//     Route::resource('reports', ReportController::class);
+    Route::resource('reports', ReportController::class);
 //     Route::get('reports-chart', [ReportController::class, 'reports_chart'])->name('reports.chart');
 //     Route::get('report-export', [ReportController::class, 'export'])->name('reports.export');
 //     Route::get('order-reports', [ReportController::class, 'OrderReport'])->name('reports.order_report');
@@ -676,9 +676,9 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 
 //     // Order Route
 //     Route::get('order/export', [OrderController::class, 'fileExport'])->name('order.export');
-    Route::resource('order', OrderController::class);
+    Route::resource('order', controller: OrderController::class);
 //     Route::get('order/all', [OrderController::class, 'allOrders']);
-//     Route::get('order-view/{id}', [OrderController::class, 'order_view'])->name('order.view');
+    Route::get('order-view/{id}', [OrderController::class, 'order_view'])->name('order.view');
 //     // Pos Route
     Route::resource('pos', PosController::class);
     Route::get('product-categories', [MainCategoryController::class, 'getProductCategories'])->name('product.categories');
@@ -749,13 +749,13 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //   Route::get('shippinglabel/pdf/{id}', [OrderController::class, 'shippinglabel'])->name('shippinglabel.pdf');
 //   Route::post('order-return', [OrderController::class, 'order_return'])->name('order.return')->middleware('themelanguage');
 //   Route::get('order-view/{id}', [OrderController::class, 'order_view'])->name('order.view')->middleware('themelanguage');
-//   Route::get('orders/order_view/{id}', [OrderController::class, 'show'])->name('order.order_view')->middleware('themelanguage');
+  Route::get('orders/order_view/{id}', [OrderController::class, 'show'])->name('order.order_view');
 //   Route::get('order-receipt/{id}', [OrderController::class, 'order_receipt'])->name('order.receipt')->middleware('themelanguage');
-//   Route::post('order-status-change/{id}', [OrderController::class, 'order_status_change'])->name('order.status.change')->middleware('themelanguage');
-//   Route::post('order-payment-status', [OrderController::class, 'order_payment_status'])->name('order.payment.status')->middleware('themelanguage');
+  Route::post('order-status-change/{id}', [OrderController::class, 'order_status_change'])->name('order.status.change');
+  Route::post('order-payment-status', [OrderController::class, 'order_payment_status'])->name('order.payment.status');
 //   Route::resource('order-note', OrderNoteController::class);
 //   Route::get('{storeSlug}/order/{id}', [OrderController::class, 'orderdetails'])->name('order.details')->middleware('themelanguage');
-//   Route::post('update-order-status/{id}', [OrderController::class, 'updateStatus'])->name('order.order_status_update')->middleware('themelanguage');
+  Route::post('update-order-status/{id}', [OrderController::class, 'updateStatus'])->name('order.order_status_update')->middleware('themelanguage');
 
   Route::post('order-return-request', [OrderController::class, 'order_return_request'])->name('order.return.request')->middleware('themelanguage');
 //   Route::get('order-view/{id}', [OrderController::class, 'order_view'])->name('order.view')->middleware('themelanguage');

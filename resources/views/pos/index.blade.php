@@ -546,11 +546,11 @@
                 },
                 success: function(data) {
                     $('#loader').fadeOut();
-                    if (discount <= maintotal) {
+                    //if (discount <= maintotal) {
                         $('.totalamount').text(data.total);
-                    } else {
-                        $('.totalamount').text(addCommas(0));
-                    }
+                    //} else {
+                    //    $('.totalamount').text(addCommas(0));
+                    //}
                 },
                 error: function(data) {
                     $('#loader').fadeOut();

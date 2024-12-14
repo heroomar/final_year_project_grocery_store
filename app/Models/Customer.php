@@ -56,6 +56,7 @@ class Customer extends Authenticatable
     // ];
 
     // // *********************************
+    protected $appends = ["name"];
     // protected $appends = ["demo_field", "name", "address", "postcode"];
 
     // public function getDemoFieldAttribute()
@@ -63,10 +64,10 @@ class Customer extends Authenticatable
     //     return 'demo_field';
     // }
 
-    // public function getNameAttribute()
-    // {
-    //     return $this->first_name.' '.$this->last_name;
-    // }
+    public function getNameAttribute()
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
 
     // public function getAddressAttribute()
     // {

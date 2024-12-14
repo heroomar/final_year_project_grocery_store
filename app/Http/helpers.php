@@ -140,3 +140,7 @@ function get_currency(){
 function SetNumberFormat($num){
     return number_format($num,2);
 }
+
+function SetNumber($num){
+    return number_format($num,2);
+}

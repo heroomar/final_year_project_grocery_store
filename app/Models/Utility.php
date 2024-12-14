@@ -26,7 +26,9 @@ class Utility extends Model
 {
     use HasFactory;
 
-
+    public static function dateFormat($date){
+        return \Carbon\Carbon::parse($date)->diffForHumans();
+    }
     
     public static function upload_file($request, $key_name, $name, $path, $custom_validation = [], $image = '')
     {

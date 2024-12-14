@@ -237,163 +237,163 @@
                       'depend_on' => 
                       array (
                       ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage Dashboard',
-                    ),
-                    1 => 
-                    array (
-                      'title' => 'Dashboard',
-                      'icon' => 'home',
-                      'name' => 'dashboard',
-                      'parent' => 'admin_dashboard',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
                       'route' => 'dashboard',
                       'module' => 'Base',
                       'permission' => 'Manage Dashboard',
                     ),
-                    2 => 
-                    array (
-                      'title' => 'Store Analytics',
-                      'icon' => '',
-                      'name' => 'store-analytics',
-                      'parent' => 'admin_dashboard',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'theme_analytic',
-                      'module' => 'Base',
-                      'permission' => 'Manage Store Analytics',
-                    ),
-                    3 => 
-                    array (
-                      'title' => 'Theme Preview',
-                      'icon' => 'rotate',
-                      'name' => 'themepreview',
-                      'parent' => NULL,
-                      'order' => 20,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'theme-preview.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Themes',
-                    ),
-                    4 => 
-                    array (
-                      'title' => 'Store Setting',
-                      'icon' => 'settings-automation',
-                      'name' => 'storesetting',
-                      'parent' => NULL,
-                      'order' => 40,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'app-setting.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Store Setting',
-                    ),
-                    5 => 
-                    array (
-                      'title' => 'Mobile App Settings',
-                      'icon' => 'settings-automation',
-                      'name' => 'mobilescreensetting',
-                      'parent' => NULL,
-                      'order' => 60,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'mobilescreen.content',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    6 => 
-                    array (
-                      'title' => 'Staff',
-                      'icon' => 'users',
-                      'name' => 'staff',
-                      'parent' => NULL,
-                      'order' => 80,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage User',
-                    ),
-                    7 => 
-                    array (
-                      'title' => 'Roles',
-                      'icon' => '',
-                      'name' => 'roles',
-                      'parent' => 'staff',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'roles.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Role',
-                    ),
-                    8 => 
-                    array (
-                      'title' => 'User',
-                      'icon' => '',
-                      'name' => 'user',
-                      'parent' => 'staff',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'users.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage User',
-                    ),
-                    9 => 
-                    array (
-                      'title' => 'Delivery Boy',
-                      'icon' => 'truck',
-                      'name' => 'deliveryboy',
-                      'parent' => NULL,
-                      'order' => 100,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'deliveryboy.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Deliveryboy',
-                    ),
+                    // 1 => 
+                    // array (
+                    //   'title' => 'Dashboard',
+                    //   'icon' => 'home',
+                    //   'name' => 'dashboard',
+                    //   'parent' => 'admin_dashboard',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'dashboard',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Dashboard',
+                    // ),
+                    // 2 => 
+                    // array (
+                    //   'title' => 'Store Analytics',
+                    //   'icon' => '',
+                    //   'name' => 'store-analytics',
+                    //   'parent' => 'admin_dashboard',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'theme_analytic',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Store Analytics',
+                    // ),
+                    // 3 => 
+                    // array (
+                    //   'title' => 'Theme Preview',
+                    //   'icon' => 'rotate',
+                    //   'name' => 'themepreview',
+                    //   'parent' => NULL,
+                    //   'order' => 20,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'theme-preview.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Themes',
+                    // ),
+                    // 4 => 
+                    // array (
+                    //   'title' => 'Store Setting',
+                    //   'icon' => 'settings-automation',
+                    //   'name' => 'storesetting',
+                    //   'parent' => NULL,
+                    //   'order' => 40,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'app-setting.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Store Setting',
+                    // ),
+                    // 5 => 
+                    // array (
+                    //   'title' => 'Mobile App Settings',
+                    //   'icon' => 'settings-automation',
+                    //   'name' => 'mobilescreensetting',
+                    //   'parent' => NULL,
+                    //   'order' => 60,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'mobilescreen.content',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 6 => 
+                    // array (
+                    //   'title' => 'Staff',
+                    //   'icon' => 'users',
+                    //   'name' => 'staff',
+                    //   'parent' => NULL,
+                    //   'order' => 80,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => '',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage User',
+                    // ),
+                    // 7 => 
+                    // array (
+                    //   'title' => 'Roles',
+                    //   'icon' => '',
+                    //   'name' => 'roles',
+                    //   'parent' => 'staff',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'roles.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Role',
+                    // ),
+                    // 8 => 
+                    // array (
+                    //   'title' => 'User',
+                    //   'icon' => '',
+                    //   'name' => 'user',
+                    //   'parent' => 'staff',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'users.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage User',
+                    // ),
+                    // 9 => 
+                    // array (
+                    //   'title' => 'Delivery Boy',
+                    //   'icon' => 'truck',
+                    //   'name' => 'deliveryboy',
+                    //   'parent' => NULL,
+                    //   'order' => 100,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'deliveryboy.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Deliveryboy',
+                    // ),
                     10 => 
                     array (
                       'title' => 'Products',
@@ -547,57 +547,57 @@
                     //   'module' => 'Base',
                     //   'permission' => 'Manage Product Question',
                     // ),
-                    19 => 
-                    array (
-                      'title' => 'Shipping',
-                      'icon' => 'truck-delivery',
-                      'name' => 'shipping',
-                      'parent' => NULL,
-                      'order' => 140,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage Shipping',
-                    ),
-                    20 => 
-                    array (
-                      'title' => 'Shipping Class',
-                      'icon' => '',
-                      'name' => 'shipping class',
-                      'parent' => 'shipping',
-                      'order' => 34,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'shipping.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Shipping Class',
-                    ),
-                    21 => 
-                    array (
-                      'title' => 'Shipping Zone',
-                      'icon' => '',
-                      'name' => 'shipping zone',
-                      'parent' => 'shipping',
-                      'order' => 35,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'shipping-zone.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Shipping Zone',
-                    ),
+                    // 19 => 
+                    // array (
+                    //   'title' => 'Shipping',
+                    //   'icon' => 'truck-delivery',
+                    //   'name' => 'shipping',
+                    //   'parent' => NULL,
+                    //   'order' => 140,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => '',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Shipping',
+                    // ),
+                    // 20 => 
+                    // array (
+                    //   'title' => 'Shipping Class',
+                    //   'icon' => '',
+                    //   'name' => 'shipping class',
+                    //   'parent' => 'shipping',
+                    //   'order' => 34,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'shipping.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Shipping Class',
+                    // ),
+                    // 21 => 
+                    // array (
+                    //   'title' => 'Shipping Zone',
+                    //   'icon' => '',
+                    //   'name' => 'shipping zone',
+                    //   'parent' => 'shipping',
+                    //   'order' => 35,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'shipping-zone.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Shipping Zone',
+                    // ),
                     22 => 
                     array (
                       'title' => 'Orders',

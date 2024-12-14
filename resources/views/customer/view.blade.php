@@ -30,7 +30,7 @@
                                 <tr>
                                     <th>{{ __('Orders') }}</th>
                                     <th>{{ __('Date') }}</th>
-                                    <th>{{ __('Name') }}</th>
+                                   
                                     <th>{{ __('Value') }}</th>
                                     <th>{{ __('Payment Type') }}</th>
                                     <th>{{ __('Status') }}</th>
@@ -41,7 +41,7 @@
                                 @foreach ($orders as $order)
                                     <tr>
                                         <th scope="row">
-                                            <a href="{{ route('order.view', \Illuminate\Support\Facades\Crypt::encrypt($order->id)) }}"
+                                            <a href="{{ route('order.view', ($order->id)) }}"
                                                 @php
                                                     $btn_class = 'bg-info';
                                                     if($order->delivered_status == 2 || $order->delivered_status == 3) {
@@ -65,13 +65,7 @@
                                             <span
                                                 class="h6 text-sm font-weight-bold mb-0">{{ \App\Models\Utility::dateFormat($order->created_at) }}</span>
                                         </td>
-                                        <td>
-                                            @if ($order->user_id == 0)
-                                                {{ __('Guest') }}
-                                            @elseif ($order->user_id != 0)
-                                                {{ !empty($order->UserData->name) ? $order->UserData->name : '' }}
-                                            @endif
-                                        </td>
+                                        
                                         <td>
                                             <span>{{ currency_format_with_sym( ($order->final_price ?? 0), getCurrentStore(), APP_THEME()) ?? SetNumberFormat($order->final_price) }}</span>
                                         </td>
@@ -190,7 +184,7 @@
                                         </td>
                                         <td class="text-center ignore">
                                             <div class="d-flex">
-                                                    <a href="{{ route('order.view', \Illuminate\Support\Facades\Crypt::encrypt($order->id)) }}" class="btn btn-sm btn-icon  btn-info me-2" data-toggle="tooltip" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Show') }}" data-tooltip="View">
+                                                    <a href="{{ route('order.view', ($order->id)) }}" class="btn btn-sm btn-icon  btn-info me-2" data-toggle="tooltip" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Show') }}" data-tooltip="View">
                                                         <i  class="ti ti-eye"></i>
                                                     </a>
                                                 {!! Form::open(['method' => 'DELETE', 'route' => ['order.destroy', $order->id], 'class' => 'd-inline']) !!}

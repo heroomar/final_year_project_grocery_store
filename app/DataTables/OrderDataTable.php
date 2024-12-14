@@ -40,7 +40,13 @@ class OrderDataTable extends DataTable
                     $btnClass = 'btn-dark';
                 }
                 return '<div class="d-flex align-items-center">
-                            <a href="' . route('order.view', \Illuminate\Support\Facades\Crypt::encrypt($item->id)) . '" class="btn ' . $btnClass . ' btn-sm text-sm" data-toggle="tooltip" title="' . __('Invoice ID') . '">
+                            <a 
+                                href="javascript:void(0)"
+                                data-url="'. route('order.order_view', ($item->id)) .'" data-size="lg"
+                                data-ajax-popup="true" data-title="Order    #'. $item->product_order_id .'"
+                               data-bs-toggle="tooltip"
+                                data-original-title="Show" data-bs-toggle="tooltip"
+                            class="btn ' . $btnClass . ' btn-sm text-sm" data-toggle="tooltip" title="' . __('Invoice ID') . '">
                                 <span class="btn-inner--icon"></span>
                                 <span class="btn-inner--text">#'. $item->product_order_id . '</span>
                             </a>
@@ -50,9 +56,7 @@ class OrderDataTable extends DataTable
                 return \App\Models\Utility::dateFormat($item->order_date);
             })
             ->editColumn('customer_id', function ($item) {
-                if ($item->is_guest == 1) {
-                    return __('Guest');
-                } elseif ($item->customer_id != 0) {
+                if ($item->customer_id != 0) {
                     return (!empty($item->CustomerData->name) ? $item->CustomerData->name : '') . '<br>' .
                            (!empty($item->CustomerData->mobile) ? $item->CustomerData->mobile : '');
                 } else {
@@ -65,56 +69,9 @@ class OrderDataTable extends DataTable
             ->editColumn('payment_type', function ($item) {
                 $paymentTypes = [
                     'cod' => __('Cash On Delivery'),
-                    'bank_transfer' => __('Bank Transfer'),
-                    'stripe' => __('Stripe'),
-                    'paystack' => __('Paystack'),
-                    'mercado' => __('Mercado Pago'),
-                    'skrill' => __('Skrill'),
-                    'paymentwall' => __('PaymentWall'),
-                    'Razorpay' => __('Razorpay'),
-                    'paypal' => __('Paypal'),
-                    'flutterwave' => __('Flutterwave'),
-                    'mollie' => __('Mollie'),
-                    'coingate' => __('Coingate'),
-                    'paytm' => __('Paytm'),
+                    
                     'POS' => __('POS'),
-                    'toyyibpay' => __('Toyyibpay'),
-                    'sspay' => __('Sspay'),
-                    'Paytabs' => __('Paytabs'),
-                    'iyzipay' => __('IyziPay'),
-                    'payfast' => __('PayFast'),
-                    'benefit' => __('Benefit'),
-                    'cashfree' => __('Cashfree'),
-                    'aamarpay' => __('Aamarpay'),
-                    'telegram' => __('Telegram'),
-                    'whatsapp' => __('Whatsapp'),
-                    'paytr' => __('PayTR'),
-                    'yookassa' => __('Yookassa'),
-                    'midtrans' => __('Midtrans'),
-                    'Xendit' => __('Xendit'),
-                    'Nepalste' => __('Nepalste'),
-                    'khalti' => __('Khalti'),
-                    'AuthorizeNet' => __('AuthorizeNet'),
-                    'Tap' => __('Tap'),
-                    'PhonePe' => __('PhonePe'),
-                    'Paddle' => __('Paddle'),
-                    'Paiementpro' => __('Paiement Pro'),
-                    'FedPay' => __('FedPay'),
-                    'CinetPay' => __('CinetPay'),
-                    'SenagePay' => __('SenagePay'),
-                    'CyberSource' => __('CyberSource'),
-                    'Ozow' => __('Ozow'),
-                    'MyFatoorah' => __('MyFatoorah'),
-                    'easebuzz' => __('Easebuzz'),
-                    'NMI' => __('NMI'),
-                    'PayU' => __('PayU'),
-                    'sofort' => __('Sofort'),
-                    'esewa' => __('Esewa'),
-                    'Paynow' => __('Paynow'),
-                    'DPO' => __('DPO'),
-                    'Braintree' => __('Braintree'),
-                    'PowerTranz' => __('PowerTranz'),
-                    'SSLCommerz' => __('SSLCommerz'),
+                    
                 ];
 
                 return $paymentTypes[$item->payment_type] ?? '';

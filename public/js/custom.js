@@ -32,42 +32,42 @@ $(document).on('input', '.autogrow', function () {
     $(this).height("auto").height($(this)[0].scrollHeight - 18);
 });
 
-$(document).on('click', 'a[data-ajax-popup="true"], button[data-ajax-popup="true"], div[data-ajax-popup="true"]', function () {
+// $(document).on('click', 'a[data-ajax-popup="true"], button[data-ajax-popup="true"], div[data-ajax-popup="true"]', function () {
 
-    var title = $(this).data('title');
-    var size = ($(this).attr('data-size') == '') ? 'md' : $(this).attr('data-size');
-    var url = $(this).data('url');
-    $("#commanModel .modal-title").html(title);
-    $("#commanModel .modal-dialog").removeClass('modal-lg').removeClass('modal-md').removeClass('modal-sm');
-    $("#commanModel .modal-dialog").addClass('modal-' + size);
+//     var title = $(this).data('title');
+//     var size = ($(this).attr('data-size') == '') ? 'md' : $(this).attr('data-size');
+//     var url = $(this).data('url');
+//     $("#commanModel .modal-title").html(title);
+//     $("#commanModel .modal-dialog").removeClass('modal-lg').removeClass('modal-md').removeClass('modal-sm');
+//     $("#commanModel .modal-dialog").addClass('modal-' + size);
 
-    $.ajax({
-        url: url,
-        success: function (data) {
-            $('#commanModel .modal-body').html(data);
-            $("#commanModel").modal('show');
-            $('#loader').fadeOut();
-            $('#theme_id').trigger('change');
+//     $.ajax({
+//         url: url,
+//         success: function (data) {
+            // $('#commanModel .modal-body').html(data);
+            // $("#commanModel").modal('show');
+            // $('#loader').fadeOut();
+            // $('#theme_id').trigger('change');
 
-            // Product Page
-            $('#enable_product_variant').trigger('change');
-            $('#variant_tag').trigger('change');
-            $('#maincategory').trigger('change');
+            // // Product Page
+            // $('#enable_product_variant').trigger('change');
+            // $('#variant_tag').trigger('change');
+            // $('#maincategory').trigger('change');
 
-            // Review Page
-            $('#category_id').trigger('change');
+            // // Review Page
+            // $('#category_id').trigger('change');
 
-            // coupone Code Page
-            $('.code').trigger('click');
+            // // coupone Code Page
+            // $('.code').trigger('click');
 
-            comman_function();
-        },
-        error: function (data) {
-            data = data.responseJSON;
-        }
-    });
+            // comman_function();
+//         },
+//         error: function (data) {
+//             data = data.responseJSON;
+//         }
+//     });
 
-});
+// });
 
 $(document).on('click', 'a[data-ajax-popup-over="true"], button[data-ajax-popup-over="true"], div[data-ajax-popup-over="true"]', function () {
     var title = $(this).data('title');
@@ -291,8 +291,26 @@ $(document).on('click', 'a[data-ajax-popup="true"], button[data-ajax-popup="true
         data:data,
         success: function (data) {
 
-            $('#commonModal .modal-body').html(data);
-            $("#commonModal").modal('show');
+            // $('#commonModal .modal-body').html(data);
+            // $("#commonModal").modal('show');
+
+            $('#commanModel .modal-body').html(data);
+            $("#commanModel").modal('show');
+            $('#loader').fadeOut();
+            $('#theme_id').trigger('change');
+
+            // Product Page
+            $('#enable_product_variant').trigger('change');
+            $('#variant_tag').trigger('change');
+            $('#maincategory').trigger('change');
+
+            // Review Page
+            $('#category_id').trigger('change');
+
+            // coupone Code Page
+            $('.code').trigger('click');
+
+            comman_function();
 
         },
         error: function (data) {

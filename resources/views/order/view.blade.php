@@ -3,36 +3,15 @@
 @section('page-title', __('Order Detail'))
 
 @php
-    if ($order['deliveryboy_id'] == 0 && $order['order_status'] == 0) {
-        $disableSelectBox = false;
-    } else {
-        $disableSelectBox = true;
-    }
+    
 @endphp
 @section('action-button')
     <div class=" text-end d-flex all-button-box justify-content-md-end justify-content-center">
-        <div class="col-md-3 mx-2">
-            {!! Form::select('delivery_boy', $deliveryboys, $order['deliveryboy_id'], [
-                'class' => 'form-control select category',
-                'id' => 'delivery_boy',
-                'disabled' => $disableSelectBox,
-            ]) !!}
-        </div>
-        @if (module_is_active('AutomaticOrderPrinting'))
-            @stack('invoice-button')
-        @else
-            <a href="{{ route('shippinglabel.pdf', \Illuminate\Support\Facades\Crypt::encrypt($order['id'])) }}"
-                target="_blank" class="btn btn-sm btn-primary btn-icon d-flex align-items-center" data-bs-toggle="tooltip"
-                data-bs-placement="top" title="Print" aria-label="Print">
-                <i class="ti ti-printer" style="font-size:20px"></i>
-            </a>
-        @endif
-        <a href="{{ route('order.receipt', \Illuminate\Support\Facades\Crypt::encrypt($order['id'])) }}"
-            class="mx-1 btn btn-sm btn-primary btn-icon d-flex align-items-center " data-bs-toggle="tooltip"
-            data-bs-placement="top" title="{{ __('Receipt') }}"><i class="ti ti-receipt" style="font-size:20px"></i>
-        </a>
+        
+        
+        
         <a href="#"
-            id="{{ env('APP_URL') . '/' . $store->slug . '/order/' . \Illuminate\Support\Facades\Crypt::encrypt($order['id']) }}"
+            id="{{ env('APP_URL') . '/' .'/order/' . ($order['id']) }}"
             class="btn btn-sm btn-primary btn-icon d-flex align-items-center" onclick="copyToClipboard(this)"
             title="Copy link" data-bs-toggle="tooltip" data-original-title="{{ __('Click to copy') }}"><i class="ti ti-link"
                 style="font-size:20px"></i></a>
@@ -110,7 +89,7 @@
             @endif
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-5">
             {!! Form::select('payment_status', App\Models\order::payment_status(), $order['payment_status'], [
                 'class' => 'form-control select category',
                 'id' => 'payment_status',
@@ -257,19 +236,15 @@
                                         <tr>
                                             <th>{{ __('Item') }}</th>
                                             <th>{{ __('Quantity') }}</th>
-                                            @if ($order['order_status'] == 1)
-                                                <th>{{ __('Downloadable Product') }}</th>
-                                            @endif
+                                           
                                             <th>{{ __('Total') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($order['product'] as $item)
                                             @php
-                                                $variant = \App\Models\ProductVariant::where(
-                                                    'id',
-                                                    $item['variant_id'],
-                                                )->first();
+                                                
+                                                
                                                 $product = \App\Models\Product::where(
                                                     'id',
                                                     $item['product_id'],
@@ -283,39 +258,11 @@
                                                     <span class="text-sm"> {{ $item['variant_name'] }} </span>
                                                 </td>
                                                 <td>
-                                                    @if ($order['paymnet_type'] == 'POS')
-                                                        {{ $item['quantity'] }}
-                                                    @else
-                                                        {{ $item['qty'] }}
-                                                    @endif
+                                                    
+                                                        {{ $item['quantity'] ?? $item['qty'] }}
+                                                   
                                                 </td>
-                                                @if ($product || $variant)
-                                                    @if ($order['order_status'] == 1)
-                                                        @if (!empty($variant->downloadable_product) != null || !empty($product->downloadable_product) != null)
-                                                            <td>
-                                                                @if (!empty($variant->downloadable_product))
-                                                                    <a class="downloadable_product_{{ $item['product_id'] }}"
-                                                                        href="{{ get_file($variant->downloadable_product) }}"
-                                                                        download style="display: none;"></a>
-                                                                @endif
-                                                                @if (!empty($product->downloadable_product))
-                                                                    <a class="downloadable_product_{{ $item['product_id'] }}"
-                                                                        href="{{ get_file($product->downloadable_product) }}"
-                                                                        download style="display: none;"></a>
-                                                                @endif
-                                                                <button
-                                                                    class="download-btn action-btn btn-primary btn btn-sm align-items-center"
-                                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                    title="{{ __('Download') }}"
-                                                                    data-product-id="{{ $item['product_id'] }}">
-                                                                    <i class="ti ti-download text-white"></i>
-                                                                </button>
-                                                            </td>
-                                                        @else
-                                                            <td>-</td>
-                                                        @endif
-                                                    @endif
-                                                @endif
+                                               
                                                 <td>
                                                     @if ($order['paymnet_type'] == 'POS')
                                                         {{ currency_format_with_sym(($item['orignal_price'] ?? 0) * ($item['quantity'] ?? 0), getCurrentStore(), APP_THEME()) ?? SetNumberFormat(($item['orignal_price'] ?? 0) * ($item['quantity'] ?? 0)) }}
@@ -400,154 +347,8 @@
                     @stack('OrderPartialPaymentView')
                 </div>
                 <div class="col-xxl-5">
-                    @permission('Manage Order Note')
-                    <div class="card  p-0">
-                        <div class="card-header d-flex justify-content-between pb-0">
-                            <h5 class="mb-4">{{ __('Order Notes') }}</h5>
-                        </div>
-                        <div class="card-body">
-                            @foreach ($order_notes as $note)
-                                <div class="card">
-                                    @if ($note->status == 'Stock Manage')
-                                        <div class="card-header note-bg-color  stock-mange-note">
-                                            <span class="tl-btn licence-btn ">
-                                                {{ $note->notes }}
-                                            </span>
-                                            <div class="cart-time-wrapper">
-                                                <span
-                                                    class="time">{{ $note->created_at->format('d M Y h:i A') }}{{ __(' by ') }}{{ Auth::user()->name ?? '' }}</span>
-                                                @permission('Delete Order Note')
-                                                {!! Form::open([
-                                                    'method' => 'DELETE',
-                                                    'route' => ['order-note.destroy', $note->id],
-                                                    'class' => 'd-inline',
-                                                ]) !!}
-                                                <button type="button" class="btn btn-sm show_confirm order-not-dlt">
-                                                    <i class="ti ti-trash" data-bs-toggle="tooltip"
-                                                        title="Delete"></i>
-                                                </button>
-                                                {!! Form::close() !!}
-                                                @endpermission
-                                            </div>
-                                        </div>
-                                    @elseif ($note->status == 'Order Created')
-                                        <div class="card-header note-bg-color order-create-note">
-                                            <span class="tl-btn licence-btn ">
-                                                {{ $note->notes }}
-                                            </span>
-                                            <div class="cart-time-wrapper">
-                                                <span
-                                                    class="time">{{ $note->created_at->format('d M Y h:i A') }}{{ __(' by ') }}{{ Auth::user()->name ?? '' }}</span>
-                                                @permission('Delete Order Note')
-                                                {!! Form::open([
-                                                    'method' => 'DELETE',
-                                                    'route' => ['order-note.destroy', $note->id],
-                                                    'class' => 'd-inline',
-                                                ]) !!}
-                                                <button type="button" class="btn btn-sm  show_confirm order-not-dlt">
-                                                    <i class="ti ti-trash" data-bs-toggle="tooltip"
-                                                        title="Delete"></i>
-                                                </button>
-                                                {!! Form::close() !!}
-                                                @endpermission
-                                            </div>
-                                        </div>
-                                    @elseif ($note->status == 'Order status change')
-                                        <div class="card-header note-bg-color order-status-note">
-                                            <span class="tl-btn licence-btn ">
-                                                {{ $note->notes }}
-                                            </span>
-                                            <div class="cart-time-wrapper">
-                                                <span
-                                                    class="time">{{ $note->created_at->format('d M Y h:i A') }}{{ __(' by ') }}{{ Auth::user()->name ?? '' }}</span>
-                                                @permission('Delete Order Note')
-                                                {!! Form::open([
-                                                    'method' => 'DELETE',
-                                                    'route' => ['order-note.destroy', $note->id],
-                                                    'class' => 'd-inline',
-                                                ]) !!}
-                                                <button type="button" class="btn btn-sm  show_confirm order-not-dlt">
-                                                    <i class="ti ti-trash text-white py-1" data-bs-toggle="tooltip"
-                                                        title="Delete"></i>
-                                                </button>
-                                                {!! Form::close() !!}
-                                                @endpermission
-                                            </div>
-                                        </div>
-                                    @elseif ($note->status == '' && $note->note_type == 'private_note')
-                                        <div class="card-header note-bg-color admin-private-note">
-                                            <span class="tl-btn licence-btn ">
-                                                {{ $note->notes }}
-                                            </span>
-                                            <div class="cart-time-wrapper">
-                                                <span
-                                                    class="time">{{ $note->created_at->format('d M Y h:i A') }}{{ __(' by ') }}{{ Auth::user()->name ?? '' }}</span>
-                                                @permission('Delete Order Note')
-                                                {!! Form::open([
-                                                    'method' => 'DELETE',
-                                                    'route' => ['order-note.destroy', $note->id],
-                                                    'class' => 'd-inline',
-                                                ]) !!}
-                                                <button type="button" class="btn btn-sm  show_confirm order-not-dlt">
-                                                    <i class="ti ti-trash text-white py-1" data-bs-toggle="tooltip"
-                                                        title="Delete"></i>
-                                                </button>
-                                                {!! Form::close() !!}
-                                                @endpermission
-                                            </div>
-                                        </div>
-                                    @elseif ($note->status == '' && $note->note_type == 'to_customer')
-                                        <div class="card-header note-bg-color customer-note">
-                                            <span class="tl-btn licence-btn ">
-                                                {{ $note->notes }}
-                                            </span>
-                                            <div class="cart-time-wrapper">
-                                                <span
-                                                    class="time">{{ $note->created_at->format('d M Y h:i A') }}{{ __(' by ') }}{{ Auth::user()->name ?? '' }}</span>
-                                                @permission('Delete Order Note')
-                                                {!! Form::open([
-                                                    'method' => 'DELETE',
-                                                    'route' => ['order-note.destroy', $note->id],
-                                                    'class' => 'd-inline',
-                                                ]) !!}
-                                                <button type="button" class="btn btn-sm  show_confirm order-not-dlt">
-                                                    <i class="ti ti-trash text-white py-1" data-bs-toggle="tooltip"
-                                                        title="Delete"></i>
-                                                </button>
-                                                {!! Form::close() !!}
-                                                @endpermission
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                </div>
-                            @endforeach
-                            @permission('Create Order Note') 
-                            {{ Form::open(['route' => 'order-note.store', 'method' => 'POST', 'id' => 'choice_form', 'enctype' => 'multipart/form-data']) }}
-                            <div class="row">
-                                <input type="hidden" class="hidden" name="order_id" value="{{ $order['id'] }}">
-                                <div class="form-group col-md-8">
-                                    {!! Form::label('', __('Note'), ['class' => 'form-label']) !!}
-                                    <textarea name="note" rows="3" class="autogrow form-control" placeholder="message here..."></textarea>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    {!! Form::label('', __('Note Type'), ['class' => 'form-label']) !!}
-                                    {!! Form::select('note_type', ['private_note' => 'Private Note', 'to_customer' => 'To Customer'], null, [
-                                        'class' => 'form-control',
-                                    ]) !!}
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <input type="submit" value="Create" class="btn btn-primary ">
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
-                            @endpermission 
-                        </div>
-                    </div>
-                    @endpermission 
-                    @stack('showdigitalproductattachment')
-                    @stack('CheckoutAttachment')
-                    @stack('ViewAdditionalFields')
+                    
+                    
                 </div>
             </div>
         </div>
@@ -592,22 +393,7 @@
                 variant_id: variant_id,
                 order_id: order_id
             }
-            $.ajax({
-                url: '{{ route('order.return') }}',
-                method: 'POST',
-                data: data,
-                context: this,
-                success: function(data) {
-                    $('#loader').fadeOut();
-                    if (data.status == 'error') {
-                        show_toastr('{{ __('Error') }}', data.message, 'error')
-                    } else {
-                        show_toastr('{{ __('Success') }}', data.message, 'success')
-                        $(this).parent().append('<h6 class="text-danger">{{ __('Returned') }}</h6>');
-                        $(this).parent().find('.order_return').remove();
-                    }
-                }
-            });
+            
         });
 
         $(document).on('click', '.order_status', function() {
@@ -672,18 +458,7 @@
                 order_id: "{{ $order['id'] }}",
             }
 
-            $.ajax({
-                url: '{{ route('order.assign') }}',
-                method: 'POST',
-                data: data,
-                context: this,
-                success: function(data) {
-                    $('#loader').fadeOut();
-                    show_toastr('{{ __('Success') }}', data.message, 'success')
-
-
-                }
-            });
+            
         });
 
         function myFunction() {

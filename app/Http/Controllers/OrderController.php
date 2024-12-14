@@ -46,40 +46,29 @@ class OrderController extends Controller
         }
     }
 
-    // public function show(Order $order, $id)
-    // {
+    public function show($id)
+    {
+        $order = Order::order_detail($id);
+        $orders = Order::find($id);
+        
+        return view('order.order_show', compact('order', 'orders'));
+    }
 
-    //     $id = Crypt::decrypt($id);
-    //     $order = Order::order_detail($id);
-    //     $orders = Order::find($id);
-    //     return view('order.order_show', compact('order', 'orders'));
-    // }
-
-    // public function order_view(Request $request, $id)
-    // {
-    //     if (auth()->user() && auth()->user()->isAbleTo('Show Order')) {
-    //         try {
-    //             $id = Crypt::decrypt($id);
-    //             $order = Order::order_detail($id);
-    //             $store_id = Store::where('id', getCurrentStore())->first();
-    //             $order_notes = OrderNote::where('order_id', $id)->where('theme_id', $store_id->theme_id)->where('store_id', getCurrentStore())->get();
-    //             $store = Cache::remember('store_' . getCurrentStore(), 3600, function () {
-    //                 return Store::where('id', getCurrentStore())->first();
-    //             });
-    //             $deliveryboys = DeliveryBoy::where('theme_id', $store_id->theme_id)->where('store_id', getCurrentStore())->pluck('name', 'id')->prepend('Assign to deliveryboy', "");
-    //             if (!empty($order['message'])) {
-    //                 return redirect()->back()->with('error', __('Order Not Found.'));
-    //             }
-    //             return view('order.view', compact('order', 'store', 'order_notes', 'deliveryboys'));
-    //         } catch (DecryptException $e) {
-    //             return redirect()->back()->with('error', __('Something was wrong.'));
-    //         } catch (\Exception $e) {
-    //             return redirect()->back()->with('error', __('Something was wrong.'));
-    //         }
-    //     } else {
-    //         return redirect()->back()->with('error', __('Permission denied.'));
-    //     }
-    // }
+    public function order_view(Request $request, $id)
+    {
+        if (auth()->user() && auth()->user()->isAbleTo('Show Order')) {
+                
+                $order = Order::order_detail($id);
+                $store_id = getCurrentStore();
+                
+                
+                return view('order.view', compact('order',   ));
+            
+            
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
 
     // public function applycoupon(Request $request, $slug)
     // {
@@ -335,87 +324,37 @@ class OrderController extends Controller
     //     return response()->json($return);
     // }
 
-    // public function order_status_change(Request $request)
-    // {
+    public function order_status_change(Request $request)
+    {
        
-    //     $data['order_id'] = $request->id;
-    //     $data['order_status'] = $request->delivered;
-    //     $responce = Order::order_status_change($data);
-    //     $order = Order::order_detail($data['order_id']);
-    //     $d_order = Order::find($data['order_id']);
-    //     $store = Store::where('id', $d_order->store_id)->first();
-    //     $dArr = [
-    //         'order_id' => $data['order_id'],
-    //         'order_status' => $data['order_status']
-    //     ];
-    //     $owner = User::find($store->created_by);
-    //     try {
-    //         $order_id = Crypt::encrypt($data['order_id']);
-    //         $resp = Utility::sendEmailTemplate('Status Change', $order['delivery_informations']['email'], $dArr, $owner, $store, $order_id);
-    //     } catch (\Exception $e) {
-    //         $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
-    //     }
-       
-    //     if (module_is_active('ReviewReminder')) {
-    
-    //             event(new SendOrderReviewMail($data, $order, $dArr, $owner, $store, $order_id));
+        $data['order_id'] = $request->id;
+        $data['order_status'] = $request->delivered;
+        $responce = Order::order_status_change($data);
+        
+        
+        if ($responce['status'] == 'success') {
             
-    //     }
+            $return['status'] = 'success';
+            $return['order_status'] = ucfirst($data['order_status']) ?? '';
+            $return['message'] = $responce['message'] . ((isset($msgs)) ? '<br> <span class="text-danger">' . $msgs . '</span>' : '');
+            return response()->json($return);
+        } else {
+            $return['status'] = false;
+            $return['message'] = $responce['message'];
+            return response()->json($return);
+        }
 
-    //     OrderNote::order_note_data([
-    //         'customer_id' => $d_order->customer_id,
-    //         'order_id' => $request->id,
-    //         'status' => 'Order status change',
-    //         'changeble_status' => $request->delivered,
-    //         'theme_id' => $store->theme_id,
-    //         'store_id' => $d_order->store_id
-    //     ]);
-    //     try {
-    //         $mobile_no = $order['delivery_informations']['phone'];
-    //         $msg = __("Hello, Welcome to $store->name .Your Order is $request->delivered, !Hi $order->product_order_id, Thank you for Shopping");
+    }
 
-    //         $resp = Utility::SendMsgs('Status Change', $mobile_no, $msg);
-    //     } catch (\Exception $e) {
-    //         $smtp_error = __('Invalid OAuth access token - Cannot parse access token');
-    //     }
-    //     if ($responce['status'] == 'success') {
-    //         $module = 'Status Change';
-    //         $store = Cache::remember('store_' . getCurrentStore(), 3600, function ()  {
-    //             return Store::find(getCurrentStore());
-    //         });
-    //         $webhook = Utility::webhook($module, $store->id);
-    //         if ($webhook) {
-    //             $order = Order::order_detail($request->id);
-    //             $parameter = json_encode($order);
-
-    //             // 1 parameter is  URL , 2 parameter is data , 3 parameter is method
-    //             $status = Utility::WebhookCall($webhook['url'], $parameter, $webhook['method']);
-    //             if ($status != true) {
-    //                 $msgs = 'Webhook call failed.';
-    //             }
-    //         }
-
-    //         $return['status'] = 'success';
-    //         $return['order_status'] = ucfirst($data['order_status']) ?? '';
-    //         $return['message'] = $responce['message'] . ((isset($msgs)) ? '<br> <span class="text-danger">' . $msgs . '</span>' : '');
-    //         return response()->json($return);
-    //     } else {
-    //         $return['status'] = false;
-    //         $return['message'] = $responce['message'];
-    //         return response()->json($return);
-    //     }
-
-    // }
-
-    // public function order_payment_status(Request $request)
-    // {
-    //     $order = Order::find($request->order_id);
-    //     $order->payment_status = $request->payment_status;
-    //     $order->save();
-    //     $return['status'] = 'success';
-    //     $return['message'] = __('Payment status has been changed.');
-    //     return response()->json($return);
-    // }
+    public function order_payment_status(Request $request)
+    {
+        $order = Order::find($request->order_id);
+        $order->payment_status = $request->payment_status;
+        $order->save();
+        $return['status'] = 'success';
+        $return['message'] = __('Payment status has been changed.');
+        return response()->json($return);
+    }
 
     // public function orderdetails($slug, $order_id)
     // {
@@ -489,19 +428,16 @@ class OrderController extends Controller
 
     // }
 
-    // public function destroy(Order $order)
-    // {
+    public function destroy(Order $order)
+    {
 
-    //     if (auth()->user() && auth()->user()->isAbleTo('Delete Order')) {
-    //         OrderTaxDetail::where('order_id', $order->id)->delete();
-    //         OrderCouponDetail::where('order_id', $order->id)->delete();
-    //         OrderBillingDetail::where('order_id', $order->id)->delete();
-    //         Order::where('id', $order->id)->delete();
-    //         return redirect()->back()->with('success', __('Order Delete succefully.'));
-    //     } else {
-    //         return redirect()->back()->with('error', __('Permission denied.'));
-    //     }
-    // }
+        if (auth()->user() && auth()->user()->isAbleTo('Delete Order')) {
+            Order::where('id', $order->id)->delete();
+            return redirect()->back()->with('success', __('Order Delete succefully.'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
 
     // public function updateStatus(Request $request, $id)
     // {
