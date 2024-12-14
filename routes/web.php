@@ -602,11 +602,11 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::post('theme-enable', [AddonController::class, 'ThemeEnable'])->name('theme.enable');
 
 //     // Report
-    Route::resource('reports', ReportController::class);
+//     Route::resource('reports', ReportController::class);
 //     Route::get('reports-chart', [ReportController::class, 'reports_chart'])->name('reports.chart');
 //     Route::get('report-export', [ReportController::class, 'export'])->name('reports.export');
-//     Route::get('order-reports', [ReportController::class, 'OrderReport'])->name('reports.order_report');
-//     Route::get('order-reports-chart', [ReportController::class, 'order_reports_chart'])->name('reports.order.chart');
+    Route::get('order-reports', [ReportController::class, 'OrderReport'])->name('reports.order_report');
+    Route::get('order-reports-chart', [ReportController::class, 'order_reports_chart'])->name('reports.order.chart');
 //     Route::get('order-report-export', [ReportController::class, 'order_report_export'])->name('order.reports.export');
 //     Route::get('order-barchart-report-export', [ReportController::class, 'order_bar_report_export'])->name('order.barchart.reports.export');
 //     Route::get('order-reports-data', [ReportController::class, 'BarChartOrderReport'])->name('orders.barchart_order_report');

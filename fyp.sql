@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2024 at 10:04 PM
+-- Generation Time: Dec 14, 2024 at 04:04 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -155,7 +155,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (11, '2024_01_23_061635_create_orders_table', 5),
 (12, '2023_12_15_112855_create_customers_table', 6),
 (13, '2023_12_29_092412_create_coupons_table', 7),
-(14, '2023_12_29_100550_create_user_coupons_table', 8);
+(14, '2023_12_29_100550_create_user_coupons_table', 8),
+(15, '2024_02_02_030433_create_purchased_products_table', 9),
+(16, '2024_02_07_090758_create_order_coupon_details_table', 10);
 
 -- --------------------------------------------------------
 
@@ -198,7 +200,29 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `product_order_id`, `order_date`, `customer_id`, `is_guest`, `product_json`, `product_id`, `product_price`, `coupon_price`, `delivery_price`, `tax_price`, `final_price`, `return_price`, `payment_comment`, `payment_type`, `payment_status`, `delivered_status`, `delivery_date`, `confirmed_date`, `return_status`, `return_date`, `cancel_date`, `additional_note`, `theme_id`, `store_id`, `created_at`, `updated_at`) VALUES
-(1, '1734123680', '2024-12-13 21:03:22', 0, 0, '{\"1\":{\"product_id\":1,\"name\":\"Acton Clay\",\"image\":\"themes\\/grocery\\/uploads\\/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg\",\"quantity\":1,\"orignal_price\":1000,\"per_product_discount_price\":null,\"discount_price\":null,\"final_price\":1000,\"id\":\"1\",\"tax\":0,\"total_orignal_price\":1000,\"originalquantity\":100,\"variant_id\":0,\"variant_name\":null,\"return\":0}}', '1', 0.10, 0.00, 0.00, 0.00, 0.10, 0.00, NULL, 'POS', 'Paid', 0, NULL, NULL, 0, NULL, NULL, NULL, 'grocery', 1, '2024-12-13 16:03:22', '2024-12-13 16:03:22');
+(13, '1734176530', '2024-12-14 11:42:12', 0, 0, '{\"1\":{\"product_id\":1,\"name\":\"Acton Clay\",\"image\":\"themes\\/grocery\\/uploads\\/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg\",\"quantity\":\"5\",\"orignal_price\":1000,\"per_product_discount_price\":null,\"discount_price\":null,\"final_price\":1000,\"id\":\"1\",\"tax\":0,\"total_orignal_price\":5000,\"originalquantity\":94,\"variant_id\":0,\"variant_name\":null,\"return\":0}}', '1', 4000.00, 1000.00, 0.00, 0.00, 4000.00, 0.00, NULL, 'POS', 'Paid', 0, NULL, NULL, 0, NULL, NULL, NULL, 'grocery', 1, '2024-12-14 06:42:12', '2024-12-14 06:42:12'),
+(14, '1734177088', '2024-12-14 11:51:30', 0, 0, '{\"1\":{\"product_id\":1,\"name\":\"Acton Clay\",\"image\":\"themes\\/grocery\\/uploads\\/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg\",\"quantity\":1,\"orignal_price\":1000,\"per_product_discount_price\":null,\"discount_price\":null,\"final_price\":1000,\"id\":\"1\",\"tax\":0,\"total_orignal_price\":1000,\"originalquantity\":89,\"variant_id\":0,\"variant_name\":null,\"return\":0}}', '1', 500.00, 0.00, 0.00, 0.00, 500.00, 0.00, NULL, 'POS', 'Unpaid', 1, NULL, NULL, 0, NULL, NULL, NULL, 'grocery', 1, '2024-12-14 06:51:30', '2024-12-14 08:01:37');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_coupon_details`
+--
+
+CREATE TABLE `order_coupon_details` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `order_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `coupon_id` int(11) NOT NULL DEFAULT 0,
+  `coupon_name` varchar(255) DEFAULT NULL,
+  `coupon_code` varchar(255) DEFAULT NULL,
+  `coupon_discount_type` varchar(255) DEFAULT NULL,
+  `coupon_discount_number` double(8,2) NOT NULL DEFAULT 0.00,
+  `coupon_discount_amount` double(8,2) NOT NULL DEFAULT 0.00,
+  `coupon_final_amount` double(8,2) NOT NULL DEFAULT 0.00,
+  `theme_id` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -266,7 +290,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `slug`, `maincategory_id`, `subcategory_id`, `status`, `price`, `sale_price`, `product_stock`, `product_weight`, `cover_image_path`, `cover_image_url`, `stock_status`, `description`, `detail`, `specification`, `theme_id`, `store_id`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Acton Clay', 'Acton-Clay', 1, 1, 1, 1000.00, 200.00, 99, 888, 'themes/grocery/uploads/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg', 'http://localhost:8000/themes/grocery/uploads/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg', '0', '<p>sadasd</p>', '<p>ugguyguyguyguyguyguyg</p>', '<p>guyuyygug</p>', 'grocery', 1, 2, '2024-12-13 09:24:16', '2024-12-13 16:03:22');
+(1, 'Acton Clay', 'Acton-Clay', 1, 1, 1, 1000.00, 200.00, 78, 888, 'themes/grocery/uploads/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg', 'http://localhost:8000/themes/grocery/uploads/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg', '0', '<p>sadasd</p>', '<p>ugguyguyguyguyguyguyg</p>', '<p>guyuyygug</p>', 'grocery', 1, 2, '2024-12-13 09:24:16', '2024-12-14 08:29:49');
 
 -- --------------------------------------------------------
 
@@ -294,6 +318,33 @@ INSERT INTO `product_images` (`id`, `product_id`, `image_path`, `image_url`, `th
 (9, 1, 'themes/grocery/uploads/17341058411352.jfif', 'http://localhost:8000/themes/grocery/uploads/17341058411352.jfif', 'grocery', 1, '2024-12-13 11:04:01', '2024-12-13 11:04:01'),
 (10, 1, 'themes/grocery/uploads/17341058416020.webp', 'http://localhost:8000/themes/grocery/uploads/17341058416020.webp', 'grocery', 1, '2024-12-13 11:04:01', '2024-12-13 11:04:01'),
 (11, 1, 'themes/grocery/uploads/17341058411888.jfif', 'http://localhost:8000/themes/grocery/uploads/17341058411888.jfif', 'grocery', 1, '2024-12-13 11:04:01', '2024-12-13 11:04:01');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `purchased_products`
+--
+
+CREATE TABLE `purchased_products` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `customer_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `product_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `order_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `theme_id` varchar(255) DEFAULT NULL,
+  `store_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `purchased_products`
+--
+
+INSERT INTO `purchased_products` (`id`, `customer_id`, `product_id`, `order_id`, `theme_id`, `store_id`, `created_at`, `updated_at`) VALUES
+(5, 0, 1, 12, 'grocery', 1, '2024-12-14 06:35:50', '2024-12-14 06:35:50'),
+(6, 0, 1, 13, 'grocery', 1, '2024-12-14 06:42:12', '2024-12-14 06:42:12'),
+(7, 0, 1, 14, 'grocery', 1, '2024-12-14 06:51:30', '2024-12-14 06:51:30'),
+(8, 2, 1, 15, 'grocery', 1, '2024-12-14 08:29:49', '2024-12-14 08:29:49');
 
 -- --------------------------------------------------------
 
@@ -407,6 +458,13 @@ ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `order_coupon_details`
+--
+ALTER TABLE `order_coupon_details`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_coupon_details_order_id_foreign` (`order_id`);
+
+--
 -- Indexes for table `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
@@ -432,6 +490,12 @@ ALTER TABLE `products`
 -- Indexes for table `product_images`
 --
 ALTER TABLE `product_images`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `purchased_products`
+--
+ALTER TABLE `purchased_products`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -488,13 +552,19 @@ ALTER TABLE `main_categories`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `order_coupon_details`
+--
+ALTER TABLE `order_coupon_details`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -513,6 +583,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `product_images`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `purchased_products`
+--
+ALTER TABLE `purchased_products`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `sub_categories`
@@ -535,6 +611,12 @@ ALTER TABLE `user_coupons`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `order_coupon_details`
+--
+ALTER TABLE `order_coupon_details`
+  ADD CONSTRAINT `order_coupon_details_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `products`

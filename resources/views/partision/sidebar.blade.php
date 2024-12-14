@@ -668,7 +668,7 @@
                     ),
                     26 => 
                     array (
-                      'title' => 'Reports',
+                      'title' => 'Sales Report',
                       'icon' => 'chart-bar',
                       'name' => 'reports',
                       'parent' => NULL,
@@ -679,200 +679,200 @@
                       'depend_on' => 
                       array (
                       ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage Reports',
-                    ),
-                    27 => 
-                    array (
-                      'title' => 'Customer Reports',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'reports',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Reports',
-                    ),
-                    28 => 
-                    array (
-                      'title' => 'Order Reports',
-                      'icon' => 'home',
-                      'name' => 'order_reports',
-                      'parent' => 'reports',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage Order Reports',
-                    ),
-                    29 => 
-                    array (
-                      'title' => 'Sales Report',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'order_reports',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
                       'route' => 'reports.order_report',
                       'module' => 'Base',
-                      'permission' => '',
+                      'permission' => 'Manage Reports',
                     ),
-                    30 => 
-                    array (
-                      'title' => 'Sales Product Report',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'order_reports',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.order_product_report',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    31 => 
-                    array (
-                      'title' => 'Sales Category Report',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'order_reports',
-                      'order' => 3,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.order_category_report',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    32 => 
-                    array (
-                      'title' => 'Sales Downloadable Product',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'order_reports',
-                      'order' => 4,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.order_downloadable_report',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    33 => 
-                    array (
-                      'title' => 'Sales Brand Report',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'order_reports',
-                      'order' => 5,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.order_brand_report',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    34 => 
-                    array (
-                      'title' => 'Country Based Order Report',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'order_reports',
-                      'order' => 6,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.orderCountryReport',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    35 => 
-                    array (
-                      'title' => 'Top Sales Reports',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'reports',
-                      'order' => 3,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.top_product',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    36 => 
-                    array (
-                      'title' => 'Order Status Reports',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'order_reports',
-                      'order' => 7,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.orderStatusReport',
-                      'module' => 'Base',
-                      'permission' => '',
-                    ),
-                    37 => 
-                    array (
-                      'title' => 'Stock Reports',
-                      'icon' => 'home',
-                      'name' => '',
-                      'parent' => 'reports',
-                      'order' => 4,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'reports.stock_report',
-                      'module' => 'Base',
-                      'permission' => 'Manage Stock Reports',
-                    ),
+                    // 27 => 
+                    // array (
+                    //   'title' => 'Customer Reports',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'reports',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Reports',
+                    // ),
+                    // 28 => 
+                    // array (
+                    //   'title' => 'Order Reports',
+                    //   'icon' => 'home',
+                    //   'name' => 'order_reports',
+                    //   'parent' => 'reports',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => '',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Order Reports',
+                    // ),
+                    // 29 => 
+                    // array (
+                    //   'title' => 'Sales Report',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'order_reports',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.order_report',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 30 => 
+                    // array (
+                    //   'title' => 'Sales Product Report',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'order_reports',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.order_product_report',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 31 => 
+                    // array (
+                    //   'title' => 'Sales Category Report',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'order_reports',
+                    //   'order' => 3,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.order_category_report',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 32 => 
+                    // array (
+                    //   'title' => 'Sales Downloadable Product',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'order_reports',
+                    //   'order' => 4,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.order_downloadable_report',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 33 => 
+                    // array (
+                    //   'title' => 'Sales Brand Report',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'order_reports',
+                    //   'order' => 5,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.order_brand_report',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 34 => 
+                    // array (
+                    //   'title' => 'Country Based Order Report',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'order_reports',
+                    //   'order' => 6,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.orderCountryReport',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 35 => 
+                    // array (
+                    //   'title' => 'Top Sales Reports',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'reports',
+                    //   'order' => 3,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.top_product',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 36 => 
+                    // array (
+                    //   'title' => 'Order Status Reports',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'order_reports',
+                    //   'order' => 7,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.orderStatusReport',
+                    //   'module' => 'Base',
+                    //   'permission' => '',
+                    // ),
+                    // 37 => 
+                    // array (
+                    //   'title' => 'Stock Reports',
+                    //   'icon' => 'home',
+                    //   'name' => '',
+                    //   'parent' => 'reports',
+                    //   'order' => 4,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'reports.stock_report',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Stock Reports',
+                    // ),
                     38 => 
                     array (
-                      'title' => 'Marketing',
+                      'title' => 'Coupon',
                       'icon' => 'confetti',
                       'name' => 'marketing',
                       'parent' => NULL,
@@ -883,112 +883,112 @@
                       'depend_on' => 
                       array (
                       ),
-                      'route' => '',
+                      'route' => 'coupon.index',
                       'module' => 'Base',
                       'permission' => 'Manage Marketing',
                     ),
-                    39 => 
-                    array (
-                      'title' => 'Coupon',
-                      'icon' => 'home',
-                      'name' => 'coupon',
-                      'parent' => 'marketing',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'coupon.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Coupon',
-                    ),
-                    40 => 
-                    array (
-                      'title' => 'Newsletter',
-                      'icon' => 'home',
-                      'name' => 'newsletter',
-                      'parent' => 'marketing',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'newsletter.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Newsletter',
-                    ),
-                    41 => 
-                    array (
-                      'title' => 'Flash Sale',
-                      'icon' => 'home',
-                      'name' => 'flashsale',
-                      'parent' => 'marketing',
-                      'order' => 3,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'flash-sale.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Flash Sale',
-                    ),
-                    42 => 
-                    array (
-                      'title' => 'Wishlist',
-                      'icon' => 'home',
-                      'name' => 'wishlist',
-                      'parent' => 'marketing',
-                      'order' => 4,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'wishlist.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Wishlist',
-                    ),
-                    43 => 
-                    array (
-                      'title' => 'Abandon Cart',
-                      'icon' => 'home',
-                      'name' => 'abandon_cart',
-                      'parent' => 'marketing',
-                      'order' => 5,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'abandon.carts.handled',
-                      'module' => 'Base',
-                      'permission' => 'Manage Cart',
-                    ),
-                    44 => 
-                    array (
-                      'title' => 'Support Ticket',
-                      'icon' => 'ticket',
-                      'name' => 'support_ticket.index',
-                      'parent' => NULL,
-                      'order' => 280,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'support_ticket.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Support Ticket',
-                    ),
+                    // 39 => 
+                    // array (
+                    //   'title' => 'Coupon',
+                    //   'icon' => 'home',
+                    //   'name' => 'coupon',
+                    //   'parent' => 'marketing',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'coupon.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Coupon',
+                    // ),
+                    // 40 => 
+                    // array (
+                    //   'title' => 'Newsletter',
+                    //   'icon' => 'home',
+                    //   'name' => 'newsletter',
+                    //   'parent' => 'marketing',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'newsletter.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Newsletter',
+                    // ),
+                    // 41 => 
+                    // array (
+                    //   'title' => 'Flash Sale',
+                    //   'icon' => 'home',
+                    //   'name' => 'flashsale',
+                    //   'parent' => 'marketing',
+                    //   'order' => 3,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'flash-sale.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Flash Sale',
+                    // ),
+                    // 42 => 
+                    // array (
+                    //   'title' => 'Wishlist',
+                    //   'icon' => 'home',
+                    //   'name' => 'wishlist',
+                    //   'parent' => 'marketing',
+                    //   'order' => 4,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'wishlist.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Wishlist',
+                    // ),
+                    // 43 => 
+                    // array (
+                    //   'title' => 'Abandon Cart',
+                    //   'icon' => 'home',
+                    //   'name' => 'abandon_cart',
+                    //   'parent' => 'marketing',
+                    //   'order' => 5,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'abandon.carts.handled',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Cart',
+                    // ),
+                    // 44 => 
+                    // array (
+                    //   'title' => 'Support Ticket',
+                    //   'icon' => 'ticket',
+                    //   'name' => 'support_ticket.index',
+                    //   'parent' => NULL,
+                    //   'order' => 280,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'support_ticket.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Support Ticket',
+                    // ),
                     45 => 
                     array (
                       'title' => 'POS',
@@ -1006,74 +1006,74 @@
                       'module' => 'Base',
                       'permission' => 'Manage Pos',
                     ),
-                    46 => 
-                    array (
-                      'title' => 'CMS',
-                      'icon' => 'layout-cards',
-                      'name' => 'cms',
-                      'parent' => NULL,
-                      'order' => 320,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage CMS',
-                    ),
-                    47 => 
-                    array (
-                      'title' => 'Menu',
-                      'icon' => 'home',
-                      'name' => 'menu',
-                      'parent' => 'cms',
-                      'order' => 1,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'menus.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Menu',
-                    ),
-                    48 => 
-                    array (
-                      'title' => 'Pages',
-                      'icon' => 'home',
-                      'name' => 'pages',
-                      'parent' => 'cms',
-                      'order' => 2,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'pages.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Page',
-                    ),
-                    49 => 
-                    array (
-                      'title' => 'Blog Section',
-                      'icon' => 'home',
-                      'name' => 'blog_section',
-                      'parent' => 'cms',
-                      'order' => 3,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => '',
-                      'module' => 'Base',
-                      'permission' => 'Manage Blog',
-                    ),
+                    // 46 => 
+                    // array (
+                    //   'title' => 'CMS',
+                    //   'icon' => 'layout-cards',
+                    //   'name' => 'cms',
+                    //   'parent' => NULL,
+                    //   'order' => 320,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => '',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage CMS',
+                    // ),
+                    // 47 => 
+                    // array (
+                    //   'title' => 'Menu',
+                    //   'icon' => 'home',
+                    //   'name' => 'menu',
+                    //   'parent' => 'cms',
+                    //   'order' => 1,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'menus.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Menu',
+                    // ),
+                    // 48 => 
+                    // array (
+                    //   'title' => 'Pages',
+                    //   'icon' => 'home',
+                    //   'name' => 'pages',
+                    //   'parent' => 'cms',
+                    //   'order' => 2,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'pages.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Page',
+                    // ),
+                    // 49 => 
+                    // array (
+                    //   'title' => 'Blog Section',
+                    //   'icon' => 'home',
+                    //   'name' => 'blog_section',
+                    //   'parent' => 'cms',
+                    //   'order' => 3,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => '',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Blog',
+                    // ),
                     50 => 
                     array (
                       'title' => 'Blog',
@@ -1159,23 +1159,23 @@
                       'module' => 'Base',
                       'permission' => 'Manage Contact Us',
                     ),
-                    55 => 
-                    array (
-                      'title' => 'Plan',
-                      'icon' => 'trophy',
-                      'name' => 'plan',
-                      'parent' => NULL,
-                      'order' => 340,
-                      'ignore_if' => 
-                      array (
-                      ),
-                      'depend_on' => 
-                      array (
-                      ),
-                      'route' => 'plan.index',
-                      'module' => 'Base',
-                      'permission' => 'Manage Plan',
-                    ),
+                    // 55 => 
+                    // array (
+                    //   'title' => 'Plan',
+                    //   'icon' => 'trophy',
+                    //   'name' => 'plan',
+                    //   'parent' => NULL,
+                    //   'order' => 340,
+                    //   'ignore_if' => 
+                    //   array (
+                    //   ),
+                    //   'depend_on' => 
+                    //   array (
+                    //   ),
+                    //   'route' => 'plan.index',
+                    //   'module' => 'Base',
+                    //   'permission' => 'Manage Plan',
+                    // ),
                     56 => 
                     array (
                       'title' => 'Settings',
