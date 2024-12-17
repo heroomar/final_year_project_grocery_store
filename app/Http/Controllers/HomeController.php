@@ -35,11 +35,11 @@ class HomeController extends Controller
      */
     public function Landing()
     {
-        if (auth()->user()) {
-            return redirect('dashboard');
-        }
+        // if (auth()->user()) {
+        //     return redirect('dashboard');
+        // }
         
-        return view('home');
+        return view('front.index');
         
     }
 
