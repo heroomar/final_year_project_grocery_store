@@ -21,7 +21,7 @@
         <div class="m-header">
             <a href="{{ route('dashboard') }}" class="b-brand">
                 <!-- ========   change your logo hear   ============ -->
-               <img src="{{ isset($company_logo) && !empty($company_logo) ? $company_logo . '?timestamp=' . time() : $logo . '/logo-dark.svg' . '?timestamp=' . time() }}"
+               <img src="{{ url('/storage/uploads/logo/logo-light.png') }}"
                 alt="" class="logo logo-lg" />
             </a>
         </div>

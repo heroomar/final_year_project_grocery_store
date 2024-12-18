@@ -107,11 +107,13 @@ $setting['footer_text'] = '';
             if (custdarklayout.checked) {
                 document.querySelector(".m-header > .b-brand > .logo-lg").setAttribute("src",
                     "{{ asset(Storage::url('uploads/logo/logo-light.png')) }}");
-                    if (rtl.checked) {
-                        document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/rtl-style-dark.css') }}");
-                        document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
-                        document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
-                    } else if (!rtl.checked) {
+                    // if (rtl.checked) {
+                    //     document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/rtl-style-dark.css') }}");
+                    //     document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
+                    //     document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
+                    // } else
+                    //  if (!rtl.checked) {
+                    if (1) {
                         document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style-dark.css') }}");
                         document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/custom.css') }}");
                         document.querySelector('#html-dir-tag').setAttribute('dir', '');
@@ -124,11 +126,13 @@ $setting['footer_text'] = '';
             } else {
                 document.querySelector(".m-header > .b-brand > .logo-lg").setAttribute("src",
                     "{{ asset(Storage::url('uploads/logo/logo-dark.png')) }}");
-                    if (rtl.checked) {
-                        document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style-rtl.css') }}");
-                        document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
-                        document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
-                    } else if (!rtl.checked) {
+                    // if (rtl.checked) {
+                    //     document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style-rtl.css') }}");
+                    //     document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
+                    //     document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
+                    // } else 
+                    // if (!rtl.checked) {
+                        if (1) {
                         document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style.css') }}");
                         document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/custom.css') }}");
                         document.querySelector('#html-dir-tag').setAttribute('dir', '');
@@ -160,11 +164,13 @@ $setting['footer_text'] = '';
             if ($('#cust-darklayout').is(":checked")) {
                 document.querySelector(".m-header > .b-brand > .logo-lg").setAttribute("src",
                     "{{ asset(Storage::url('uploads/logo/logo-light.png')) }}");
-                    if (rtl.checked) {
-                        document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/rtl-style-dark.css') }}");
-                        document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
-                        document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
-                    } else if (!rtl.checked) {
+                    // if (rtl.checked) {
+                    //     document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/rtl-style-dark.css') }}");
+                    //     document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
+                    //     document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
+                    // } else 
+                    // if (!rtl.checked) {
+                    if (1) {
                         document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style-dark.css') }}");
                         document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/custom.css') }}");
                         document.querySelector('#html-dir-tag').setAttribute('dir', '');
@@ -177,11 +183,13 @@ $setting['footer_text'] = '';
             } else {
                 document.querySelector(".m-header > .b-brand > .logo-lg").setAttribute("src",
                     "{{ asset(Storage::url('uploads/logo/logo-dark.png')) }}");
-                    if (rtl.checked) {
-                        document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style-rtl.css') }}");
-                        document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
-                        document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
-                    } else if (!rtl.checked) {
+                    // if (rtl.checked) {
+                    //     document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style-rtl.css') }}");
+                    //     document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/rtl-custom.css') }}");
+                    //     document.querySelector('#html-dir-tag').setAttribute('dir', 'rtl');
+                    // } else 
+                    // if (!rtl.checked) {
+                    if (1) {
                         document.querySelector("#main-style-link").setAttribute("href", "{{ asset('assets/css/style.css') }}");
                         document.querySelector("#main-style-custom-link").setAttribute("href", "{{ asset('css/custom.css') }}");
                         document.querySelector('#html-dir-tag').setAttribute('dir', '');

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Setting;
+
 function __route($name, $parameters = [], $absolute = true){
     try {
         return route($name, $parameters, $absolute) ;
@@ -143,4 +145,14 @@ function SetNumberFormat($num){
 
 function SetNumber($num){
     return number_format($num,2);
+}
+
+function GetAllSettings(){
+    $setting = Setting::get()->pluck('value','name')->toArray();
+    $setting['color'] = $setting['color'] ?? 'theme-3';
+    $setting['logo_dark'] = url('/storage/uploads/logo/logo-dark.png');
+    $setting['logo_light'] = url('/storage/uploads/logo/logo-light.png');
+    $setting['favicon'] = url('/storage/uploads/logo/favicon.png');
+
+    return $setting;
 }

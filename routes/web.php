@@ -200,7 +200,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::get('/apply-coupon', [PlanCouponController::class, 'applyCoupon'])->name('apply.coupon');
     Route::resource('setting', SettingController::class);
 //     Route::post('storage-settings', [SettingController::class, 'StorageSettings'])->name('storage.settings');
-//     Route::post('business-settings', [SettingController::class, 'BusinessSettings'])->name('business.settings');
+    Route::post('business-settings', [SettingController::class, 'BusinessSettings'])->name('business.settings');
 //     Route::post('/payment-setting', [SettingController::class, 'PaymentSetting'])->name('payment.settings');
     Route::post('/setting-form', [SettingController::class, 'settingForm'])->name('setting.form');
 
