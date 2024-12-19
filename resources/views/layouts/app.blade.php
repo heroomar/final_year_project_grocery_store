@@ -146,7 +146,7 @@ $SuperadminData['metaimage'] = '';
     {!! isset($setting['storejs']) ? $setting['storejs'] :  '' !!}
 </head>
 
-<body class="{{ $themeColor ?? 'theme-3'}}">
+<body class="{{ GetAllSettings()['color'] ?? 'theme-3'}}">
     @include('partision.sidebar')
 
     @include('partision.header')

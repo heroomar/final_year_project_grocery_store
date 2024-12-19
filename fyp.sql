@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 14, 2024 at 04:04 PM
+-- Generation Time: Dec 19, 2024 at 05:08 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -20,6 +20,25 @@ SET time_zone = "+00:00";
 --
 -- Database: `fyp`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `carts`
+--
+
+CREATE TABLE `carts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `customer_id` int(11) DEFAULT 0,
+  `product_id` int(11) NOT NULL DEFAULT 0,
+  `variant_id` int(11) NOT NULL DEFAULT 0,
+  `qty` int(11) NOT NULL DEFAULT 0,
+  `price` int(11) NOT NULL DEFAULT 0,
+  `theme_id` varchar(255) NOT NULL DEFAULT ' ',
+  `store_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -124,8 +143,11 @@ CREATE TABLE `main_categories` (
 --
 
 INSERT INTO `main_categories` (`id`, `name`, `slug`, `image_url`, `image_path`, `icon_path`, `trending`, `status`, `theme_id`, `store_id`, `created_at`, `updated_at`) VALUES
-(1, 'cat1', 'collections/cat1', 'http://localhost:8000/themes/grocery/uploads/80_1733298250_Capture.PNG', 'themes/grocery/uploads/80_1733298250_Capture.PNG', '/storage/uploads/default.jpg', 0, 0, 'grocery', 1, '2024-12-04 02:14:34', '2024-12-04 02:44:10'),
-(2, 'f1111', 'collections/f1111', 'http://localhost:8000/themes/grocery/uploads/98_1733298147_Capture.PNG', 'themes/grocery/uploads/98_1733298147_Capture.PNG', '/storage/uploads/default.jpg', 0, 0, 'grocery', 1, '2024-12-04 02:42:27', '2024-12-11 09:43:57');
+(4, 'Breakfast Essentials', 'collections/breakfast-essentials', 'http://localhost:8000/storage/uploads/default.jpg', '/storage/uploads/default.jpg', '/storage/uploads/default.jpg', 0, 1, 'grocery', 1, '2024-12-19 10:04:45', '2024-12-19 10:04:45'),
+(5, 'Milk & Dairy', 'collections/milk-dairy', 'http://localhost:8000/storage/uploads/default.jpg', '/storage/uploads/default.jpg', '/storage/uploads/default.jpg', 0, 1, 'grocery', 1, '2024-12-19 10:05:03', '2024-12-19 10:05:03'),
+(6, 'Fruits & Vegetables', 'collections/fruits-vegetables', 'http://localhost:8000/storage/uploads/default.jpg', '/storage/uploads/default.jpg', '/storage/uploads/default.jpg', 0, 1, 'grocery', 1, '2024-12-19 10:05:12', '2024-12-19 10:05:12'),
+(7, 'Meat & Seafood', 'collections/meat-seafood', 'http://localhost:8000/storage/uploads/default.jpg', '/storage/uploads/default.jpg', '/storage/uploads/default.jpg', 0, 1, 'grocery', 1, '2024-12-19 10:05:20', '2024-12-19 10:05:20'),
+(8, 'Oil, Ghee & Masala', 'collections/oil-ghee-masala', 'http://localhost:8000/storage/uploads/default.jpg', '/storage/uploads/default.jpg', '/storage/uploads/default.jpg', 0, 1, 'grocery', 1, '2024-12-19 10:05:30', '2024-12-19 10:05:30');
 
 -- --------------------------------------------------------
 
@@ -157,7 +179,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (13, '2023_12_29_092412_create_coupons_table', 7),
 (14, '2023_12_29_100550_create_user_coupons_table', 8),
 (15, '2024_02_02_030433_create_purchased_products_table', 9),
-(16, '2024_02_07_090758_create_order_coupon_details_table', 10);
+(16, '2024_02_07_090758_create_order_coupon_details_table', 10),
+(17, '2024_12_18_090858_create_settings_table', 11),
+(18, '2024_01_18_103138_create_carts_table', 12);
 
 -- --------------------------------------------------------
 
@@ -285,13 +309,6 @@ CREATE TABLE `products` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `products`
---
-
-INSERT INTO `products` (`id`, `name`, `slug`, `maincategory_id`, `subcategory_id`, `status`, `price`, `sale_price`, `product_stock`, `product_weight`, `cover_image_path`, `cover_image_url`, `stock_status`, `description`, `detail`, `specification`, `theme_id`, `store_id`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Acton Clay', 'Acton-Clay', 1, 1, 1, 1000.00, 200.00, 78, 888, 'themes/grocery/uploads/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg', 'http://localhost:8000/themes/grocery/uploads/52_1734099856_extremerainfallandfloodmonitoringsystemforpakistan.jpg', '0', '<p>sadasd</p>', '<p>ugguyguyguyguyguyguyg</p>', '<p>guyuyygug</p>', 'grocery', 1, 2, '2024-12-13 09:24:16', '2024-12-14 08:29:49');
-
 -- --------------------------------------------------------
 
 --
@@ -349,6 +366,31 @@ INSERT INTO `purchased_products` (`id`, `customer_id`, `product_id`, `order_id`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `value` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `user_id`, `name`, `value`, `created_at`, `updated_at`) VALUES
+(1, NULL, 'title_text', 'grocery store', '2024-12-18 02:55:29', '2024-12-18 02:55:29'),
+(2, NULL, 'footer_text', 'grocery store', '2024-12-18 02:55:29', '2024-12-18 02:55:29'),
+(3, NULL, 'logo_dark', '/storage/uploads/logo/logo_darkpng', '2024-12-18 02:56:30', '2024-12-18 02:56:30'),
+(4, NULL, 'color', 'theme-6', '2024-12-18 03:01:56', '2024-12-18 03:01:56');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sub_categories`
 --
 
@@ -371,7 +413,18 @@ CREATE TABLE `sub_categories` (
 --
 
 INSERT INTO `sub_categories` (`id`, `name`, `image_url`, `image_path`, `icon_path`, `maincategory_id`, `status`, `theme_id`, `store_id`, `created_at`, `updated_at`) VALUES
-(1, 'sub cat', 'http://localhost:8000/themes/grocery/uploads/76_1733929039_deposit-receipt_x.png', 'themes/grocery/uploads/76_1733929039_deposit-receipt_x.png', '/storage/uploads/default.jpg', 1, 1, 'grocery', 1, '2024-12-11 09:57:19', '2024-12-11 09:57:19');
+(3, 'Eggs', 'http://localhost:8000/themes/grocery/uploads/80_1734620772_grocerapp-eggs-61e95ac1ae97f.jpeg', 'themes/grocery/uploads/80_1734620772_grocerapp-eggs-61e95ac1ae97f.jpeg', 'themes/grocery/uploads/51_1734620772_grocerapp-eggs-61e95ac1ae97f.jpeg', 4, 1, 'grocery', 1, '2024-12-19 10:06:12', '2024-12-19 10:06:12'),
+(4, 'Bread & Crumbs', 'http://localhost:8000/themes/grocery/uploads/81_1734620884_grocerapp-bread-crumbs-64dcc5819296b.jpeg', 'themes/grocery/uploads/81_1734620884_grocerapp-bread-crumbs-64dcc5819296b.jpeg', 'themes/grocery/uploads/81_1734620884_grocerapp-bread-crumbs-64dcc5819296b.jpeg', 4, 1, 'grocery', 1, '2024-12-19 10:08:04', '2024-12-19 10:08:04'),
+(5, 'Honey', 'http://localhost:8000/themes/grocery/uploads/93_1734620920_grocerapp-honey-64dcc72aabb32.jpeg', 'themes/grocery/uploads/93_1734620920_grocerapp-honey-64dcc72aabb32.jpeg', 'themes/grocery/uploads/97_1734620920_grocerapp-honey-64dcc72aabb32.jpeg', 4, 1, 'grocery', 1, '2024-12-19 10:08:40', '2024-12-19 10:08:40'),
+(6, 'Raw & Fresh Milk', 'http://localhost:8000/themes/grocery/uploads/96_1734622157_grocerapp-raw-fresh-milk-64dca9154de75.jpeg', 'themes/grocery/uploads/96_1734622157_grocerapp-raw-fresh-milk-64dca9154de75.jpeg', 'themes/grocery/uploads/51_1734622157_grocerapp-raw-fresh-milk-64dca9154de75.jpeg', 5, 1, 'grocery', 1, '2024-12-19 10:29:17', '2024-12-19 10:29:17'),
+(7, 'UHT Milk', 'http://localhost:8000/themes/grocery/uploads/86_1734622187_grocerapp-uht-milk-66a9ff2168a65.jpeg', 'themes/grocery/uploads/86_1734622187_grocerapp-uht-milk-66a9ff2168a65.jpeg', 'themes/grocery/uploads/28_1734622187_grocerapp-uht-milk-66a9ff2168a65.jpeg', 5, 1, 'grocery', 1, '2024-12-19 10:29:47', '2024-12-19 10:29:47'),
+(8, 'Powdered Milk', 'http://localhost:8000/themes/grocery/uploads/49_1734622250_grocerapp-powdered-milk-671371a902357.jpeg', 'themes/grocery/uploads/49_1734622250_grocerapp-powdered-milk-671371a902357.jpeg', 'themes/grocery/uploads/17_1734622251_grocerapp-powdered-milk-671371a902357.jpeg', 5, 1, 'grocery', 1, '2024-12-19 10:30:51', '2024-12-19 10:30:51'),
+(9, 'Chicken', 'http://localhost:8000/themes/grocery/uploads/34_1734623205_grocerapp-chicken-61e92dd43796d.jpeg', 'themes/grocery/uploads/34_1734623205_grocerapp-chicken-61e92dd43796d.jpeg', 'themes/grocery/uploads/37_1734623206_grocerapp-chicken-61e92dd43796d.jpeg', 7, 1, 'grocery', 1, '2024-12-19 10:46:46', '2024-12-19 10:46:46'),
+(10, 'Fish & Sea Food', 'http://localhost:8000/themes/grocery/uploads/32_1734623231_grocerapp-boneless-fish-61e944f72fd17.jpeg', 'themes/grocery/uploads/32_1734623231_grocerapp-boneless-fish-61e944f72fd17.jpeg', 'themes/grocery/uploads/73_1734623231_grocerapp-boneless-fish-61e944f72fd17.jpeg', 7, 1, 'grocery', 1, '2024-12-19 10:47:11', '2024-12-19 10:47:11'),
+(11, 'Mutton', 'http://localhost:8000/themes/grocery/uploads/59_1734623255_grocerapp-mutton-61e92dff00785.jpeg', 'themes/grocery/uploads/59_1734623255_grocerapp-mutton-61e92dff00785.jpeg', 'themes/grocery/uploads/90_1734623255_grocerapp-mutton-61e92dff00785.jpeg', 7, 1, 'grocery', 1, '2024-12-19 10:47:35', '2024-12-19 10:47:35'),
+(12, 'Cooking Oil', 'http://localhost:8000/themes/grocery/uploads/60_1734623375_grocerapp-cooking-oil-670f653d0af21.jpeg', 'themes/grocery/uploads/60_1734623375_grocerapp-cooking-oil-670f653d0af21.jpeg', 'themes/grocery/uploads/60_1734623375_grocerapp-cooking-oil-670f653d0af21.jpeg', 8, 1, 'grocery', 1, '2024-12-19 10:49:35', '2024-12-19 10:49:35'),
+(13, 'Canola Oil', 'http://localhost:8000/themes/grocery/uploads/93_1734623416_grocerapp-canola-oil-670f6522260ba.jpeg', 'themes/grocery/uploads/93_1734623416_grocerapp-canola-oil-670f6522260ba.jpeg', 'themes/grocery/uploads/90_1734623416_grocerapp-canola-oil-670f6522260ba.jpeg', 8, 1, 'grocery', 1, '2024-12-19 10:50:16', '2024-12-19 10:50:16'),
+(14, 'Banaspati Ghee', 'http://localhost:8000/themes/grocery/uploads/17_1734623604_grocerapp-desi-banaspati-ghee-6710aadbd102c.jpeg', 'themes/grocery/uploads/17_1734623604_grocerapp-desi-banaspati-ghee-6710aadbd102c.jpeg', 'themes/grocery/uploads/48_1734623604_grocerapp-desi-banaspati-ghee-6710aadbd102c.jpeg', 8, 1, 'grocery', 1, '2024-12-19 10:53:24', '2024-12-19 10:53:24');
 
 -- --------------------------------------------------------
 
@@ -419,6 +472,12 @@ CREATE TABLE `user_coupons` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `carts`
+--
+ALTER TABLE `carts`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `coupons`
@@ -499,6 +558,12 @@ ALTER TABLE `purchased_products`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `sub_categories`
 --
 ALTER TABLE `sub_categories`
@@ -525,6 +590,12 @@ ALTER TABLE `user_coupons`
 --
 
 --
+-- AUTO_INCREMENT for table `carts`
+--
+ALTER TABLE `carts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `coupons`
 --
 ALTER TABLE `coupons`
@@ -546,13 +617,13 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `main_categories`
 --
 ALTER TABLE `main_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -591,10 +662,16 @@ ALTER TABLE `purchased_products`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `sub_categories`
 --
 ALTER TABLE `sub_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `users`

@@ -148,6 +148,7 @@ Route::middleware(['auth','web'])->group(function () {
 // // module page before login
 // Route::get('add-on', [HomeController::class, 'Software'])->name('apps.software');
 Route::any('/', [HomeController::class, 'Landing'])->name('start');
+Route::get('/products', [HomeController::class, 'products'])->name('products');
 // Route::get('pricing', [HomeController::class, 'Pricing'])->name('apps.pricing');
 
 // // Session Save Addon Routes
@@ -891,7 +892,7 @@ Route::any('/', [HomeController::class, 'Landing'])->name('start');
 //     Route::get('{storeSlug}/search-product', [HomeController::class, 'search_products'])->name('search.product');
 //     Route::post('/{storeSlug}/status-cancel', [OrderController::class, 'status_cancel'])->name('status.cancel');
 //     Route::post('{storeSlug}/get-tax-data', [CartController::class, 'get_tax_data'])->name('get.tax.data');
-//     Route::get('/{storeSlug}/home', [HomeController::class, 'landing_page'])->name('landing_page')->middleware('themelanguage');
+    Route::get('/storeSlug', [HomeController::class, 'landing_page'])->name('landing_page');
 
 //     Route::get('/{storeSlug}/custom/{slug}', [ThemeSettingController::class, 'page'])->where('slug', '.*')->name('themes.page');
 //     Route::get('/{storeSlug}/custom/{slug}', [ThemeSettingController::class, 'page'])->where('slug', '.*')->name('theme.page');

@@ -15,10 +15,10 @@ class SubCategory extends Model
 
     // protected $appends = ["icon_img_path","image_path_full_url","icon_path_full_url"];
 
-    // public function MainCategory()
-    // {
-    //     return $this->hasOne(MainCategory::class, 'id', 'maincategory_id');
-    // }
+    public function MainCategory()
+    {
+        return $this->hasOne(MainCategory::class, 'id', 'maincategory_id');
+    }
 
     // public function getIconImgPathAttribute($value)
     // {
