@@ -30,6 +30,23 @@ class Product extends Model
         return !empty($this->SubCategoryctData) ? $this->SubCategoryctData->name : '';
     }
 
+    public function link(){
+        return url('product/'.$this->id);
+    }
+
+    public function addtocartlink(){
+        return url('addcart/'.$this->id);
+    }
+
+    
+
+    public function price(){
+        if ($this->sale_price > 0 && $this->price > $this->sale_price){
+            return 'Rs. '.number_format($this->sale_price,0);
+        }
+        return 'Rs. '.number_format($this->price,0);
+    }
+
     // public static function slugs($data)
     // {
     //     $slug = '';
@@ -69,23 +86,10 @@ class Product extends Model
         return $this->hasOne(SubCategory::class, 'id', 'subcategory_id');
     }
     
-    // public static function Sub_image($product_id = 0)
-    // {
-    //     $return['status'] = false;
-    //     $return['data'] = [];
-    //     $ProductImage = Cache::remember('product_image_' . $product_id, 3600, function () use ($product_id) {
-    //         return ProductImage::where('product_id', $product_id)->get();
-    //     });
-    //     if ($ProductImage->isNotEmpty()) {
-    //         $return['status'] = true;
-    //         $return['data'] = $ProductImage;
-    //     } else {
-    //         $ProductImage = Product::select('id', 'store_id', 'theme_id', 'id as product_id', 'cover_image_path as image_path')->where('id', $product_id)->get();
-    //         $return['status'] = true;
-    //         $return['data'] = $ProductImage;
-    //     }
-    //     return $return;
-    // }
+    public function Sub_image()
+    {
+        return ProductImage::where('product_id', $this->id)->get();
+    }
     
 
     // public static function ProductPrice($theme, $slug, $productId,$variantId = 0,$price=0)

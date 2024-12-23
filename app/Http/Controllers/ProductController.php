@@ -245,7 +245,7 @@ class ProductController extends Controller
                     'name' => 'required',
                     'maincategory_id' => 'required',
                     'price' => 'numeric|min:0',
-                    'sale_price' => 'numeric|min:0|lt:price', 
+                    
                 ];
             
             
@@ -399,6 +399,11 @@ class ProductController extends Controller
         $return['status'] = true;
         $return['html'] = $select;
         return response()->json($return);
+    }
+
+    public function show(Request $request,$id){
+        $product = Product::find($id);
+        return view('front.product_show',compact('product'));
     }
 
     // public function attribute_option(Request $request)

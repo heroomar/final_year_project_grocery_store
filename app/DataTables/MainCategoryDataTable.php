@@ -26,9 +26,9 @@ class MainCategoryDataTable extends DataTable
             ->addColumn('action', function (MainCategory $maincategory) {
                 return view('maincategory.action', compact('maincategory'));
             })
-            ->editColumn('trending', function (MainCategory $maincategory) {
-                $trending = $maincategory->trending == 1 ? __('Yes') : __('No');
-                    return $trending;
+            ->editColumn('subcats', function (MainCategory $maincategory) {
+                
+                    return count($maincategory->subCategory);
             })
             ->editColumn('status', function (MainCategory $maincategory) {
                 $status = $maincategory->status == 1 ? __('Active') : __('In-Active');
@@ -155,6 +155,7 @@ class MainCategoryDataTable extends DataTable
         return [
             Column::make('id')->searchable(false)->visible(false)->printable(false),
             Column::make('name')->title(__('Name')),
+            Column::make('subcats')->title(__('Sub Categories')),
             Column::make('image_path')->title(__('Image')),
             Column::make('icon_path')->title(__('Icon')),
             // Column::make('trending')->title(__('Trending')),

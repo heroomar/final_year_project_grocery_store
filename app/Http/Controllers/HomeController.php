@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
+use App\Models\OrderCouponDetail;
 use Illuminate\Http\Request;
 use App\Models\Utility;
 use App\Models\{Customer, Country, Order, PlanOrder, Plan, PlanCoupon, PlanRequest, Store, Setting, User,OrderBillingDetail , PixelFields, Page,Cart};
@@ -33,18 +35,42 @@ class HomeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function Landing()
+    public function success(){
+      return view("front.success");
+    }
+     public function Landing()
     {
         // if (auth()->user()) {
         //     return redirect('dashboard');
         // }
-        
+        $cart  = session()->get('cart');
+        if(!is_array($cart)){
+          $cart=[];
+          session()->put('cart' , $cart);
+        }
         return view('front.index');
         
     }
 
-    public function products(){
-        return view('front.products');
+    public function products(Request $request){
+        $products = Product::orderBy('id','desc');
+
+        if ($request->category != ''){
+            $SubCats = \App\Models\SubCategory::where('maincategory_id', ($_GET['category'] ?? 0))->get()->pluck('id')->toArray();
+            $products = Product::whereIn('subcategory_id',$SubCats);
+        }
+
+        if ($request->subcategory != ''){
+          $products = Product::where('subcategory_id',$request->subcategory);
+        }
+
+        if ($request->search != ''){
+            $products = Product::whereRaw('name LIKE "%'.$request->search.'%" ');
+        }
+        // dd($products->toSql());
+        $products = $products->paginate(15);
+        $categories = MainCategory::get();
+        return view('front.products',compact('products','categories'));
     }
 
     public function index()
@@ -84,6 +110,240 @@ class HomeController extends Controller
 
         $data =  compact('user', 'chartData', 'couponName', 'plan_order', 'plan_requests', 'allStores', 'topAdmins', 'visitors');
         return $data;
+    }
+
+    public function addcart(Request $request,$id){
+      $cart  = session()->get('cart');
+      if(!is_array($cart)){
+        $cart=[];
+        session()->put('cart' , $cart);
+      }
+      $product = Product::find($id)->toArray();
+      if ($product){
+        $product['qty'] = 1;
+        if (isset($cart[$product['id']])){
+          $cart[$product['id']]['qty']++;
+        } else {
+          $cart[$product['id']] = $product;
+        }
+      }
+      
+      session()->put('cart' , $cart);
+      return redirect(url('cart'));
+    }
+
+    public function cart(Request $request){
+      
+      $cart  = session()->get('cart');
+      $cart_extra  = session()->get('cart_extra');
+      if(!is_array($cart)){
+        $cart=[];
+        session()->put('cart' , $cart);
+      }
+
+      
+      if (!$cart_extra){
+        $cart_extra = ['discount'=>0 ,'coupon' => null];
+        $cart_extra  = session()->put('cart_extra',$cart_extra);
+      }
+
+
+      $total = 0;
+      $_total = 0;
+      
+      foreach ($cart as $product){
+      
+        if ($product['sale_price'] > 0 && $product['price'] > $product['sale_price']){
+          $total +=  $product['qty'] * $product['sale_price'];
+        } else {
+          $total +=  $product['qty'] * $product['price'];
+          
+        }
+        $_total +=  $product['qty'] * $product['price'];
+      }
+
+      if ($request->coupon){
+        $coupon =  Coupon::where(['coupon_code'=>$request->coupon,'status'=>1])->where('coupon_expiry_date' ,'>', now())->first();
+        
+        $discount = 0;
+        if ($coupon){
+          if ($coupon->coupon_type == 'percentage'){
+              $discount = $total * ($coupon->discount_amount/100);
+          } else {
+              $discount = $coupon->discount_amount;
+          }
+        }
+        $cart_extra = ['discount'=> $discount ,'coupon' => $coupon];
+        session()->put('cart_extra',$cart_extra);
+      }
+      
+      return view('front.cart',compact('cart','cart_extra'));
+    }
+
+    public function deletecart(Request $request){
+      $cart  = session()->get('cart');
+      if(!is_array($cart)){
+        $cart=[];
+        session()->put('cart' , $cart);
+      }
+      $_cart=[];
+
+      if (!$request->id){
+        session()->put('cart' , []);
+      } else {
+        foreach ($cart as $product) {
+          if ($product['id'] != $request->id){
+            $_cart[] = $product;
+          }
+        }
+        session()->put('cart' , $_cart);
+      }
+      
+      return redirect(url('cart'));
+    }
+
+    public function checkout(Request $request){
+      $cart  = session()->get('cart');
+      $cart_extra  = session()->get('cart_extra');
+      if (!$cart_extra){
+              $cart_extra = ['discount'=>0 ,'coupon' => null];
+              $cart_extra  = session()->put('cart_extra',$cart_extra);
+      }
+      return view('front.checkout',compact('cart','cart_extra'));
+    }
+
+    public function storecheckout(Request $request){
+      $cart  = session()->get('cart');
+      $cart_extra  = session()->get('cart_extra');
+      if (!$cart_extra){
+              $cart_extra = ['discount'=>0 ,'coupon' => null];
+              $cart_extra  = session()->put('cart_extra',$cart_extra);
+      }
+      if(!is_array($cart)){
+        $cart=[];
+        session()->put('cart' , $cart);
+      }
+
+      if (count($cart) > 0){
+
+        $total = 0;
+        $_total = 0;
+        
+        foreach ($cart as $product){
+        
+          if ($product['sale_price'] > 0 && $product['price'] > $product['sale_price']){
+            $total +=  $product['qty'] * $product['sale_price'];
+          } else {
+            $total +=  $product['qty'] * $product['price'];
+            
+          }
+          $_total +=  $product['qty'] * $product['price'];
+        }
+
+
+          $discount=$cart_extra['discount'];
+          $theme_id = APP_THEME();
+
+          
+          $currency_symbol = 'Rs';
+          $price = $total - ($discount);
+          $customer = Customer::updateOrCreate([
+            'first_name' => $request->fullName,
+            'last_name' => $request->fullName,
+            'email' => $request->email,
+            'type' => 'cutsomer',
+            'mobile' => $request->phone,
+            'address' => $request->address,
+            'city_name' => $request->city_name,
+            'country_name' => $request->country_name,
+            'postcode' => $request->postcode,
+            'status' => 0
+          ]);
+
+          
+
+          
+          $loopPrice = 0;
+          $loopQty = 0;
+
+            foreach ($cart as $key => $value) {
+
+              $cart[$key]['cover_image_path'] = '';
+              $cart[$key]['cover_image_url'] = '';
+              $cart[$key]['stock_status'] = '';
+              $cart[$key]['description'] = '';
+              $cart[$key]['detail'] = '';
+              $cart[$key]['specification'] = '';
+              $cart[$key]['product_data']='';
+              $cart[$key]['sub_categoryct_data']='';
+
+              $cart[$key]['quantity']=$value['qty'];
+              $cart[$key]['orignal_price']=$value['price'];
+              
+
+              $product_id = $value['id'];
+              $value['quantity'] = $value['qty'];
+              $value['orignal_price'] = $value['price'];
+              $original_quantity = ($value == null) ? 0 : (int)$value['product_stock'];
+
+              $product_quantity = $original_quantity - $value['quantity'];
+              
+              Product::where('id', $product_id)->update(['product_stock' => $product_quantity]);
+              
+              $loopPrice += $value['orignal_price'];
+              $loopQty += $value['quantity'];
+              $tax_amount = 0;
+              // $price += $value['total_orignal_price'];
+              
+            }
+
+            $pos   = new Order();
+            $pos->delivered_status = 4;
+            $pos->product_order_id = time()+rand(1111,9999);
+            $pos->order_date = date('Y-m-d H:i:s');
+            $pos->customer_id            = $customer->id;
+            $pos->is_guest = 1;
+            $pos->product_id = $product_id;
+            $pos->product_json = json_encode($cart);
+            $pos->final_price = ($price-$discount);
+            
+            
+            $pos->product_price = $price;
+            
+            $pos->coupon_price = (float)$discount;
+            $pos->delivery_price = 0;
+            $pos->tax_price = $tax_amount;
+            $pos->payment_type = __('cod');
+            $pos->payment_status = 'Paid';
+            $pos->theme_id = $theme_id;
+            $pos->store_id = getCurrentStore();;
+            $pos->save();
+
+
+            if ($cart_extra['coupon']){
+            
+              $OrderCouponDetail = new OrderCouponDetail();
+              $OrderCouponDetail->order_id = $pos->id;
+              
+              $OrderCouponDetail->coupon_id = $cart_extra['coupon']->id; 
+              $OrderCouponDetail->coupon_name = $cart_extra['coupon']->coupon_name; 
+              $OrderCouponDetail->coupon_code = $cart_extra['coupon']->coupon_code; 
+              $OrderCouponDetail->coupon_discount_type = $cart_extra['coupon']->coupon_type; 
+              $OrderCouponDetail->coupon_discount_amount = $cart_extra['coupon']->discount_amount; 
+              $OrderCouponDetail->coupon_final_amount = $discount; 
+              $OrderCouponDetail->theme_id = $cart_extra['coupon']->theme_id;             
+              $OrderCouponDetail->save();
+  
+              
+            }
+
+          
+            
+      }
+      session()->put('cart' , []);
+      session()->forget('cart_extra');
+      
+      return redirect(url('success'));
     }
 
     // private function handleRegularUser($user)
@@ -316,1388 +576,1388 @@ class HomeController extends Controller
     public function landing_page()
     {
         
-        $data = array (
-            'currentTheme' => 'grocery',
-            'pixelScript' => 
-            array (
-            ),
-            'whatsapp_setting_enabled' => 0,
-            'whatsapp_contact_number' => NULL,
-            'theme_section' =>
-            array (
-              0 => 
-              array (
-                'id' => 1,
-                'section_name' => 'header',
-                'order' => 0,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              1 => 
-              array (
-                'id' => 2,
-                'section_name' => 'slider',
-                'order' => 1,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              2 => 
-              array (
-                'id' => 3,
-                'section_name' => 'category',
-                'order' => 2,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              3 => 
-              array (
-                'id' => 4,
-                'section_name' => 'variant_background',
-                'order' => 3,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              4 => 
-              array (
-                'id' => 5,
-                'section_name' => 'bestseller_slider',
-                'order' => 4,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              5 => 
-              array (
-                'id' => 6,
-                'section_name' => 'product_category',
-                'order' => 5,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              6 => 
-              array (
-                'id' => 7,
-                'section_name' => 'best_product',
-                'order' => 6,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              7 => 
-              array (
-                'id' => 8,
-                'section_name' => 'best_product_second',
-                'order' => 7,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              8 => 
-              array (
-                'id' => 9,
-                'section_name' => 'product',
-                'order' => 8,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              9 => 
-              array (
-                'id' => 10,
-                'section_name' => 'product_banner_slider',
-                'order' => 9,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              10 => 
-              array (
-                'id' => 11,
-                'section_name' => 'logo_slider',
-                'order' => 10,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              11 => 
-              array (
-                'id' => 12,
-                'section_name' => 'best_selling_slider',
-                'order' => 11,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              12 => 
-              array (
-                'id' => 13,
-                'section_name' => 'newest_category',
-                'order' => 12,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              13 => 
-              array (
-                'id' => 14,
-                'section_name' => 'feature_product',
-                'order' => 13,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              14 => 
-              array (
-                'id' => 15,
-                'section_name' => 'background_image',
-                'order' => 14,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              15 => 
-              array (
-                'id' => 16,
-                'section_name' => 'modern_product',
-                'order' => 15,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              16 => 
-              array (
-                'id' => 17,
-                'section_name' => 'category_slider',
-                'order' => 16,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              17 => 
-              array (
-                'id' => 18,
-                'section_name' => 'service_section',
-                'order' => 17,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              18 => 
-              array (
-                'id' => 19,
-                'section_name' => 'subscribe',
-                'order' => 18,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              19 => 
-              array (
-                'id' => 20,
-                'section_name' => 'review',
-                'order' => 19,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              20 => 
-              array (
-                'id' => 21,
-                'section_name' => 'blog',
-                'order' => 20,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              21 => 
-              array (
-                'id' => 22,
-                'section_name' => 'articel_blog',
-                'order' => 21,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              22 => 
-              array (
-                'id' => 23,
-                'section_name' => 'top_product',
-                'order' => 22,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              23 => 
-              array (
-                'id' => 24,
-                'section_name' => 'video',
-                'order' => 23,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-              24 => 
-              array (
-                'id' => 25,
-                'section_name' => 'footer',
-                'order' => 24,
-                'is_hide' => 0,
-                'store_id' => '2',
-                'theme_id' => 'grocery',
-                'created_at' => '2024-11-19T13:15:42.000000Z',
-                'updated_at' => '2024-11-19T13:15:42.000000Z',
-              ),
-            ),
-            'section' => 
-            array (
-              'header' => 
-              array (
-                'section_name' => 'Homepage - Header',
-                'section_slug' => 'header',
-                'unique_section_slug' => 'header',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Announcement Title',
-                    'slug' => 'announcement_text',
-                    'text' => 'Monday - Friday:</b> 8:00 AM - 9:00 PM',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'support_title' => 
-                  array (
-                    'lable' => 'Support Title',
-                    'slug' => 'support_title',
-                    'text' => 'Support 24/7:',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'support_value' => 
-                  array (
-                    'lable' => 'Support Value',
-                    'slug' => 'support_value',
-                    'text' => '+12 002-224-111',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'menu_type' => 
-                  array (
-                    'lable' => 'Menu Type',
-                    'slug' => 'menu_type',
-                    'text' => 'menu_bar',
-                    'type' => 'select',
-                    'placeholder' => 'Please select..',
-                    'menu_ids' => 
-                    array (
-                    ),
-                  ),
-                ),
-              ),
-              'slider' => 
-                array(
-                'section_name' => 'Homepage Slider',
-                'section_slug' => 'slider',
-                'unique_section_slug' => 'slider',
-                'section_enable' => 'on',
-                'array_type' => 'multi-inner-list',
-                'loop_number' => 3,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Slider Title',
-                    'slug' => 'slider_title',
-                    'text' => 
-                    array (
-                      0 => 'Welcome to our store',
-                      1 => 'Welcome to our store',
-                      2 => 'Welcome to our store',
-                    ),
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'sub_title' => 
-                  array (
-                    'lable' => 'Slider Sub Title',
-                    'slug' => 'slider_sub_title',
-                    'text' => 
-                    array (
-                      0 => ' Fall in love with </b> amazing aromas',
-                      1 => ' Fall in love with </b> amazing aromas',
-                      2 => ' Fall in love with </b> amazing aromas',
-                    ),
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Slider Description',
-                    'slug' => 'slider_description',
-                    'text' => 
-                    array (
-                      0 => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy.',
-                      1 => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy.',
-                      2 => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy.',
-                    ),
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'button_first' => 
-                  array (
-                    'lable' => 'Slider First Button',
-                    'slug' => 'slider_first_button',
-                    'text' => 
-                    array (
-                      0 => 'Go to Shop',
-                      1 => 'Go to Shop',
-                      2 => 'Go to Shop',
-                    ),
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'button_second' => 
-                  array (
-                    'lable' => 'Slider Second Button',
-                    'slug' => 'slider_second_button',
-                    'text' => 
-                    array (
-                      0 => 'Show more products',
-                      1 => 'Show more products',
-                      2 => 'Show more products',
-                    ),
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'background_image' => 
-                  array (
-                    'lable' => 'Slider Background Image',
-                    'slug' => 'slider_background_image',
-                    'text' => 'themes/grocery/assets/images/banner-image.png',
-                    'image' => 'themes/grocery/assets/images/banner-image.png',
-                    'type' => 'file',
-                    'placeholder' => 'Please select file',
-                  ),
-                ),
-              ),
-              'category' => 
-              array (
-                'section_name' => 'Category',
-                'section_slug' => 'category',
-                'unique_section_slug' => 'category',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Category Title',
-                    'slug' => 'category_title',
-                    'text' => 'Love our categories',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Category Button',
-                    'slug' => 'category_button',
-                    'text' => 'Show More Products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button_second' => 
-                  array (
-                    'lable' => 'Category Button',
-                    'slug' => 'category_button_second',
-                    'text' => 'Go to Category',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'variant_background' => 
-              array (
-                'section_name' => 'VariantBackground - Section',
-                'section_slug' => 'variant_background',
-                'unique_section_slug' => 'variant_background',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Variant Background Title',
-                    'slug' => 'variant_background_title',
-                    'text' => 'Fruits </b>& Vegetables',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'sub_title' => 
-                  array (
-                    'lable' => 'Variant Background Lable',
-                    'slug' => 'variant_background_sub_title',
-                    'text' => 'Daily Discounts',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Variant Background Description',
-                    'slug' => 'variant_background_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Variant Background Button',
-                    'slug' => 'variant_background_button',
-                    'text' => 'Show Products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'image' => 
-                  array (
-                    'lable' => 'Varinat Background Image',
-                    'slug' => 'variant_background_image',
-                    'text' => 'themes/grocery/assets/images/green-mandarines.png',
-                    'image' => 'themes/grocery/assets/images/green-mandarines.png',
-                    'type' => 'photoupload',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'bestseller_slider' => 
-              array (
-                'section_name' => 'Bestseller - Slider',
-                'section_slug' => 'bestseller_slider',
-                'unique_section_slug' => 'bestseller_slider',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Bestseller Title',
-                    'slug' => 'bestseller_text',
-                    'text' => ' Top </b> Products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Bestseler Button',
-                    'slug' => 'bestseller_button',
-                    'text' => 'Show more products',
-                    'type' => 'button',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'product_type' => 
-                  array (
-                    'lable' => 'Product Type',
-                    'slug' => 'product_type',
-                    'text' => 'latest_product',
-                    'type' => 'select',
-                    'placeholder' => 'Please select..',
-                    'product_ids' => 
-                    array (
-                    ),
-                  ),
-                  'category_list' => 
-                  array (
-                    'lable' => 'Product Category Button',
-                    'slug' => 'product_category_list',
-                    'text' => '',
-                    'type' => 'select',
-                    'placeholder' => 'Please select..',
-                    'category_ids' => 
-                    array (
-                    ),
-                  ),
-                ),
-              ),
-              'product_category' => 
-              array (
-                'section_name' => 'Product - Category',
-                'section_slug' => 'product_category',
-                'unique_section_slug' => 'product_category',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Product Category Title',
-                    'slug' => 'product_category_title',
-                    'text' => 'Our Bestsellers </b>',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Product Category Button',
-                    'slug' => 'product_category_button',
-                    'text' => 'Go to products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'category_list' => 
-                  array (
-                    'lable' => 'Product Category Button',
-                    'slug' => 'product_category_list',
-                    'text' => '',
-                    'type' => 'select',
-                    'placeholder' => 'Please select..',
-                    'category_ids' => 
-                    array (
-                    ),
-                  ),
-                ),
-              ),
-              'best_product' => 
-              array (
-                'section_name' => 'Best - Product',
-                'section_slug' => 'best_product',
-                'unique_section_slug' => 'best_product',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Best Product Title',
-                    'slug' => 'best_product_titel',
-                    'text' => 'Our Loved category </b>',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Button',
-                    'slug' => 'best_product_button',
-                    'text' => 'Go to product',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button_first' => 
-                  array (
-                    'lable' => 'Button',
-                    'slug' => 'best_product_button_first',
-                    'text' => 'Go to catrgory',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'sub_title' => 
-                  array (
-                    'lable' => ' Sub Title',
-                    'slug' => 'best_product_subtitle',
-                    'text' => 'Vegetables',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Description',
-                    'slug' => 'best_product_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'image' => 
-                  array (
-                    'lable' => 'Image',
-                    'slug' => 'best_product_image',
-                    'text' => 'themes/grocery/assets/images/vegetables-2.jpg',
-                    'image' => 'themes/grocery/assets/images/vegetables-2.jpg',
-                    'type' => 'file',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'best_product_second' => 
-              array (
-              ),
-              'product' => 
-              array (
-                'section_name' => 'Product',
-                'section_slug' => 'product',
-                'unique_section_slug' => 'product',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Product Title',
-                    'slug' => 'product_title',
-                    'text' => 'Our Products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Product Button',
-                    'slug' => 'product_button',
-                    'text' => 'Go to products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Product Description',
-                    'slug' => 'product_description',
-                    'text' => 'They\'re made from botanically pure ingredients, so you can feel good about eating them. Plus, they\'re really nutritious, so you can feel good too.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'product_banner_slider' => 
-              array (
-                'section_name' => 'Product - Banner',
-                'section_slug' => 'product_banner_slider',
-                'unique_section_slug' => 'product_banner_slider',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Title',
-                    'slug' => 'product_banner_slider_title',
-                    'text' => 'Fall in love with </b>amazing clothes',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'sub_title' => 
-                  array (
-                    'lable' => 'Sub Title',
-                    'slug' => 'product_banner_slider_sub_title',
-                    'text' => 'Fall in love with </b>amazing clothes',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Description',
-                    'slug' => 'product_banner_slider_description',
-                    'text' => 'Fall in love with </b>amazing clothes',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Button',
-                    'slug' => 'product_banner_slider_button',
-                    'text' => 'Go to products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'logo_slider' => 
-              array (
-                'section_name' => 'Homepage Logo Slider',
-                'section_slug' => 'logo_slider',
-                'unique_section_slug' => 'logo_slider',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'image' => 
-                  array (
-                    'lable' => 'logo_slider Image',
-                    'slug' => 'logo_slider_image',
-                    'text' => 
-                    array (
-                      0 => 'themes/babycare/assets/images/banner-image.png',
-                    ),
-                    'image' => 
-                    array (
-                      0 => 'themes/babycare/assets/images/banner-image.png',
-                    ),
-                    'type' => 'file',
-                    'placeholder' => 'Please select file',
-                  ),
-                ),
-              ),
-              'best_selling_slider' => 
-              array (
-              ),
-              'newest_category' => 
-              array (
-                'section_name' => 'Newest - Category',
-                'section_slug' => 'newest_category',
-                'unique_section_slug' => 'newest_category',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'button' => 
-                  array (
-                    'lable' => 'Newest Category Button',
-                    'slug' => 'newest_category_button',
-                    'text' => 'Go to products',
-                    'type' => 'button',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'feature_product' => 
-              array (
-                'section_name' => 'Feature - Product',
-                'section_slug' => 'feature_product',
-                'unique_section_slug' => 'feature_product',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Feature - Product Title',
-                    'slug' => 'feature_product_title',
-                    'text' => 'A beautiful scent',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Feature - Product Button',
-                    'slug' => 'feature_product_button',
-                    'text' => 'Go to products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                ),
-              ),
-              'background_image' => 
-              array (
-                'section_name' => 'BackgroundImage - Section',
-                'section_slug' => 'background_image',
-                'unique_section_slug' => 'background_image',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Background Image Title',
-                    'slug' => 'background_image_title',
-                    'text' => 'Fall in love with </b>amazing clothes',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Background Image Description',
-                    'slug' => 'background_image_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Background Image Button',
-                    'slug' => 'background_image_button',
-                    'text' => 'Go to Shop',
-                    'type' => 'button',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'image' => 
-                  array (
-                    'lable' => 'Background Image',
-                    'slug' => 'background_image',
-                    'text' => 'themes/sensation/assets/images/banner-2.png',
-                    'image' => 'themes/sensation/assets/images/banner-2.png',
-                    'type' => 'photoupload',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'modern_product' => 
-              array (
-                'section_name' => 'Modern - Product',
-                'section_slug' => 'modern_product',
-                'unique_section_slug' => 'modern_product',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Modern Product Title',
-                    'slug' => 'modern_product_titel',
-                    'text' => 'Fall in love with </b>amazing clothes',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'sub_title' => 
-                  array (
-                    'lable' => 'Modern Product Sub Title',
-                    'slug' => 'modern_product_sub_title',
-                    'text' => ' Show </b> more product',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Modern Product Button',
-                    'slug' => 'modern_product_button',
-                    'text' => 'Go to products',
-                    'type' => 'button',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'category_slider' => 
-              array (
-                'section_name' => 'Category - Slider',
-                'section_slug' => 'category_slider',
-                'unique_section_slug' => 'category_slider',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Category Slider Title',
-                    'slug' => 'category_slider_title',
-                    'text' => 'Fall in love with </b>amazing clothes',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Category Slider Description',
-                    'slug' => 'category_slider_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'category_list' => 
-                  array (
-                    'lable' => 'Category Slider List',
-                    'slug' => 'category_slider_list',
-                    'text' => '',
-                    'type' => 'select',
-                    'placeholder' => 'Please select..',
-                    'category_ids' => 
-                    array (
-                    ),
-                  ),
-                ),
-              ),
-              'service_section' => 
-              array (
-                'section_name' => 'Service Section',
-                'section_slug' => 'service_section',
-                'unique_section_slug' => 'service_section',
-                'section_enable' => 'on',
-                'array_type' => 'multi-inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Service Section Title',
-                    'slug' => 'service_section_title',
-                    'text' => 
-                    array (
-                      0 => 'SHIPPING',
-                    ),
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'sub_title' => 
-                  array (
-                    'lable' => 'Service Section Sub Title',
-                    'slug' => 'service_section_sub_title',
-                    'text' => 
-                    array (
-                      0 => 'Free worldwideshopping',
-                    ),
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here...',
-                  ),
-                  'background_image' => 
-                  array (
-                    'lable' => 'Service Section Image',
-                    'slug' => 'service_section_image',
-                    'text' => 'themes/sensation/assets/images/banner.png',
-                    'image' => 'themes/sensation/assets/images/banner.png',
-                    'type' => 'file',
-                    'placeholder' => 'Please select file',
-                  ),
-                ),
-              ),
-              'subscribe' => 
-              array (
-                'section_name' => 'Subscribe - Section',
-                'section_slug' => 'subscribe',
-                'unique_section_slug' => 'subscribe',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Subscribe Title',
-                    'slug' => 'subscribe_title',
-                    'text' => ' Subscribe and get </b> -20% off',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Subscribe Description',
-                    'slug' => 'subscribe_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Subscribe Button',
-                    'slug' => 'subscribe_button',
-                    'text' => 'Subscribe',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'sub_title' => 
-                  array (
-                    'lable' => 'Subscribe Sub Title',
-                    'slug' => 'subscribe_sub_title',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'image' => 
-                  array (
-                    'lable' => 'Subscribe Image',
-                    'slug' => 'subscribe_image',
-                    'text' => 'themes/sensation/assets/images/sub-banner.jpg',
-                    'image' => 'themes/sensation/assets/images/sub-banner.jpg',
-                    'type' => 'file',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'review' => 
-              array (
-                'section_name' => 'Review',
-                'section_slug' => 'review',
-                'unique_section_slug' => 'review',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Review Title',
-                    'slug' => 'review_title',
-                    'text' => ' Testimonials</b>',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Review Description',
-                    'slug' => 'review_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy.Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'button' => 
-                  array (
-                    'lable' => 'Review Button',
-                    'slug' => 'review_button',
-                    'text' => 'Show products',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'blog' => 
-              array (
-                'section_name' => 'Blog',
-                'section_slug' => 'blog',
-                'unique_section_slug' => 'blog',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'title' => 
-                  array (
-                    'lable' => 'Blog Title',
-                    'slug' => 'blog_title',
-                    'text' => ' About </b> the blog',
-                    'type' => 'text',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'description' => 
-                  array (
-                    'lable' => 'Blog Description',
-                    'slug' => 'blog_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-              'articel_blog' => 
-              array (
-              ),
-              'top_product' => 
-              array (
-              ),
-              'video' => 
-              array (
-              ),
-              'footer' => 
-              array (
-                'section_name' => 'Footer - Section',
-                'section_slug' => 'footer',
-                'unique_section_slug' => 'footer',
-                'section_enable' => 'on',
-                'array_type' => 'inner-list',
-                'loop_number' => 1,
-                'section' => 
-                array (
-                  'description' => 
-                  array (
-                    'lable' => 'Footer Section Description',
-                    'slug' => 'footer_description',
-                    'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy.',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'footer_link' => 
-                  array (
-                    'lable' => 'Footer Links',
-                    'slug' => 'footer_links',
-                    'text' => 'Footer Links',
-                    'type' => 'array',
-                    'loop_number' => 4,
-                    'social_link' => 
-                    array (
-                      0 => 'https://www.youtube.com/',
-                      1 => 'https://www.facebook.com/',
-                      2 => 'https://www.instagrm.com/',
-                      3 => 'https://www.twitter.com/',
-                    ),
-                    'social_icon' => 
-                    array (
-                      0 => 
-                      array (
-                        'text' => 'themes/grocery/assets/images/youtube.png',
-                        'image' => 'themes/grocery/assets/images/youtube.png',
-                      ),
-                      1 => 
-                      array (
-                        'text' => 'themes/grocery/assets/images/facebook.png',
-                        'image' => 'themes/grocery/assets/images/facebook.png',
-                      ),
-                      2 => 
-                      array (
-                        'text' => 'themes/grocery/assets/images/insta.png',
-                        'image' => 'themes/grocery/assets/images/insta.png',
-                      ),
-                      3 => 
-                      array (
-                        'text' => 'themes/grocery/assets/images/twitter.png',
-                        'image' => 'themes/grocery/assets/images/twitter.png',
-                      ),
-                    ),
-                  ),
-                  'footer_menu_type' => 
-                  array (
-                    'lable' => 'Footer Menu Type',
-                    'slug' => 'footer_menu_type',
-                    'text' => 'footer_menu_bar',
-                    'type' => 'array',
-                    'loop_number' => 3,
-                    'footer_menu_ids' => 
-                    array (
-                    ),
-                  ),
-                  'copy_right' => 
-                  array (
-                    'lable' => 'Copy Right',
-                    'slug' => 'footer_copy_right',
-                    'text' => '© 2022 Foodmart. All rights reserved',
-                    'type' => 'textarea',
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'privacy_policy' => 
-                  array (
-                    'lable' => 'Policy Privacy',
-                    'slug' => 'footer_privacy_policy',
-                    'text' => 'Policy Privacy',
-                    'type' => 'text',
-                    'link' => NULL,
-                    'placeholder' => 'Please enter here..',
-                  ),
-                  'terms_and_conditions' => 
-                  array (
-                    'lable' => 'Terms and conditions',
-                    'slug' => 'footer_terms_and_conditions',
-                    'text' => 'Terms and conditions',
-                    'type' => 'text',
-                    'link' => NULL,
-                    'placeholder' => 'Please enter here..',
-                  ),
-                ),
-              ),
-            ),
-            'setting' => 
-            array (
-              'logo_dark' => 'storage/uploads/logo/logo-dark.png',
-              'logo_light' => 'storage/uploads/logo/logo-light.png',
-              'favicon' => 'storage/uploads/logo/favicon.png',
-              'title_text' => 'ecom',
-              'footer_text' => 'Copyright © ecom',
-              'site_date_format' => 'M j, Y',
-              'site_time_format' => 'g:i A',
-              'SITE_RTL' => 'off',
-              'display_landing' => 'off',
-              'SIGNUP' => 'off',
-              'email_verification' => 'off',
-              'color' => 'theme-4',
-              'cust_theme_bg' => 'on',
-              'cust_darklayout' => 'off',
-              'CURRENCY_NAME' => 'USD',
-              'CURRENCYCURRENCY' => '$',
-              'currency_format' => '1',
-              'defult_currancy' => 'USD',
-              'defult_language' => 'en',
-              'defult_timezone' => 'Asia/Kolkata',
-              'enable_cookie' => 'on',
-              'cookie_logging' => 'on',
-              'necessary_cookies' => 'on',
-              'cookie_title' => 'We use cookies!',
-              'cookie_description' => 'Hi, this website uses essential cookies to ensure its proper operation and tracking cookies to understand how you interact with it',
-              'strictly_cookie_title' => 'Strictly necessary cookies',
-              'strictly_cookie_description' => 'These cookies are essential for the proper functioning of my website. Without these cookies, the website would not work properly',
-              'more_information_description' => 'For any queries in relation to our policy on cookies and your choices, please contact us',
-              'more_information_title' => '',
-              'contactus_url' => '#',
-              '_token' => 'aEh0zcmeJhBxBjaIu6WqjLdvujNcs7JM0ZXBx72k',
-              'custom_color' => '#000000',
-              'color_flag' => 'false',
-              'taxes' => 'off',
-            ),
-            'theme_logo' => 'storage/uploads/logo/logo.png',
-            'currantLang' => 'en',
-            'stringid' => 2,
-            'languages' => 
-            array (
-              'ar' => 'Arabic',
-              'da' => 'Danish',
-              'de' => 'German',
-              'en' => 'English',
-              'es' => 'Spanish',
-              'fr' => 'French',
-              'it' => 'Italian',
-              'ja' => 'Japanese',
-              'nl' => 'Dutch',
-              'pl' => 'Polish',
-              'pt' => 'Portuguese',
-              'ru' => 'Russian',
-              'tr' => 'Turkish',
-              'zh' => 'Chinese',
-              'he' => 'Hebrew',
-              'pt-br' => 'Portuguese(Brazil)',
-            ),
-            'currency' => '$',
-            'SITE_RTL' => NULL,
-            'color' => 'theme-3',
-            'is_publish' => true,
-            'slug' => 'grocery',
-            'store' => 
-            array (
-              'id' => 2,
-              'name' => 'grocery',
-              'email' => 'admin@example.com',
-              'theme_id' => 'grocery',
-              'slug' => 'grocery',
-              'default_language' => 'en',
-              'created_by' => 2,
-              'is_active' => 1,
-              'enable_pwa_store' => 'off',
-              'created_at' => '2024-11-19T13:15:42.000000Z',
-              'updated_at' => '2024-12-19T13:38:21.000000Z',
-            ),
-            'theme_id' => 'grocery',
-            'category_options' => 
-            array (
-              0 => 'All Products',
-              1 => 'mian',
-            ),
-            'store_id' => 2,
-            'topNavItems' => '',
-            'products' => 
-            array (
-            ),
-            'tax_option' => 
-            array (
-            ),
-            'theme_favicon' => 'https://demo.tgnu.tj/ecom/storage/uploads/logo/Favicon.png',
-            'theme_favicons' => 'https://demo.tgnu.tj/ecom/storage/uploads/logo/Favicon.png',
-            'google_analytic' => NULL,
-            'storejs' => NULL,
-            'storecss' => NULL,
-            'fbpixel_code' => NULL,
-            'metaimage' => 'https://demo.tgnu.tj/ecom/themes/grocery/theme_img/img_1.png',
-            'metadesc' => NULL,
-            'metakeyword' => NULL,
-            'currency_icon' => '$',
-            'theme_image' => 'https://demo.tgnu.tj/ecom/themes/grocery/theme_img/img_1.png',
-            'pages' => 
-            array (
-            ),
-            'categories' => 
-            array (
-            ),
-            'latest_product' => NULL,
-            'landing_product' => NULL,
-            'search_products' => 
-            array (
-              1 => 'cat1',
-            ),
-            'MainCategoryList' => 
-            array (
-            ),
-            'SubCategoryList' => 
-            array (
-              0 => 
-              array (
-                'id' => 1,
-                'name' => 'sabzi',
-                'image_url' => 'https://demo.tgnu.tj/ecom/storage/uploads/default.jpg',
-                'image_path' => '/storage/uploads/default.jpg',
-                'icon_path' => '/storage/uploads/default.jpg',
-                'maincategory_id' => 1,
-                'status' => 1,
-                'theme_id' => 'grocery',
-                'store_id' => 2,
-                'created_at' => '2024-12-19T13:40:10.000000Z',
-                'updated_at' => '2024-12-19T13:40:10.000000Z',
-                'icon_img_path' => '/storage/uploads/default.jpg',
-                'image_path_full_url' => 'https://demo.tgnu.tj/ecom/storage/uploads/default.jpg',
-                'icon_path_full_url' => 'https://demo.tgnu.tj/ecom/storage/uploads/default.jpg',
-              ),
-            ),
-            'reviews' => 
-            array (
-            ),
-            'category_id' => 
-            array (
-            ),
-            'has_subcategory' => 0,
-            'discount_products' => 
-            array (
-            ),
-            'all_products' => 
-            array (
-            ),
-            'modern_products' => 
-            array (
-            ),
-            'home_products' => 
-            array (
-            ),
-            'home_page_products' => 
-            array (
-            ),
-            'random_product' => NULL,
-            'bestSeller' => 
-            array (
-            ),
-            'all_slider_products' => 
-            array (
-            ),
-        );
-        // $data = (object)$data; 
-        // $data->section = $data->section; 
-        foreach ($data['section'] as $key => $value) {
-            $data['section'][$key] = (object)$value;
-        }
-        // dd($data);
+        // $data = array (
+        //     'currentTheme' => 'grocery',
+        //     'pixelScript' => 
+        //     array (
+        //     ),
+        //     'whatsapp_setting_enabled' => 0,
+        //     'whatsapp_contact_number' => NULL,
+        //     'theme_section' =>
+        //     array (
+        //       0 => 
+        //       array (
+        //         'id' => 1,
+        //         'section_name' => 'header',
+        //         'order' => 0,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       1 => 
+        //       array (
+        //         'id' => 2,
+        //         'section_name' => 'slider',
+        //         'order' => 1,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       2 => 
+        //       array (
+        //         'id' => 3,
+        //         'section_name' => 'category',
+        //         'order' => 2,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       3 => 
+        //       array (
+        //         'id' => 4,
+        //         'section_name' => 'variant_background',
+        //         'order' => 3,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       4 => 
+        //       array (
+        //         'id' => 5,
+        //         'section_name' => 'bestseller_slider',
+        //         'order' => 4,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       5 => 
+        //       array (
+        //         'id' => 6,
+        //         'section_name' => 'product_category',
+        //         'order' => 5,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       6 => 
+        //       array (
+        //         'id' => 7,
+        //         'section_name' => 'best_product',
+        //         'order' => 6,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       7 => 
+        //       array (
+        //         'id' => 8,
+        //         'section_name' => 'best_product_second',
+        //         'order' => 7,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       8 => 
+        //       array (
+        //         'id' => 9,
+        //         'section_name' => 'product',
+        //         'order' => 8,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       9 => 
+        //       array (
+        //         'id' => 10,
+        //         'section_name' => 'product_banner_slider',
+        //         'order' => 9,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       10 => 
+        //       array (
+        //         'id' => 11,
+        //         'section_name' => 'logo_slider',
+        //         'order' => 10,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       11 => 
+        //       array (
+        //         'id' => 12,
+        //         'section_name' => 'best_selling_slider',
+        //         'order' => 11,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       12 => 
+        //       array (
+        //         'id' => 13,
+        //         'section_name' => 'newest_category',
+        //         'order' => 12,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       13 => 
+        //       array (
+        //         'id' => 14,
+        //         'section_name' => 'feature_product',
+        //         'order' => 13,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       14 => 
+        //       array (
+        //         'id' => 15,
+        //         'section_name' => 'background_image',
+        //         'order' => 14,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       15 => 
+        //       array (
+        //         'id' => 16,
+        //         'section_name' => 'modern_product',
+        //         'order' => 15,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       16 => 
+        //       array (
+        //         'id' => 17,
+        //         'section_name' => 'category_slider',
+        //         'order' => 16,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       17 => 
+        //       array (
+        //         'id' => 18,
+        //         'section_name' => 'service_section',
+        //         'order' => 17,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       18 => 
+        //       array (
+        //         'id' => 19,
+        //         'section_name' => 'subscribe',
+        //         'order' => 18,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       19 => 
+        //       array (
+        //         'id' => 20,
+        //         'section_name' => 'review',
+        //         'order' => 19,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       20 => 
+        //       array (
+        //         'id' => 21,
+        //         'section_name' => 'blog',
+        //         'order' => 20,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       21 => 
+        //       array (
+        //         'id' => 22,
+        //         'section_name' => 'articel_blog',
+        //         'order' => 21,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       22 => 
+        //       array (
+        //         'id' => 23,
+        //         'section_name' => 'top_product',
+        //         'order' => 22,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       23 => 
+        //       array (
+        //         'id' => 24,
+        //         'section_name' => 'video',
+        //         'order' => 23,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //       24 => 
+        //       array (
+        //         'id' => 25,
+        //         'section_name' => 'footer',
+        //         'order' => 24,
+        //         'is_hide' => 0,
+        //         'store_id' => '2',
+        //         'theme_id' => 'grocery',
+        //         'created_at' => '2024-11-19T13:15:42.000000Z',
+        //         'updated_at' => '2024-11-19T13:15:42.000000Z',
+        //       ),
+        //     ),
+        //     'section' => 
+        //     array (
+        //       'header' => 
+        //       array (
+        //         'section_name' => 'Homepage - Header',
+        //         'section_slug' => 'header',
+        //         'unique_section_slug' => 'header',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Announcement Title',
+        //             'slug' => 'announcement_text',
+        //             'text' => 'Monday - Friday:</b> 8:00 AM - 9:00 PM',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'support_title' => 
+        //           array (
+        //             'lable' => 'Support Title',
+        //             'slug' => 'support_title',
+        //             'text' => 'Support 24/7:',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'support_value' => 
+        //           array (
+        //             'lable' => 'Support Value',
+        //             'slug' => 'support_value',
+        //             'text' => '+12 002-224-111',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'menu_type' => 
+        //           array (
+        //             'lable' => 'Menu Type',
+        //             'slug' => 'menu_type',
+        //             'text' => 'menu_bar',
+        //             'type' => 'select',
+        //             'placeholder' => 'Please select..',
+        //             'menu_ids' => 
+        //             array (
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //       'slider' => 
+        //         array(
+        //         'section_name' => 'Homepage Slider',
+        //         'section_slug' => 'slider',
+        //         'unique_section_slug' => 'slider',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'multi-inner-list',
+        //         'loop_number' => 3,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Slider Title',
+        //             'slug' => 'slider_title',
+        //             'text' => 
+        //             array (
+        //               0 => 'Welcome to our store',
+        //               1 => 'Welcome to our store',
+        //               2 => 'Welcome to our store',
+        //             ),
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'sub_title' => 
+        //           array (
+        //             'lable' => 'Slider Sub Title',
+        //             'slug' => 'slider_sub_title',
+        //             'text' => 
+        //             array (
+        //               0 => ' Fall in love with </b> amazing aromas',
+        //               1 => ' Fall in love with </b> amazing aromas',
+        //               2 => ' Fall in love with </b> amazing aromas',
+        //             ),
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Slider Description',
+        //             'slug' => 'slider_description',
+        //             'text' => 
+        //             array (
+        //               0 => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy.',
+        //               1 => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy.',
+        //               2 => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy.',
+        //             ),
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'button_first' => 
+        //           array (
+        //             'lable' => 'Slider First Button',
+        //             'slug' => 'slider_first_button',
+        //             'text' => 
+        //             array (
+        //               0 => 'Go to Shop',
+        //               1 => 'Go to Shop',
+        //               2 => 'Go to Shop',
+        //             ),
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'button_second' => 
+        //           array (
+        //             'lable' => 'Slider Second Button',
+        //             'slug' => 'slider_second_button',
+        //             'text' => 
+        //             array (
+        //               0 => 'Show more products',
+        //               1 => 'Show more products',
+        //               2 => 'Show more products',
+        //             ),
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'background_image' => 
+        //           array (
+        //             'lable' => 'Slider Background Image',
+        //             'slug' => 'slider_background_image',
+        //             'text' => 'themes/grocery/assets/images/banner-image.png',
+        //             'image' => 'themes/grocery/assets/images/banner-image.png',
+        //             'type' => 'file',
+        //             'placeholder' => 'Please select file',
+        //           ),
+        //         ),
+        //       ),
+        //       'category' => 
+        //       array (
+        //         'section_name' => 'Category',
+        //         'section_slug' => 'category',
+        //         'unique_section_slug' => 'category',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Category Title',
+        //             'slug' => 'category_title',
+        //             'text' => 'Love our categories',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Category Button',
+        //             'slug' => 'category_button',
+        //             'text' => 'Show More Products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button_second' => 
+        //           array (
+        //             'lable' => 'Category Button',
+        //             'slug' => 'category_button_second',
+        //             'text' => 'Go to Category',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'variant_background' => 
+        //       array (
+        //         'section_name' => 'VariantBackground - Section',
+        //         'section_slug' => 'variant_background',
+        //         'unique_section_slug' => 'variant_background',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Variant Background Title',
+        //             'slug' => 'variant_background_title',
+        //             'text' => 'Fruits </b>& Vegetables',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'sub_title' => 
+        //           array (
+        //             'lable' => 'Variant Background Lable',
+        //             'slug' => 'variant_background_sub_title',
+        //             'text' => 'Daily Discounts',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Variant Background Description',
+        //             'slug' => 'variant_background_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Variant Background Button',
+        //             'slug' => 'variant_background_button',
+        //             'text' => 'Show Products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'image' => 
+        //           array (
+        //             'lable' => 'Varinat Background Image',
+        //             'slug' => 'variant_background_image',
+        //             'text' => 'themes/grocery/assets/images/green-mandarines.png',
+        //             'image' => 'themes/grocery/assets/images/green-mandarines.png',
+        //             'type' => 'photoupload',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'bestseller_slider' => 
+        //       array (
+        //         'section_name' => 'Bestseller - Slider',
+        //         'section_slug' => 'bestseller_slider',
+        //         'unique_section_slug' => 'bestseller_slider',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Bestseller Title',
+        //             'slug' => 'bestseller_text',
+        //             'text' => ' Top </b> Products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Bestseler Button',
+        //             'slug' => 'bestseller_button',
+        //             'text' => 'Show more products',
+        //             'type' => 'button',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'product_type' => 
+        //           array (
+        //             'lable' => 'Product Type',
+        //             'slug' => 'product_type',
+        //             'text' => 'latest_product',
+        //             'type' => 'select',
+        //             'placeholder' => 'Please select..',
+        //             'product_ids' => 
+        //             array (
+        //             ),
+        //           ),
+        //           'category_list' => 
+        //           array (
+        //             'lable' => 'Product Category Button',
+        //             'slug' => 'product_category_list',
+        //             'text' => '',
+        //             'type' => 'select',
+        //             'placeholder' => 'Please select..',
+        //             'category_ids' => 
+        //             array (
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //       'product_category' => 
+        //       array (
+        //         'section_name' => 'Product - Category',
+        //         'section_slug' => 'product_category',
+        //         'unique_section_slug' => 'product_category',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Product Category Title',
+        //             'slug' => 'product_category_title',
+        //             'text' => 'Our Bestsellers </b>',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Product Category Button',
+        //             'slug' => 'product_category_button',
+        //             'text' => 'Go to products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'category_list' => 
+        //           array (
+        //             'lable' => 'Product Category Button',
+        //             'slug' => 'product_category_list',
+        //             'text' => '',
+        //             'type' => 'select',
+        //             'placeholder' => 'Please select..',
+        //             'category_ids' => 
+        //             array (
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //       'best_product' => 
+        //       array (
+        //         'section_name' => 'Best - Product',
+        //         'section_slug' => 'best_product',
+        //         'unique_section_slug' => 'best_product',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Best Product Title',
+        //             'slug' => 'best_product_titel',
+        //             'text' => 'Our Loved category </b>',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Button',
+        //             'slug' => 'best_product_button',
+        //             'text' => 'Go to product',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button_first' => 
+        //           array (
+        //             'lable' => 'Button',
+        //             'slug' => 'best_product_button_first',
+        //             'text' => 'Go to catrgory',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'sub_title' => 
+        //           array (
+        //             'lable' => ' Sub Title',
+        //             'slug' => 'best_product_subtitle',
+        //             'text' => 'Vegetables',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Description',
+        //             'slug' => 'best_product_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'image' => 
+        //           array (
+        //             'lable' => 'Image',
+        //             'slug' => 'best_product_image',
+        //             'text' => 'themes/grocery/assets/images/vegetables-2.jpg',
+        //             'image' => 'themes/grocery/assets/images/vegetables-2.jpg',
+        //             'type' => 'file',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'best_product_second' => 
+        //       array (
+        //       ),
+        //       'product' => 
+        //       array (
+        //         'section_name' => 'Product',
+        //         'section_slug' => 'product',
+        //         'unique_section_slug' => 'product',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Product Title',
+        //             'slug' => 'product_title',
+        //             'text' => 'Our Products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Product Button',
+        //             'slug' => 'product_button',
+        //             'text' => 'Go to products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Product Description',
+        //             'slug' => 'product_description',
+        //             'text' => 'They\'re made from botanically pure ingredients, so you can feel good about eating them. Plus, they\'re really nutritious, so you can feel good too.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'product_banner_slider' => 
+        //       array (
+        //         'section_name' => 'Product - Banner',
+        //         'section_slug' => 'product_banner_slider',
+        //         'unique_section_slug' => 'product_banner_slider',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Title',
+        //             'slug' => 'product_banner_slider_title',
+        //             'text' => 'Fall in love with </b>amazing clothes',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'sub_title' => 
+        //           array (
+        //             'lable' => 'Sub Title',
+        //             'slug' => 'product_banner_slider_sub_title',
+        //             'text' => 'Fall in love with </b>amazing clothes',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Description',
+        //             'slug' => 'product_banner_slider_description',
+        //             'text' => 'Fall in love with </b>amazing clothes',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Button',
+        //             'slug' => 'product_banner_slider_button',
+        //             'text' => 'Go to products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'logo_slider' => 
+        //       array (
+        //         'section_name' => 'Homepage Logo Slider',
+        //         'section_slug' => 'logo_slider',
+        //         'unique_section_slug' => 'logo_slider',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'image' => 
+        //           array (
+        //             'lable' => 'logo_slider Image',
+        //             'slug' => 'logo_slider_image',
+        //             'text' => 
+        //             array (
+        //               0 => 'themes/babycare/assets/images/banner-image.png',
+        //             ),
+        //             'image' => 
+        //             array (
+        //               0 => 'themes/babycare/assets/images/banner-image.png',
+        //             ),
+        //             'type' => 'file',
+        //             'placeholder' => 'Please select file',
+        //           ),
+        //         ),
+        //       ),
+        //       'best_selling_slider' => 
+        //       array (
+        //       ),
+        //       'newest_category' => 
+        //       array (
+        //         'section_name' => 'Newest - Category',
+        //         'section_slug' => 'newest_category',
+        //         'unique_section_slug' => 'newest_category',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Newest Category Button',
+        //             'slug' => 'newest_category_button',
+        //             'text' => 'Go to products',
+        //             'type' => 'button',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'feature_product' => 
+        //       array (
+        //         'section_name' => 'Feature - Product',
+        //         'section_slug' => 'feature_product',
+        //         'unique_section_slug' => 'feature_product',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Feature - Product Title',
+        //             'slug' => 'feature_product_title',
+        //             'text' => 'A beautiful scent',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Feature - Product Button',
+        //             'slug' => 'feature_product_button',
+        //             'text' => 'Go to products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //         ),
+        //       ),
+        //       'background_image' => 
+        //       array (
+        //         'section_name' => 'BackgroundImage - Section',
+        //         'section_slug' => 'background_image',
+        //         'unique_section_slug' => 'background_image',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Background Image Title',
+        //             'slug' => 'background_image_title',
+        //             'text' => 'Fall in love with </b>amazing clothes',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Background Image Description',
+        //             'slug' => 'background_image_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Background Image Button',
+        //             'slug' => 'background_image_button',
+        //             'text' => 'Go to Shop',
+        //             'type' => 'button',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'image' => 
+        //           array (
+        //             'lable' => 'Background Image',
+        //             'slug' => 'background_image',
+        //             'text' => 'themes/sensation/assets/images/banner-2.png',
+        //             'image' => 'themes/sensation/assets/images/banner-2.png',
+        //             'type' => 'photoupload',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'modern_product' => 
+        //       array (
+        //         'section_name' => 'Modern - Product',
+        //         'section_slug' => 'modern_product',
+        //         'unique_section_slug' => 'modern_product',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Modern Product Title',
+        //             'slug' => 'modern_product_titel',
+        //             'text' => 'Fall in love with </b>amazing clothes',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'sub_title' => 
+        //           array (
+        //             'lable' => 'Modern Product Sub Title',
+        //             'slug' => 'modern_product_sub_title',
+        //             'text' => ' Show </b> more product',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Modern Product Button',
+        //             'slug' => 'modern_product_button',
+        //             'text' => 'Go to products',
+        //             'type' => 'button',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'category_slider' => 
+        //       array (
+        //         'section_name' => 'Category - Slider',
+        //         'section_slug' => 'category_slider',
+        //         'unique_section_slug' => 'category_slider',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Category Slider Title',
+        //             'slug' => 'category_slider_title',
+        //             'text' => 'Fall in love with </b>amazing clothes',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Category Slider Description',
+        //             'slug' => 'category_slider_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'category_list' => 
+        //           array (
+        //             'lable' => 'Category Slider List',
+        //             'slug' => 'category_slider_list',
+        //             'text' => '',
+        //             'type' => 'select',
+        //             'placeholder' => 'Please select..',
+        //             'category_ids' => 
+        //             array (
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //       'service_section' => 
+        //       array (
+        //         'section_name' => 'Service Section',
+        //         'section_slug' => 'service_section',
+        //         'unique_section_slug' => 'service_section',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'multi-inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Service Section Title',
+        //             'slug' => 'service_section_title',
+        //             'text' => 
+        //             array (
+        //               0 => 'SHIPPING',
+        //             ),
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'sub_title' => 
+        //           array (
+        //             'lable' => 'Service Section Sub Title',
+        //             'slug' => 'service_section_sub_title',
+        //             'text' => 
+        //             array (
+        //               0 => 'Free worldwideshopping',
+        //             ),
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here...',
+        //           ),
+        //           'background_image' => 
+        //           array (
+        //             'lable' => 'Service Section Image',
+        //             'slug' => 'service_section_image',
+        //             'text' => 'themes/sensation/assets/images/banner.png',
+        //             'image' => 'themes/sensation/assets/images/banner.png',
+        //             'type' => 'file',
+        //             'placeholder' => 'Please select file',
+        //           ),
+        //         ),
+        //       ),
+        //       'subscribe' => 
+        //       array (
+        //         'section_name' => 'Subscribe - Section',
+        //         'section_slug' => 'subscribe',
+        //         'unique_section_slug' => 'subscribe',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Subscribe Title',
+        //             'slug' => 'subscribe_title',
+        //             'text' => ' Subscribe and get </b> -20% off',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Subscribe Description',
+        //             'slug' => 'subscribe_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Subscribe Button',
+        //             'slug' => 'subscribe_button',
+        //             'text' => 'Subscribe',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'sub_title' => 
+        //           array (
+        //             'lable' => 'Subscribe Sub Title',
+        //             'slug' => 'subscribe_sub_title',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'image' => 
+        //           array (
+        //             'lable' => 'Subscribe Image',
+        //             'slug' => 'subscribe_image',
+        //             'text' => 'themes/sensation/assets/images/sub-banner.jpg',
+        //             'image' => 'themes/sensation/assets/images/sub-banner.jpg',
+        //             'type' => 'file',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'review' => 
+        //       array (
+        //         'section_name' => 'Review',
+        //         'section_slug' => 'review',
+        //         'unique_section_slug' => 'review',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Review Title',
+        //             'slug' => 'review_title',
+        //             'text' => ' Testimonials</b>',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Review Description',
+        //             'slug' => 'review_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy.Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'button' => 
+        //           array (
+        //             'lable' => 'Review Button',
+        //             'slug' => 'review_button',
+        //             'text' => 'Show products',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'blog' => 
+        //       array (
+        //         'section_name' => 'Blog',
+        //         'section_slug' => 'blog',
+        //         'unique_section_slug' => 'blog',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'title' => 
+        //           array (
+        //             'lable' => 'Blog Title',
+        //             'slug' => 'blog_title',
+        //             'text' => ' About </b> the blog',
+        //             'type' => 'text',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Blog Description',
+        //             'slug' => 'blog_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //       'articel_blog' => 
+        //       array (
+        //       ),
+        //       'top_product' => 
+        //       array (
+        //       ),
+        //       'video' => 
+        //       array (
+        //       ),
+        //       'footer' => 
+        //       array (
+        //         'section_name' => 'Footer - Section',
+        //         'section_slug' => 'footer',
+        //         'unique_section_slug' => 'footer',
+        //         'section_enable' => 'on',
+        //         'array_type' => 'inner-list',
+        //         'loop_number' => 1,
+        //         'section' => 
+        //         array (
+        //           'description' => 
+        //           array (
+        //             'lable' => 'Footer Section Description',
+        //             'slug' => 'footer_description',
+        //             'text' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy.',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'footer_link' => 
+        //           array (
+        //             'lable' => 'Footer Links',
+        //             'slug' => 'footer_links',
+        //             'text' => 'Footer Links',
+        //             'type' => 'array',
+        //             'loop_number' => 4,
+        //             'social_link' => 
+        //             array (
+        //               0 => 'https://www.youtube.com/',
+        //               1 => 'https://www.facebook.com/',
+        //               2 => 'https://www.instagrm.com/',
+        //               3 => 'https://www.twitter.com/',
+        //             ),
+        //             'social_icon' => 
+        //             array (
+        //               0 => 
+        //               array (
+        //                 'text' => 'themes/grocery/assets/images/youtube.png',
+        //                 'image' => 'themes/grocery/assets/images/youtube.png',
+        //               ),
+        //               1 => 
+        //               array (
+        //                 'text' => 'themes/grocery/assets/images/facebook.png',
+        //                 'image' => 'themes/grocery/assets/images/facebook.png',
+        //               ),
+        //               2 => 
+        //               array (
+        //                 'text' => 'themes/grocery/assets/images/insta.png',
+        //                 'image' => 'themes/grocery/assets/images/insta.png',
+        //               ),
+        //               3 => 
+        //               array (
+        //                 'text' => 'themes/grocery/assets/images/twitter.png',
+        //                 'image' => 'themes/grocery/assets/images/twitter.png',
+        //               ),
+        //             ),
+        //           ),
+        //           'footer_menu_type' => 
+        //           array (
+        //             'lable' => 'Footer Menu Type',
+        //             'slug' => 'footer_menu_type',
+        //             'text' => 'footer_menu_bar',
+        //             'type' => 'array',
+        //             'loop_number' => 3,
+        //             'footer_menu_ids' => 
+        //             array (
+        //             ),
+        //           ),
+        //           'copy_right' => 
+        //           array (
+        //             'lable' => 'Copy Right',
+        //             'slug' => 'footer_copy_right',
+        //             'text' => '© 2022 Foodmart. All rights reserved',
+        //             'type' => 'textarea',
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'privacy_policy' => 
+        //           array (
+        //             'lable' => 'Policy Privacy',
+        //             'slug' => 'footer_privacy_policy',
+        //             'text' => 'Policy Privacy',
+        //             'type' => 'text',
+        //             'link' => NULL,
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //           'terms_and_conditions' => 
+        //           array (
+        //             'lable' => 'Terms and conditions',
+        //             'slug' => 'footer_terms_and_conditions',
+        //             'text' => 'Terms and conditions',
+        //             'type' => 'text',
+        //             'link' => NULL,
+        //             'placeholder' => 'Please enter here..',
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //     'setting' => 
+        //     array (
+        //       'logo_dark' => 'storage/uploads/logo/logo-dark.png',
+        //       'logo_light' => 'storage/uploads/logo/logo-light.png',
+        //       'favicon' => 'storage/uploads/logo/favicon.png',
+        //       'title_text' => 'ecom',
+        //       'footer_text' => 'Copyright © ecom',
+        //       'site_date_format' => 'M j, Y',
+        //       'site_time_format' => 'g:i A',
+        //       'SITE_RTL' => 'off',
+        //       'display_landing' => 'off',
+        //       'SIGNUP' => 'off',
+        //       'email_verification' => 'off',
+        //       'color' => 'theme-4',
+        //       'cust_theme_bg' => 'on',
+        //       'cust_darklayout' => 'off',
+        //       'CURRENCY_NAME' => 'USD',
+        //       'CURRENCYCURRENCY' => '$',
+        //       'currency_format' => '1',
+        //       'defult_currancy' => 'USD',
+        //       'defult_language' => 'en',
+        //       'defult_timezone' => 'Asia/Kolkata',
+        //       'enable_cookie' => 'on',
+        //       'cookie_logging' => 'on',
+        //       'necessary_cookies' => 'on',
+        //       'cookie_title' => 'We use cookies!',
+        //       'cookie_description' => 'Hi, this website uses essential cookies to ensure its proper operation and tracking cookies to understand how you interact with it',
+        //       'strictly_cookie_title' => 'Strictly necessary cookies',
+        //       'strictly_cookie_description' => 'These cookies are essential for the proper functioning of my website. Without these cookies, the website would not work properly',
+        //       'more_information_description' => 'For any queries in relation to our policy on cookies and your choices, please contact us',
+        //       'more_information_title' => '',
+        //       'contactus_url' => '#',
+        //       '_token' => 'aEh0zcmeJhBxBjaIu6WqjLdvujNcs7JM0ZXBx72k',
+        //       'custom_color' => '#000000',
+        //       'color_flag' => 'false',
+        //       'taxes' => 'off',
+        //     ),
+        //     'theme_logo' => 'storage/uploads/logo/logo.png',
+        //     'currantLang' => 'en',
+        //     'stringid' => 2,
+        //     'languages' => 
+        //     array (
+        //       'ar' => 'Arabic',
+        //       'da' => 'Danish',
+        //       'de' => 'German',
+        //       'en' => 'English',
+        //       'es' => 'Spanish',
+        //       'fr' => 'French',
+        //       'it' => 'Italian',
+        //       'ja' => 'Japanese',
+        //       'nl' => 'Dutch',
+        //       'pl' => 'Polish',
+        //       'pt' => 'Portuguese',
+        //       'ru' => 'Russian',
+        //       'tr' => 'Turkish',
+        //       'zh' => 'Chinese',
+        //       'he' => 'Hebrew',
+        //       'pt-br' => 'Portuguese(Brazil)',
+        //     ),
+        //     'currency' => '$',
+        //     'SITE_RTL' => NULL,
+        //     'color' => 'theme-3',
+        //     'is_publish' => true,
+        //     'slug' => 'grocery',
+        //     'store' => 
+        //     array (
+        //       'id' => 2,
+        //       'name' => 'grocery',
+        //       'email' => 'admin@example.com',
+        //       'theme_id' => 'grocery',
+        //       'slug' => 'grocery',
+        //       'default_language' => 'en',
+        //       'created_by' => 2,
+        //       'is_active' => 1,
+        //       'enable_pwa_store' => 'off',
+        //       'created_at' => '2024-11-19T13:15:42.000000Z',
+        //       'updated_at' => '2024-12-19T13:38:21.000000Z',
+        //     ),
+        //     'theme_id' => 'grocery',
+        //     'category_options' => 
+        //     array (
+        //       0 => 'All Products',
+        //       1 => 'mian',
+        //     ),
+        //     'store_id' => 2,
+        //     'topNavItems' => '',
+        //     'products' => 
+        //     array (
+        //     ),
+        //     'tax_option' => 
+        //     array (
+        //     ),
+        //     'theme_favicon' => 'https://demo.tgnu.tj/ecom/storage/uploads/logo/Favicon.png',
+        //     'theme_favicons' => 'https://demo.tgnu.tj/ecom/storage/uploads/logo/Favicon.png',
+        //     'google_analytic' => NULL,
+        //     'storejs' => NULL,
+        //     'storecss' => NULL,
+        //     'fbpixel_code' => NULL,
+        //     'metaimage' => 'https://demo.tgnu.tj/ecom/themes/grocery/theme_img/img_1.png',
+        //     'metadesc' => NULL,
+        //     'metakeyword' => NULL,
+        //     'currency_icon' => '$',
+        //     'theme_image' => 'https://demo.tgnu.tj/ecom/themes/grocery/theme_img/img_1.png',
+        //     'pages' => 
+        //     array (
+        //     ),
+        //     'categories' => 
+        //     array (
+        //     ),
+        //     'latest_product' => NULL,
+        //     'landing_product' => NULL,
+        //     'search_products' => 
+        //     array (
+        //       1 => 'cat1',
+        //     ),
+        //     'MainCategoryList' => 
+        //     array (
+        //     ),
+        //     'SubCategoryList' => 
+        //     array (
+        //       0 => 
+        //       array (
+        //         'id' => 1,
+        //         'name' => 'sabzi',
+        //         'image_url' => 'https://demo.tgnu.tj/ecom/storage/uploads/default.jpg',
+        //         'image_path' => '/storage/uploads/default.jpg',
+        //         'icon_path' => '/storage/uploads/default.jpg',
+        //         'maincategory_id' => 1,
+        //         'status' => 1,
+        //         'theme_id' => 'grocery',
+        //         'store_id' => 2,
+        //         'created_at' => '2024-12-19T13:40:10.000000Z',
+        //         'updated_at' => '2024-12-19T13:40:10.000000Z',
+        //         'icon_img_path' => '/storage/uploads/default.jpg',
+        //         'image_path_full_url' => 'https://demo.tgnu.tj/ecom/storage/uploads/default.jpg',
+        //         'icon_path_full_url' => 'https://demo.tgnu.tj/ecom/storage/uploads/default.jpg',
+        //       ),
+        //     ),
+        //     'reviews' => 
+        //     array (
+        //     ),
+        //     'category_id' => 
+        //     array (
+        //     ),
+        //     'has_subcategory' => 0,
+        //     'discount_products' => 
+        //     array (
+        //     ),
+        //     'all_products' => 
+        //     array (
+        //     ),
+        //     'modern_products' => 
+        //     array (
+        //     ),
+        //     'home_products' => 
+        //     array (
+        //     ),
+        //     'home_page_products' => 
+        //     array (
+        //     ),
+        //     'random_product' => NULL,
+        //     'bestSeller' => 
+        //     array (
+        //     ),
+        //     'all_slider_products' => 
+        //     array (
+        //     ),
+        // );
+        // // $data = (object)$data; 
+        // // $data->section = $data->section; 
+        // foreach ($data['section'] as $key => $value) {
+        //     $data['section'][$key] = (object)$value;
+        // }
+        // // dd($data);
         
 
-        return view('main_file', $data);
+        // return view('main_file', $data);
     }
 
 

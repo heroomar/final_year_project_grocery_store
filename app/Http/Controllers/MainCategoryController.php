@@ -308,4 +308,11 @@ class MainCategoryController extends Controller
         }
         return Response($html);
     }
+
+
+    public function getcats(Request $request){
+        $MainCategory = MainCategory::find($request->id);
+        $categories = $MainCategory->subCategory;
+        return $categories;
+    }
 }

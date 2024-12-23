@@ -88,7 +88,7 @@
                             <div class="product-stock-div">
                                 <hr>
                                 <h4>{{ __('Product Stock') }}</h4>
-                                    <div class="row" id="options">
+                                    <div class="row" >
                                         <div class="form-group col-md-6 col-12 product_stock">
                                             {!! Form::label('', __('Stock'), ['class' => 'form-label']) !!}
                                             {!! Form::number('product_stock', null, ['class' => 'form-control productStock']) !!}

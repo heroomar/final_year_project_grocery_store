@@ -49,6 +49,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::order_detail($id);
+        
         $orders = Order::find($id);
         
         return view('order.order_show', compact('order', 'orders'));
@@ -59,6 +60,7 @@ class OrderController extends Controller
         if (auth()->user() && auth()->user()->isAbleTo('Show Order')) {
                 
                 $order = Order::order_detail($id);
+                
                 $store_id = getCurrentStore();
                 
                 

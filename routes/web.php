@@ -149,6 +149,16 @@ Route::middleware(['auth','web'])->group(function () {
 // Route::get('add-on', [HomeController::class, 'Software'])->name('apps.software');
 Route::any('/', [HomeController::class, 'Landing'])->name('start');
 Route::get('/products', [HomeController::class, 'products'])->name('products');
+Route::get('/addcart/{id}', [HomeController::class, 'addcart'])->name('addcart');
+Route::get('/cart', [HomeController::class, 'cart'])->name('cart');
+Route::get('/deletecart', [HomeController::class, 'deletecart'])->name('deletecart');
+Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
+Route::post('/checkout', [HomeController::class, 'storecheckout']);
+Route::get('/success', [HomeController::class, 'success']);
+
+
+
+Route::get('/get-cats', [MainCategoryController::class, 'getcats'])->name('getcats');
 // Route::get('pricing', [HomeController::class, 'Pricing'])->name('apps.pricing');
 
 // // Session Save Addon Routes

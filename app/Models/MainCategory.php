@@ -99,10 +99,10 @@ class MainCategory extends Model
     //     return view('front_end.sections.homepage.category_slider', compact('slug', 'best_seller_category', 'themeId', 'section','currentTheme'))->render();
     // }
 
-    // public function subCategory()
-    // {
-    //     return $this->hasMany(SubCategory::class, 'id', 'maincategory_id');
-    // }
+    public function subCategory()
+    {
+        return $this->hasMany(SubCategory::class, 'maincategory_id');
+    }
 
     // public function getCategoryItemAttribute() {
     //     $count = $this->subCategory()->count();

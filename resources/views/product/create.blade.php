@@ -92,7 +92,7 @@
 
                   
                   </div>
-                    <div class="row" id="options">
+                    <div class="row" >
                       <div class="form-group col-md-6 col-12 product_stock">
                         {!! Form::label('', __('Stock'), ['class' => 'form-label']) !!}
                         {!! Form::number('product_stock', 0, ['class' => 'form-control productStock']) !!}

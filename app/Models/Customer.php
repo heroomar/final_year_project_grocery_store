@@ -28,11 +28,22 @@ class Customer extends Authenticatable
         'last_name',
         'email',
         'profile_image',
+        'type',
+        'email_verified_at',
         'mobile',
+        'address',
+        'city_name',
+        'country_name',
+        'postcode',
+        'regiester_date',
+        'status',
         'date_of_birth',
+        'created_by',
         'theme_id',
         'store_id',
-        'created_by',
+        'remember_token',
+        'created_at',
+        'updated_at',
     ];
 
     // /**

@@ -127,7 +127,7 @@ function getCurrentStore(){
 
 function get_file($path, $theme_id = '')
     {
-        return $path;
+        return url($path);
     }
 
 

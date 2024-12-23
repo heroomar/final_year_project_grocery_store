@@ -202,32 +202,34 @@ class Order extends Model
             if (!empty($products)) {
                 foreach ($products as $key => $product) {
 
-
+                    if (isset($product['id']))  $product['product_id'] = $product['id'];
+                    $_product = Product::find($product['product_id'])->toArray();
+                    
                     if ($order->payment_type == 'POS') {
                         $products[$key] = [
                             "product_id" => $product['product_id'],
-                            "image" => $product["image"],
+                            "image" => $_product["cover_image_path"],
                             "name" => $product["name"],
                             "orignal_price" => $product["orignal_price"],
                             "total_orignal_price" => SetNumber($product["total_orignal_price"]),
                             "final_price" => SetNumber($product["final_price"]),
                             "quantity" => $product["quantity"] ?? ($product["qty"] ?? 1),
-                            "variant_id" => $product["variant_id"],
-                            "variant_name" => $product["variant_name"],
-                            "return" => $product["return"],
+                            "variant_id" => $product["variant_id"] ?? '',
+                            "variant_name" => $product["variant_name"] ?? '',
+                            "return" => $product["return"] ?? '',
                         ];
                     } else {
                         $products[$key] = [
                             "product_id" => $product['product_id'],
-                            "image" => $product["image"],
+                            "image" => $_product["cover_image_path"] ,
                             "name" => $product["name"],
                             "orignal_price" => $product["orignal_price"],
-                            "total_orignal_price" => SetNumber($product["total_orignal_price"]),
+                            "total_orignal_price" => SetNumber($product["orignal_price"]),
                             "final_price" => SetNumber($product["final_price"]),
                             "qty" => $product["qty"] ?? ($product["quantity"] ?? 1),
-                            "variant_id" => $product["variant_id"],
-                            "variant_name" => $product["variant_name"],
-                            "return" => $product["return"],
+                            "variant_id" => $product["variant_id"] ?? '',
+                            "variant_name" => $product["variant_name"] ?? '',
+                            "return" => $product["return"] ?? '',
 
                         ];
                         if (isset($product['sale_price'])) {
@@ -298,31 +300,7 @@ class Order extends Model
             // 1 => review (hide) and 0 => no review (show)
             $order_array['is_review'] = 0;
 
-            if ($order->payment_type != 'POS') {
-                $OrderBillingDetail = OrderBillingDetail::where('order_id', $order_id)->first();
-                $bi_f_name = !empty($OrderBillingDetail->first_name) ? $OrderBillingDetail->first_name : '';
-                $bi_l_name = !empty($OrderBillingDetail->last_name) ? $OrderBillingDetail->last_name : '';
-                $order_array['billing_informations']['name'] = $bi_f_name . ' ' . $bi_l_name;
-                $order_array['billing_informations']['address'] = !empty($OrderBillingDetail->address) ? $OrderBillingDetail->address : '';
-                $order_array['billing_informations']['state'] = !empty($OrderBillingDetail->BillingState->name) ? $OrderBillingDetail->BillingState->name : '';
-                $order_array['billing_informations']['country'] = !empty($OrderBillingDetail->BillingCountry->name) ? $OrderBillingDetail->BillingCountry->name : '';
-                // $order_array['billing_informations']['city'] = !empty($OrderBillingDetail->city) ? $OrderBillingDetail->city : '';
-                $order_array['billing_informations']['city'] = !empty($OrderBillingDetail->BillingCity->name) ? $OrderBillingDetail->BillingCity->name : '';
-                $order_array['billing_informations']['post_code'] = !empty($OrderBillingDetail->postcode) ? $OrderBillingDetail->postcode : '';
-                $order_array['billing_informations']['email'] = !empty($OrderBillingDetail->email) ? $OrderBillingDetail->email : '';
-                $order_array['billing_informations']['phone'] = !empty($OrderBillingDetail->telephone) ? $OrderBillingDetail->telephone : '';
-
-                $order_array['delivery_informations']['name'] = $bi_f_name . ' ' . $bi_l_name;
-                $order_array['delivery_informations']['address'] = !empty($OrderBillingDetail->delivery_address) ? $OrderBillingDetail->delivery_address : '';
-                $order_array['delivery_informations']['state'] = !empty($OrderBillingDetail->DeliveryState->name) ? $OrderBillingDetail->DeliveryState->name : '';
-                $order_array['delivery_informations']['country'] = !empty($OrderBillingDetail->DeliveryCountry->name) ? $OrderBillingDetail->DeliveryCountry->name : '';
-                // $order_array['delivery_informations']['city'] = !empty($OrderBillingDetail->delivery_city) ? $OrderBillingDetail->delivery_city : '';
-                $order_array['delivery_informations']['city'] = !empty($OrderBillingDetail->DeliveryCity->name) ? $OrderBillingDetail->DeliveryCity->name : '';
-                $order_array['delivery_informations']['post_code'] = !empty($OrderBillingDetail->delivery_postcode) ? $OrderBillingDetail->delivery_postcode : '';
-                $order_array['delivery_informations']['email'] = !empty($OrderBillingDetail->email) ? $OrderBillingDetail->email : '';
-                $order_array['delivery_informations']['phone'] = !empty($OrderBillingDetail->telephone) ? $OrderBillingDetail->telephone : '';
-
-            } else {
+            if (1) {
                 $customer = Customer::where('id', $order->customer_id)->first();
                 if ($customer) {
                     $customerAddress = [];
@@ -335,20 +313,20 @@ class Order extends Model
                     $order_array['delivery_informations']['name'] = $customer->first_name . ' ' . $customer->last_name;
                 }
 
-                $order_array['billing_informations']['address'] = !empty($customerAddress) ? $customerAddress->address : '-';
-                $order_array['billing_informations']['state'] = !empty($customerAddress->state_name) ? $customerAddress->state_name : '-';
-                $order_array['billing_informations']['country'] = !empty($customerAddress->country_name) ? $customerAddress->country_name : '';
-                $order_array['billing_informations']['city'] = !empty($customerAddress->city_name) ? $customerAddress->city_name : '-';
-                $order_array['billing_informations']['post_code'] = !empty($customerAddress->postcode) ? $customerAddress->postcode : '-';
+                $order_array['billing_informations']['address'] = !empty($customer) ? $customer->address : '-';
+                $order_array['billing_informations']['state'] = !empty($customer->state_name) ? $customer->state_name : '-';
+                $order_array['billing_informations']['country'] = !empty($customer->country_name) ? $customer->country_name : '';
+                $order_array['billing_informations']['city'] = !empty($customer->city_name) ? $customer->city_name : '-';
+                $order_array['billing_informations']['post_code'] = !empty($customer->postcode) ? $customer->postcode : '-';
                 $order_array['billing_informations']['email'] = !empty($customer->email) ? $customer->email : '-';
                 $order_array['billing_informations']['phone'] = !empty($customer->mobile) ? $customer->mobile : '-';
 
 
-                $order_array['delivery_informations']['address'] = !empty($customerAddress) ? $customerAddress->address : '-';
-                $order_array['delivery_informations']['state'] = !empty($customerAddress->state_name) ? $customerAddress->state_name : '-';
-                $order_array['delivery_informations']['country'] = !empty($customerAddress->country_name) ? $customerAddress->country_name : '';
-                $order_array['delivery_informations']['city'] = !empty($customerAddress->city_name) ? $customerAddress->city_name : '-';
-                $order_array['delivery_informations']['post_code'] = !empty($customerAddress->postcode) ? $customerAddress->postcode : '-';
+                $order_array['delivery_informations']['address'] = !empty($customer) ? $customer->address : '-';
+                $order_array['delivery_informations']['state'] = !empty($customer->state_name) ? $customer->state_name : '-';
+                $order_array['delivery_informations']['country'] = !empty($customer->country_name) ? $customer->country_name : '';
+                $order_array['delivery_informations']['city'] = !empty($customer->city_name) ? $customer->city_name : '-';
+                $order_array['delivery_informations']['post_code'] = !empty($customer->postcode) ? $customer->postcode : '-';
                 $order_array['delivery_informations']['email'] = !empty($customer->email) ? $customer->email : '-';
                 $order_array['delivery_informations']['phone'] = !empty($customer->mobile) ? $customer->mobile : '-';
             }

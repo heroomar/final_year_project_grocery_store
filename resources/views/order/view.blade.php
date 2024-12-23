@@ -140,6 +140,10 @@
                                                 <dd class="col-sm-9 text-sm">
                                                     {{ !empty($order['delivery_informations']['city']) ? $order['delivery_informations']['city'] : '' }}
                                                 </dd>
+                                                <dt class="col-sm-3 h6 text-sm">{{ __('Address') }}</dt>
+                                                <dd class="col-sm-9 text-sm">
+                                                    {{ !empty($order['delivery_informations']['address']) ? $order['delivery_informations']['address'] : '' }}
+                                                </dd>
                                                 <dt class="col-sm-3 h6 text-sm">{{ __('State') }}</dt>
                                                 <dd class="col-sm-9 text-sm">
                                                     {{ !empty($order['delivery_informations']['state']) ? $order['delivery_informations']['state'] : '' }}
@@ -199,6 +203,10 @@
                                             <dt class="col-sm-3 h6 text-sm">{{ __('City') }}</dt>
                                             <dd class="col-sm-9 text-sm">
                                                 {{ !empty($order['billing_informations']['city']) ? $order['billing_informations']['city'] : '' }}
+                                            </dd>
+                                            <dt class="col-sm-3 h6 text-sm">{{ __('Address') }}</dt>
+                                            <dd class="col-sm-9 text-sm">
+                                                {{ !empty($order['delivery_informations']['address']) ? $order['delivery_informations']['address'] : '' }}
                                             </dd>
                                             <dt class="col-sm-3 h6 text-sm">{{ __('State') }}</dt>
                                             <dd class="col-sm-9 text-sm">
