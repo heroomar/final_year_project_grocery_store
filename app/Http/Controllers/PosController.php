@@ -209,7 +209,7 @@ class PosController extends Controller
                 $pos->payment_type = __('POS');
                 $pos->payment_status = 'Paid';
                 $pos->theme_id = $theme_id;
-                $pos->store_id = getCurrentStore();;
+                $pos->store_id = getCurrentStore();
                 $pos->save();
 
                 //webhook

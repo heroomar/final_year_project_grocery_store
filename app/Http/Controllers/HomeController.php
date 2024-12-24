@@ -43,14 +43,23 @@ class HomeController extends Controller
         // if (auth()->user()) {
         //     return redirect('dashboard');
         // }
+        $products = Product::orderBy('id','desc')->get();
+        // $products = $products->paginate(20);
         $cart  = session()->get('cart');
         if(!is_array($cart)){
           $cart=[];
           session()->put('cart' , $cart);
         }
-        return view('front.index');
+        return view('front.index',compact('products'));
         
     }
+
+    
+    public function categories(Request $request){
+      
+      $categories = SubCategory::get();
+      return view('front.categories',compact('categories'));
+  }
 
     public function products(Request $request){
         $products = Product::orderBy('id','desc');
@@ -86,6 +95,10 @@ class HomeController extends Controller
             $data = $this->handleRegularUser($user);
             return view('dashboard', $data);
         }
+    }
+
+    public function about(){
+      return view('front.about');
     }
 
     private function handleSuperAdmin($user)

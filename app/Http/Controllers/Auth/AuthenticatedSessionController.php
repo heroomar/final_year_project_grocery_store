@@ -75,8 +75,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // dd('ok');
         // Clear the language cookie
-        Cookie::queue(Cookie::forget('LANGUAGE'));
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

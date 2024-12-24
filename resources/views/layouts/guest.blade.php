@@ -161,134 +161,26 @@
     </style>
 </head>
 
-<body class="">
+<body class="" style="background-image: url('http://localhost:8000/front/img/carousel-1.jpg') !important;background-size: cover !important;" >
 
     <div class="register-page auth-wrapper auth-v3">
-        <div class="login-back-img">
+        <!-- <div class="login-back-img">
             <img src="{{ asset('assets/images/auth/img-bg-1.svg') }}" alt="" class="img-fluid login-bg-1" />
             <img src="{{ asset('assets/images/auth/img-bg-2.svg') }}" alt="" class="img-fluid login-bg-2" />
             <img src="{{ asset('assets/images/auth/img-bg-3.svg') }}" alt="" class="img-fluid login-bg-3" />
             <img src="{{ asset('assets/images/auth/img-bg-4.svg') }}" alt="" class="img-fluid login-bg-4" />
-        </div>
+        </div> -->
         <div class="bg-auth-side bg-primary login-page"></div>
         <div class="auth-content">
             <nav class="navbar navbar-expand-md navbar-light default">
                 <div class="container-fluid pe-2">
 
                     <a class="navbar-brand" href="{{ \URL::to('/') }}">
-                        <img src="{{ isset($company_logo) && !empty($company_logo) ? $company_logo . '?timestamp=' . time() : '/logo-dark.svg' . '?timestamp=' . time() }}"
+                        <img src="{{ GetAllSettings()['logo_light'] }}"
                             alt="logo" class="brand_icon" />
                     </a>
 
-                    <div class="d-flex gap-3">
-                        @if (isset($menusettings) &&
-                                isset($menusettings->menus_id) &&
-                                $menusettings->enable_login == 'on' &&
-                                !empty($topNavItems))
-                            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                                <ul class="lnding-menubar p-0 m-0">
-                                    @foreach ($topNavItems as $navGroup)
-                                        <li class="menu-lnk has-item">
-                                            <a class="dash-head-link" href="#">
-                                                <span>
-                                                    {{ $navGroup['name'] }}
-                                                </span>
-                                                <i class="ti ti-chevron-down drp-arrow"></i>
-                                            </a>
-                                            <div class="menu-dropdown">
-                                                <ul class="p-0 m-0">
-                                                    @foreach ($navGroup['items'] as $nav)
-                                                        @if ($nav->type == 'page')
-                                                            <li class="lnk-itm">
-                                                                <a href="{{ url('landing-pages' . '/' . $nav->slug) }}"
-                                                                    target="{{ $nav->target }}" class="dropdown-item">
-                                                                    <span>{{ $nav->title }}</span>
-                                                                </a>
-                                                                @if (!empty($nav->children) && isset($nav->children))
-                                                                    <ul class="lnk-child">
-                                                                        @foreach ($nav->children[0] as $child)
-                                                                            @if (!empty($child))
-                                                                                <li>
-                                                                                    @if ($child->type == 'page')
-                                                                                        <a href="{{ url('landing-pages' . '/' . $child->slug) }}"
-                                                                                            target="{{ $child->target }}"
-                                                                                            class="dropdown-item">
-                                                                                            <span>{{ $child->title }}</span>
-                                                                                        </a>
-                                                                                    @else
-                                                                                        <a href="{{ $child->slug }}"
-                                                                                        target="{{ $child->target }}"
-                                                                                        class="dropdown-item">
-                                                                                            <span>{{ $child->title }}</span>
-                                                                                        </a>
-                                                                                    @endif
-                                                                                </li>
-                                                                            @endif
-                                                                        @endforeach
-                                                                    </ul>
-                                                                @endif
-                                                            </li>
-                                                        @else
-                                                            <li>
-                                                                <a href="{{ $nav->slug }}"
-                                                                    target="{{ $nav->target }}"
-                                                                    class="dropdown-item">
-                                                                    <span>{{ $nav->title }}</span>
-                                                                </a>
-                                                                @if (!empty($nav->children))
-                                                                    <ul>
-                                                                        @foreach ($nav->children[0] as $child)
-                                                                            @if (!empty($child))
-                                                                                <li>
-                                                                                    @if ($child->type == 'page')
-                                                                                        <a href="{{ url('landing-pages' . '/' . $child->slug) }}"
-                                                                                            target="{{ $child->target }}"
-                                                                                            class="dropdown-item">
-                                                                                            <span>{{ $child->title }}</span>
-                                                                                        </a>
-                                                                                    @else
-                                                                                        <a href="{{ $child->slug }}"
-                                                                                        target="{{ $child->target }}"
-                                                                                        class="dropdown-item">
-                                                                                            <span>{{ $child->title }}</span>
-                                                                                        </a>
-                                                                                    @endif
-                                                                                </li>
-                                                                            @endif
-                                                                        @endforeach
-                                                                    </ul>
-                                                                @endif
-                                                            </li>
-                                                        @endif
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                <button class="navbar-toggler bg-primary" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01"
-                                    aria-expanded="false" aria-label="Toggle navigation">
-                                    <span class="navbar-toggler-icon"></span>
-                                </button>
-                            </div>
-                        @endif
-                        <div class="dropdown dash-h-item drp-language ecom-lang-drp">
-                            <a class="dash-head-link dropdown-toggle arrow-none me-0 bg-primary"
-                                data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                aria-expanded="false">
-                                <i class="ti ti-world nocolor"></i>
-                                <span class="drp-text">english</span>
-                                <i class="ti ti-chevron-down drp-arrow nocolor"></i>
-                            </a>
-
-                            <div class="dropdown-menu dash-h-dropdown dropdown-menu-end"
-                                onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-
-                                
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </nav>
             <div class="card">

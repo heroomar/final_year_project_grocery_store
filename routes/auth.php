@@ -54,9 +54,10 @@ Route::middleware(['guest'])->group(function () {
 
 //     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-//     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-//                 ->name('logout');
+    
 
 //     Route::get('verify-user-email', [RegisteredUserController::class, 'verify_email'])
 //     ->name('verify-email');
 });
+Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+                ->name('logout');
