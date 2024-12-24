@@ -1159,23 +1159,23 @@
                       'module' => 'Base',
                       'permission' => 'Manage Contact Us',
                     ),
-                    // 55 => 
-                    // array (
-                    //   'title' => 'Plan',
-                    //   'icon' => 'trophy',
-                    //   'name' => 'plan',
-                    //   'parent' => NULL,
-                    //   'order' => 340,
-                    //   'ignore_if' => 
-                    //   array (
-                    //   ),
-                    //   'depend_on' => 
-                    //   array (
-                    //   ),
-                    //   'route' => 'plan.index',
-                    //   'module' => 'Base',
-                    //   'permission' => 'Manage Plan',
-                    // ),
+                    55 => 
+                    array (
+                      'title' => 'Users',
+                      'icon' => 'user',
+                      'name' => 'plan',
+                      'parent' => NULL,
+                      'order' => 340,
+                      'ignore_if' => 
+                      array (
+                      ),
+                      'depend_on' => 
+                      array (
+                      ),
+                      'route' => 'users.index',
+                      'module' => 'Base',
+                      'permission' => 'Manage User',
+                    ),
                     56 => 
                     array (
                       'title' => 'Settings',

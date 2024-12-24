@@ -100,6 +100,10 @@ class HomeController extends Controller
     public function about(){
       return view('front.about');
     }
+    
+    public function contact(){
+      return view('front.contact');
+    }
 
     private function handleSuperAdmin($user)
     {

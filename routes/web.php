@@ -145,6 +145,7 @@ Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
 Route::post('/checkout', [HomeController::class, 'storecheckout']);
 Route::get('/success', [HomeController::class, 'success']);
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 
 Route::get('/get-cats', [MainCategoryController::class, 'getcats'])->name('getcats');
@@ -179,7 +180,7 @@ Route::middleware(['auth','web'])->group(function () {
 //     Route::patch('/profile', [ProfileController::class, 'update'])->name('auth.profile.update');
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 //     Route::resource('roles', RoleController::class);
-//     Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class);
 //     Route::get('user-info/{id}', [UserController::class, 'userInfo'])->name('user.info');
 //     Route::post('user-unable', [UserController::class, 'userUnable'])->name('user.unable');
 //     Route::get('user-enable-login/{id}', [UserController::class, 'userLoginManage'])->name('users.enable.login');

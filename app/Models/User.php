@@ -47,4 +47,8 @@ class User extends Authenticatable
     public function isAbleTo($name){
         return true;
     }
+
+    public function creatorId(){
+        return $this->id;
+    }
 }
