@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 23, 2024 at 04:19 PM
+-- Generation Time: Dec 24, 2024 at 09:29 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -555,6 +555,7 @@ INSERT INTO `sub_categories` (`id`, `name`, `image_url`, `image_path`, `icon_pat
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
+  `role` int(11) NOT NULL DEFAULT 3 COMMENT '1 for admin 2 for employee 3 for customers',
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
@@ -567,9 +568,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Daniel Daniels', 'cohutegic@mailinator.com', NULL, '$2y$12$Y9rvOUsoI3Lv71C2ksQG/e7CzjTkN7IYdvYO0YdEv0RkBW7p6MfCO', NULL, '2024-11-27 08:12:20', '2024-11-27 08:12:20'),
-(2, 'umer', 'superadmin@gmail.com', NULL, '$2y$12$GMxQdxSYrVFP4lTAFqvoiegZOwHMk6aqmJt5qO1r2aEc6.r3zmwa2', NULL, '2024-12-03 08:30:34', '2024-12-03 08:30:34');
+INSERT INTO `users` (`id`, `name`, `role`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(2, 'umer', 1, 'superadmin@gmail.com', NULL, '$2y$12$GMxQdxSYrVFP4lTAFqvoiegZOwHMk6aqmJt5qO1r2aEc6.r3zmwa2', NULL, '2024-12-03 08:30:34', '2024-12-03 08:30:34');
 
 -- --------------------------------------------------------
 
