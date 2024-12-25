@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\User;
 use App\Models\Utility;
 use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 use App\Models\FlashSale;
 use App\Models\Store;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Order;
 use App\Models\OrderBillingDetail;
 use App\DataTables\CustomerDataTable;
@@ -70,6 +72,20 @@ class CustomerController extends Controller
         $Customer->store_id = getCurrentStore(); 
 
         $Customer->save();
+
+        $user =  new User();
+        $user->name =  $request->first_name;
+        $user->email =  $request->email;
+        $user->role = 3;
+        $user->password = Hash::make($request->email);
+        
+        
+        $user->email_verified_at = date("Y-m-d H:i:s");
+        
+        
+        $user->save();
+
+
         return redirect(route('customer.index'))->with('success', __('Customer successfully created.'));
     }
 

@@ -198,12 +198,14 @@
                 </a>
             @endif
         </div>
+        @if(auth()->user()->role != 3)
         <div class="col-md-2 text-end">
             <a href="{{ route('order.view', ($order['id'])) }}"
                 class="btn btn-sm btn-success me-2">
                 {{ __('Edit Order') }}
             </a>
         </div>
+        @endif
     </div>
     <script>
         $(document).ready(function() {

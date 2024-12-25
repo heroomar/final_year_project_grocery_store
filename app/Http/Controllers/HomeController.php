@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -86,15 +87,10 @@ class HomeController extends Controller
     {
         $user = auth()->user();
         
-        if (1||$user->type == 'super admin') {
-          
           $data = $this->handleSuperAdmin($user);
 
             return view('superadmin.dashboard', $data);
-        } else {
-            $data = $this->handleRegularUser($user);
-            return view('dashboard', $data);
-        }
+       
     }
 
     public function about(){
@@ -107,11 +103,20 @@ class HomeController extends Controller
 
     private function handleSuperAdmin($user)
     {
-        $user['total_user'] = 0;
-        $user['total_orders'] = 0;
-        $user['total_plan'] = 0;
-        $chartData = [0,0,0,0,0,0,0];
-        $topAdmins = [];
+        $user['total_user'] = User::where('role','!=', 1 )->count();
+        $user['total_orders'] = Order::count();
+        $user['total_plan'] = Customer::count();
+        $user['sales'] = Order::sum('product_price');
+        $chartData = [
+        rand(11,99),
+        rand(11,99),
+        rand(11,99),
+        rand(11,99),
+        rand(11,99),
+        rand(11,99),
+        rand(11,99)
+      ];
+        $topAdmins = Customer::get();
 
         
         $visitors = [0,0,0,0,0];
@@ -277,7 +282,18 @@ class HomeController extends Controller
             'status' => 0
           ]);
 
+          $user =  User::updateOrCreate([
+            'name' => $request->fullName,
+            'email' => $request->email,
+            'role' => 3,
+            'password' => Hash::make($request->email),
+            'email_verified_at' => date("Y-m-d H:i:s"),
+          ]);
           
+
+          if ($user){
+            auth()->login($user);
+          }
 
           
           $loopPrice = 0;
@@ -333,7 +349,8 @@ class HomeController extends Controller
             $pos->payment_type = __('cod');
             $pos->payment_status = 'Paid';
             $pos->theme_id = $theme_id;
-            $pos->store_id = getCurrentStore();;
+            $pos->store_id = getCurrentStore();
+            $pos->user_id = auth()->id();
             $pos->save();
 
 

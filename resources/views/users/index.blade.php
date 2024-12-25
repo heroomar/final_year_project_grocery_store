@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('page-title')
-    {{ __('Users') }}
+    {{ __('Employees') }}
 @endsection
 
 @php
@@ -9,14 +9,14 @@
 @endphp
 
 @section('breadcrumb')
-    <li class="breadcrumb-item" aria-current="page">{{ __('Users') }}</li>
+    <li class="breadcrumb-item" aria-current="page">{{ __('Employees') }}</li>
 @endsection
 
 @section('action-button')
     
         <div class="text-end d-flex all-button-box justify-content-md-end justify-content-center">
-            <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true" data-size="md" data-title="{{__('Add User')}}"
-                data-url="{{ route('users.create') }}" data-bs-toggle="tooltip" title="{{ __('Add User') }}">
+            <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true" data-size="md" data-title="{{__('Add Employee')}}"
+                data-url="{{ route('users.create') }}" data-bs-toggle="tooltip" title="{{ __('Add Employee') }}">
                 <i class="ti ti-plus"></i>
             </a>
         </div>
@@ -44,18 +44,13 @@
                                         
                                             <a href="#" class="dropdown-item"
                                                 data-url="{{ route('users.edit', $user->id) }}" data-size="md"
-                                                data-ajax-popup="true" data-title="{{ __('Update User') }}">
+                                                data-ajax-popup="true" data-title="{{ __('Update Employee') }}">
                                                 <i class="ti ti-edit"></i>
                                                 <span class="ms-2">{{ __('Edit') }}</span>
                                             </a>
                                          
                                         
-                                            <a href="#" class="dropdown-item"
-                                                data-url="{{ route('stores.reset.password', \Crypt::encrypt($user->id)) }}"
-                                                data-ajax-popup="true" data-size="md" data-title="{{ __('Change Password') }}">
-                                                <i class="ti ti-key"></i>
-                                                <span class="ms-2">{{ __('Reset Password') }}</span>
-                                            </a>
+                                            
                                         
                                         
                                             {!! Form::open(['method' => 'DELETE', 'route' => ['users.destroy', $user->id], 'class' => 'd-inline']) !!}
@@ -93,9 +88,9 @@
                     </div>
                     <div class="card-body">
                         <div class="img-fluid rounded-circle card-avatar pb-4   ">
-                            <a href="{{ !empty($user->profile_image) ? asset('uploads/profile/' . $user->profile_image) : asset('storage/uploads/profile/avatar.png') }}"
+                            <a href="{{ !empty($user->profile_image) ? asset('uploads/profile/' . $user->profile_image) : asset('avatar.png') }}"
                                 target="_blank">
-                                <img src="{{ !empty($user->profile_image) ? asset('uploads/profile/' . $user->profile_image) : asset('storage/uploads/profile/avatar.png') }}"
+                                <img src="{{ !empty($user->profile_image) ? asset('uploads/profile/' . $user->profile_image) : asset('avatar.png') }}"
                                     class="img-user wid-100 round-img rounded-circle">
                             </a>
                         </div>
@@ -107,13 +102,13 @@
         @endforeach
         <div class="col-md-3">
             
-                <a class="btn-addnew-project" data-url="{{ route('users.create') }}" data-title="{{ __('Add User') }}"
+                <a class="btn-addnew-project" data-url="{{ route('users.create') }}" data-title="{{ __('Add Employee') }}"
                     data-ajax-popup="true" >
                     <div class="bg-primary proj-add-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
                         <i class="ti ti-plus"></i>
                     </div>
-                    <h6 class="mt-4 mb-2">{{ __('New User') }}</h6>
-                    <p class="text-muted text-center">{{ __('Click here to add New User') }}</p>
+                    <h6 class="mt-4 mb-2">{{ __('New Employee') }}</h6>
+                    <p class="text-muted text-center">{{ __('Click here to add New Employee') }}</p>
                 </a>
             
         </div>

@@ -1,5 +1,10 @@
 <?php
 
+if(file_exists('install')){
+include 'install.php';
+die();
+}
+
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 

@@ -63,6 +63,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
         
+        return redirect(url('dashboard'));
         // \App\Models\Utility::addNewData();
 
         

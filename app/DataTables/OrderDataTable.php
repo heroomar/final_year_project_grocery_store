@@ -24,6 +24,16 @@ class OrderDataTable extends DataTable
         $dataTable = (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('action', function (Order $order) {
+                if (auth()->user()->role == 3){
+                    return '<a href="javascript:void(0)"
+                            data-url="'. route('order.order_view', ($order->id)) .'" data-size="lg"
+                            data-ajax-popup="true" data-title="'. __('Order') .'    #'. $order->product_order_id .'"
+                            class="x-3 btn btn-sm align-items-center btn btn-sm btn-warning" data-bs-toggle="tooltip"
+                            data-original-title="'. __('Show') .'" data-bs-toggle="tooltip"
+                            title="'. __('Show') .'">
+                            <i class="ti ti-eye"></i>
+                        </a>'; 
+                }
                 return view('order.action', compact('order'));
             })
             ->editColumn('product_order_id', function ($item) {
@@ -53,6 +63,7 @@ class OrderDataTable extends DataTable
                         </div>';
             })
             ->editColumn('order_date', function ($item) {
+                
                 return \App\Models\Utility::dateFormat($item->order_date);
             })
             ->editColumn('customer_id', function ($item) {
@@ -117,7 +128,10 @@ class OrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model->where('theme_id',APP_THEME())->where('store_id',getCurrentStore())->orderBy('created_at', 'desc');
+        if (auth()->user()->role == 3){
+            return $model->where('user_id' , auth()->id());
+        }
+        return $model->orderBy('created_at', 'desc');
     }
 
     /**

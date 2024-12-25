@@ -1,14 +1,5 @@
 <span class="d-flex gap-1 justify-content-end">
-@if ($order->delivered_status == 3 && $order->return_status == 1)
-    <a href="#" class="btn btn-sm btn-primary return_request" data-id="{{ $order->id }}" data-status="2" data-bs-toggle="tooltip"
-    title="{{ __('Approve') }}">
-        <i class="ti ti-check"></i>
-    </a>
-    <a href="#" class="btn btn-sm btn-danger return_request" data-id="{{ $order->id }}" data-status="3" data-bs-toggle="tooltip"
-    title="{{ __('Cancel') }}">
-        <i class="ti ti-circle-x"></i>
-    </a>
-@endif
+
 <a href="javascript:void(0)"
     data-url="{{ route('order.order_view', ($order->id)) }}" data-size="lg"
     data-ajax-popup="true" data-title="{{ __('Order') }}    #{{ $order->product_order_id }}"

@@ -41,10 +41,10 @@
                 </a>
                 <div class="dropdown-menu dash-h-dropdown">
 
-                    <a href="{{ url('profile') }}" class="dropdown-item">
+                    <!-- <a href="{{ url('profile') }}" class="dropdown-item">
                         <i class="ti ti-user"></i>
                         <span>{{ __('Profile') }}</span>
-                    </a>
+                    </a> -->
                     <form method="POST" action="{{ url('logout') }}" id="form_logout">
                         <a  onclick="event.preventDefault(); this.closest('form').submit();"
                             class="dropdown-item">
